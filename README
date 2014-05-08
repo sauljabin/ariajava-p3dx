@@ -20,8 +20,9 @@ Autores:
 	JORGE PARRA - THEJORGEMYLIO@GMAIL.COM
 
 Descripción: 
-	Comportamientos para robot Pioneer P3DX. Librería ARIA http://robots.mobilerobots.com/wiki/ARIA.
-	Api Java
+	Algoritmos de navegación para robot Pioneer P3DX usando la
+	Librería ARIA http://robots.mobilerobots.com/wiki/ARIA
+	y el API Java sobre Linux
 
 Requerimientos:
 	- Sistema Operativo Linux
