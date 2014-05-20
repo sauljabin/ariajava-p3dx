@@ -1,4 +1,4 @@
-package app.test;
+package app.aria.test;
 
 /* 
  Shows how to add a task callback to ArRobot's synchronization/processing cycle

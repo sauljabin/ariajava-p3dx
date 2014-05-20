@@ -31,9 +31,6 @@ public class Library {
 
 	public static void load() throws Exception {
 
-		if (!Library.is32Bit())
-			throw new FileNotFoundException("Api library not found for arch: " + Config.get("OS_ARCH"));
-
 		if (!Library.isLinux())
 			throw new FileNotFoundException("Api library not found for os: " + Config.get("OS"));
 
@@ -56,19 +53,6 @@ public class Library {
 
 	public static boolean isLinux() {
 		return Config.get("OS").toLowerCase().contains("linux");
-	}
-
-	public static boolean is32Bit() {
-		Vector<String> strings = new Vector<String>();
-		strings.add("x86");
-		strings.add("i386");
-
-		for (String string : strings) {
-			if (Config.get("OS_ARCH").toLowerCase().contains(string))
-				return true;
-		}
-
-		return false;
 	}
 
 }

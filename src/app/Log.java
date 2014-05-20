@@ -108,8 +108,10 @@ public class Log {
 			ex.printStackTrace();
 		}
 
-		if (textArea != null)
+		if (textArea != null) {
 			textArea.append(string + "\n");
+			textArea.setCaretPosition(textArea.getDocument().getLength());
+		}
 
 	}
 
