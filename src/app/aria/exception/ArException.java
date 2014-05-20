@@ -18,37 +18,19 @@
  *		JORGE PARRA - THEJORGEMYLIO@GMAIL.COM
  *		2014
  */
+ 
+package app.aria.exception;
 
-package app.com;
+public class ArException extends Exception {
 
-public class ClassW implements Comparable<ClassW> {
+	private static final long serialVersionUID = -2595110526724338943L;
 
-	private Class<?> clazz;
-
-	public Class<?> getValue() {
-		return clazz;
+	public ArException() {
+		super();
 	}
 
-	public void setValue(Class<?> clazz) {
-		this.clazz = clazz;
-	}
-
-	public ClassW(Class<?> clazz) {
-		this.clazz = clazz;
-	}
-
-	public ClassW() {
-
-	}
-
-	@Override
-	public String toString() {
-		return clazz.getSimpleName();
-	}
-
-	@Override
-	public int compareTo(ClassW o) {
-		return this.toString().compareTo(o.toString());
+	public ArException(String message) {
+		super(message);
 	}
 
 }

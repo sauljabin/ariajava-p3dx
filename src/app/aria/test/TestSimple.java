@@ -1,4 +1,4 @@
-package app.test;
+package app.aria.test;
 
 /* A simple example of connecting to and driving the robot with direct
  * motion commands.

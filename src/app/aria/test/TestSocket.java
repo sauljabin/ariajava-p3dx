@@ -1,4 +1,4 @@
-package app.test;
+package app.aria.test;
 
 import app.Config;
 import app.Library;
