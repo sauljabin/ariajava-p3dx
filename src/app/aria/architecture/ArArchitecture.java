@@ -18,7 +18,7 @@
  *		JORGE PARRA - THEJORGEMYLIO@GMAIL.COM
  *		2014
  */
- 
+
 package app.aria.architecture;
 
 import app.Translate;
@@ -100,7 +100,7 @@ public abstract class ArArchitecture implements Comparable<ArArchitecture>, Runn
 
 			robot.addRangeDevice(sonar);
 
-			init();
+			robot.addAction(getBehavior(), 100);
 
 			robot.enableMotors();
 
@@ -111,7 +111,7 @@ public abstract class ArArchitecture implements Comparable<ArArchitecture>, Runn
 	public void stop() {
 		try {
 			if (isAlive()) {
-				robot.stopRunning(true);				
+				robot.stopRunning(true);
 				thread.join(1000);
 			}
 		} catch (Exception e) {
@@ -124,6 +124,6 @@ public abstract class ArArchitecture implements Comparable<ArArchitecture>, Runn
 		robot.run(true);
 	}
 
-	public abstract void init();
+	public abstract ArBehavior getBehavior();
 
 }

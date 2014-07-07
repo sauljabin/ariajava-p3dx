@@ -18,22 +18,9 @@
  *		JORGE PARRA - THEJORGEMYLIO@GMAIL.COM
  *		2014
  */
- 
-package app.aria.architecture;
 
-import app.aria.action.ArActionAvoid;
-import app.aria.action.ArActionMove;
+package app.aria.architecture.aura;
 
-public class ArArchitectureReactive extends ArArchitecture {
-
-	public ArArchitectureReactive(String host, int tcpPort) {
-		super("Reactive", host, tcpPort);
-	}
-
-	@Override
-	public void init() {
-		getRobot().addAction(new ArActionAvoid(), 70);
-		getRobot().addAction(new ArActionMove(), 60);
-	}
+public class ArPlanSequencer {
 
 }

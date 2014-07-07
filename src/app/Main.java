@@ -26,8 +26,8 @@ import java.util.Vector;
 import javax.swing.JOptionPane;
 
 import app.aria.architecture.ArArchitecture;
-import app.aria.architecture.ArArchitectureAuRA;
-import app.aria.architecture.ArArchitectureReactive;
+import app.aria.architecture.aura.ArArchitectureAuRA;
+import app.aria.architecture.reactive.ArArchitectureReactive;
 import app.aria.exception.ArException;
 import app.gui.ControllerViewApp;
 import app.util.ClassW;
