@@ -18,65 +18,63 @@
  *		JORGE PARRA - THEJORGEMYLIO@GMAIL.COM
  *		2014
  */
- 
-package app.aria.action;
 
-import com.mobilerobots.Aria.ArAction;
+package app.aria.architecture.reactive;
+
+import app.aria.architecture.ArBehavior;
+
 import com.mobilerobots.Aria.ArActionDesired;
-import com.mobilerobots.Aria.ArRangeDevice;
-import com.mobilerobots.Aria.ArRobot;
 
-public class ArActionAvoid extends ArAction {
+public class ArBehaviorReactive extends ArBehavior {
 
-	private ArRangeDevice sonar;
-	private ArActionDesired actionDesired;
 	private double turnThreshold;
 	private double turnAmount;
 	private int turning;
+	private double maxSpeed;
+	private double stopDistance;
 
-	public ArActionAvoid() {
-		super("Avoid");
+	public ArBehaviorReactive(ArArchitectureReactive arArchitecture) {
+		super(arArchitecture);
 		turnThreshold = 400;
 		turnAmount = 10;
-		actionDesired = new ArActionDesired();
-	}
-
-	public double getTurnThreshold() {
-		return turnThreshold;
-	}
-
-	public double getTurnAmount() {
-		return turnAmount;
+		maxSpeed = 500;
+		stopDistance = 350;
 	}
 
 	@Override
 	public ArActionDesired fire(ArActionDesired currentAction) {
-		actionDesired.reset();
+		currentAction.reset();
 
 		double robotRadius = 400;
-		double leftRange = (sonar.currentReadingPolar(0, 100) - robotRadius);
-		double rightRange = (sonar.currentReadingPolar(-100, 0) - robotRadius);
+		double leftRange = (getRangeSonar().currentReadingPolar(0, 100) - robotRadius);
+		double rightRange = (getRangeSonar().currentReadingPolar(-100, 0) - robotRadius);
 
 		if (leftRange > turnThreshold && rightRange > turnThreshold) {
 			turning = 0;
-			actionDesired.setDeltaHeading(0);
+			currentAction.setDeltaHeading(0);
 		} else if (turning != 0) {
-			actionDesired.setDeltaHeading(turnAmount * turning);
+			currentAction.setDeltaHeading(turnAmount * turning);
 		} else if (leftRange < rightRange) {
 			turning = -1;
-			actionDesired.setDeltaHeading(turnAmount * turning);
+			currentAction.setDeltaHeading(turnAmount * turning);
 		} else {
 			turning = 1;
-			actionDesired.setDeltaHeading(turnAmount * turning);
+			currentAction.setDeltaHeading(turnAmount * turning);
 		}
 
-		return actionDesired;
-	}
+		double speed;
+		double range = getRangeSonar().currentReadingPolar(-70, 70) - robotRadius;
 
-	@Override
-	public void setRobot(ArRobot robot) {
-		setActionRobot(robot);
-		sonar = robot.findRangeDevice("sonar");
+		if (range > stopDistance) {
+			speed = range * .3;
+			if (speed > maxSpeed)
+				speed = maxSpeed;
+			currentAction.setVel(speed);
+		} else {
+			currentAction.setVel(0);
+		}
+
+		return currentAction;
 	}
 
 }

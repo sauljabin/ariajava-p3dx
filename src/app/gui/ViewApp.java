@@ -22,6 +22,8 @@
 package app.gui;
 
 import java.awt.BorderLayout;
+import java.awt.Canvas;
+import java.awt.Color;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -34,6 +36,7 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSeparator;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
@@ -70,6 +73,8 @@ public class ViewApp extends JFrame {
 	private JComboBox<ClassW> cmbArch;
 	private JButton btnStartSimulation;
 	private JButton btnStopSimulation;
+	private JMenuItem menuItemLoadMap;
+	private Canvas canvasAnimation;
 
 	public ViewApp() {
 		menuItems = new Vector<JMenuItem>();
@@ -97,7 +102,7 @@ public class ViewApp extends JFrame {
 
 	private void init() {
 		setLayout(new BorderLayout());
-		setSize(240, 350);
+		setSize(800, 600);
 		setTitle(Config.get("APP_NAME"));
 
 		menuBar = new JMenuBar();
@@ -106,8 +111,13 @@ public class ViewApp extends JFrame {
 		menuOptions = new JMenu(Translate.get("GUI_OPTIONS"));
 		menuBar.add(menuOptions);
 
+		menuItemLoadMap = new JMenuItem(Translate.get("GUI_LOADMAP"));
+		menuOptions.add(menuItemLoadMap);
+
 		menuItemShowConfig = new JMenuItem(Translate.get("GUI_SHOWCONFIG"));
 		menuOptions.add(menuItemShowConfig);
+
+		menuOptions.add(new JSeparator());
 
 		menuItemClose = new JMenuItem(Translate.get("GUI_CLOSE"));
 		menuOptions.add(menuItemClose);
@@ -149,8 +159,13 @@ public class ViewApp extends JFrame {
 		pnlWest.add(pnlConnection, "wrap 10");
 
 		pnlCenter = new JPanel();
-		pnlCenter.setLayout(new MigLayout());
+		pnlCenter.setLayout(new BorderLayout());
+		pnlCenter.setBorder(BorderFactory.createEmptyBorder(8, 10, 0, 7));
 		add(pnlCenter, BorderLayout.CENTER);
+
+		canvasAnimation = new Canvas();
+		canvasAnimation.setBackground(Color.WHITE);
+		pnlCenter.add(canvasAnimation, BorderLayout.CENTER);
 
 		pnlSouth = new JPanel();
 		pnlSouth.setLayout(new MigLayout());
@@ -164,6 +179,7 @@ public class ViewApp extends JFrame {
 		menuItems.add(menuItemShowConfig);
 		menuItems.add(menuItemClose);
 		menuItems.add(menuItemAbout);
+		menuItems.add(menuItemLoadMap);
 
 		buttons.add(btnStartSimulation);
 		buttons.add(btnStopSimulation);
@@ -203,6 +219,14 @@ public class ViewApp extends JFrame {
 
 	public JButton getBtnStopSimulation() {
 		return btnStopSimulation;
+	}
+
+	public JMenuItem getMenuItemLoadMap() {
+		return menuItemLoadMap;
+	}
+
+	public Canvas getCanvasAnimation() {
+		return canvasAnimation;
 	}
 
 }

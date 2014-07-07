@@ -18,18 +18,9 @@
  *		JORGE PARRA - THEJORGEMYLIO@GMAIL.COM
  *		2014
  */
- 
-package app.aria.architecture;
 
-public class ArArchitectureAuRA extends ArArchitecture {
+package app.aria.architecture.aura;
 
-	public ArArchitectureAuRA(String host, int tcpPort) {
-		super("AuRA", host, tcpPort);
-	}
-
-	@Override
-	public void init() {
-
-	}
+public class ArSpatialReasoner {
 
 }

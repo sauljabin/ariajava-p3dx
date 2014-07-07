@@ -28,6 +28,7 @@ GUI_STOPSIMULATION=Parar
 GUI_STOP=Detener
 GUI_ACTION=Acción
 GUI_SETTINGS=Ajustes
+GUI_LOADMAP=Cargar Mapa
 
 ERROR_NOSAVECONFIG=No se pudo actualizar el archivo de configuración
 ERROR_NOARCHINSTANCE=No se puede instanciar la arquitectura
@@ -35,3 +36,5 @@ ERROR_PARSEARGS=Error al ejecutar comandos
 INFO_SUCCESSFULCONN=Conexión exitosa
 INFO_UNSUCCESSFULCONN=Conexión no exitosa
 INFO_CLOSECONN=Conexión cerrada
+INFO_THREADSTOP=Hilo detenido
+INFO_MAPLOADED=Mapa cargado

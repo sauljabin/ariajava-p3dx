@@ -18,24 +18,27 @@
  *		JORGE PARRA - THEJORGEMYLIO@GMAIL.COM
  *		2014
  */
- 
+
 package app.gui;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.util.Vector;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 import app.Config;
 import app.Log;
 import app.Translate;
 import app.aria.architecture.ArArchitecture;
-import app.aria.architecture.ArArchitectureAuRA;
-import app.aria.architecture.ArArchitectureReactive;
+import app.aria.architecture.aura.ArArchitectureAuRA;
+import app.aria.architecture.reactive.ArArchitectureReactive;
 import app.aria.exception.ArException;
 import app.util.ClassW;
 
@@ -82,6 +85,28 @@ public class ControllerViewApp implements ActionListener {
 			connect();
 		else if (source.equals(viewApp.getBtnStopSimulation()))
 			disconnect();
+		else if (source.equals(viewApp.getMenuItemLoadMap()))
+			loadMap();
+	}
+
+	public void loadMap() {
+
+		JFileChooser file = new JFileChooser();
+		file.setCurrentDirectory(new File("."));
+		file.setAcceptAllFileFilterUsed(false);
+		file.setMultiSelectionEnabled(false);
+		file.setFileFilter(new FileNameExtensionFilter("MAP", "map"));
+		file.showOpenDialog(viewApp);
+
+		File path = file.getSelectedFile();
+
+		if (path == null)
+			return;
+
+		String fileName = path.getAbsolutePath();
+
+		Log.info(getClass(), Translate.get("INFO_MAPLOADED") + ": " + fileName);
+
 	}
 
 	public void about() {
