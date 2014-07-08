@@ -21,20 +21,68 @@
 
 package app.aria.architecture.reactive;
 
+import com.mobilerobots.Aria.ArUtil;
+
 import app.aria.architecture.ArArchitecture;
-import app.aria.architecture.ArBehavior;
 
 public class ArArchitectureReactive extends ArArchitecture {
-	private ArBehaviorReactive arBehaviorReactive;
+
+	private double angle;
+	private double stopDistance;
+	private double turnAngle;
+	private double speed;
+	private boolean turnLeft;
+	private boolean turnRight;
 
 	public ArArchitectureReactive(String host, int tcpPort) {
 		super("Reactive", host, tcpPort);
-		arBehaviorReactive = new ArBehaviorReactive(this);
+		angle = 60;
+		stopDistance = 1000;
+		turnAngle = 15;
+		speed = 400;
+		turnLeft = false;
+		turnRight = false;
 	}
 
 	@Override
-	public ArBehavior getBehavior() {
-		return arBehaviorReactive;
+	public void behavior() {
+		double range = getRangeSonar().currentReadingPolar(-angle, angle);
+		if (range <= stopDistance) { // TURN
+			getRobot().lock();
+			getRobot().setVel(0);
+			getRobot().unlock();
+
+			if (getRobot().getVel() > 0)
+				ArUtil.sleep(2000);
+
+			double leftRange = getRangeSonar().currentReadingPolar(0, angle);
+			double rightRange = getRangeSonar().currentReadingPolar(-angle, 0);
+
+			if (!turnRight && !turnLeft) {
+				if (leftRange <= rightRange) {
+					turnLeft = true;
+				} else {
+					turnRight = true;
+				}
+			}
+
+			getRobot().lock();
+			if (turnLeft) {
+				getRobot().setDeltaHeading(-turnAngle);
+			} else if (turnRight) {
+				getRobot().setDeltaHeading(turnAngle);
+			}
+			getRobot().unlock();
+
+		} else { // MOVE
+			if (getRobot().getVel() == 0)
+				ArUtil.sleep(2000);
+			getRobot().lock();
+			getRobot().setVel(speed);
+			getRobot().unlock();
+			turnLeft = false;
+			turnRight = false;
+		}
 	}
 
 }

@@ -25,6 +25,7 @@ import app.Translate;
 import app.aria.exception.ArException;
 import app.aria.exception.ArExceptionParseArgs;
 
+import com.mobilerobots.Aria.ArRangeDevice;
 import com.mobilerobots.Aria.ArRobot;
 import com.mobilerobots.Aria.ArSimpleConnector;
 import com.mobilerobots.Aria.ArSonarDevice;
@@ -38,7 +39,9 @@ public abstract class ArArchitecture implements Comparable<ArArchitecture>, Runn
 	private Thread thread;
 	private ArRobot robot;
 	private ArSonarDevice sonar;
+	protected ArRangeDevice rangeSonar;
 	private ArSimpleConnector conn;
+	private boolean run;
 
 	public String getName() {
 		return name;
@@ -58,6 +61,10 @@ public abstract class ArArchitecture implements Comparable<ArArchitecture>, Runn
 
 	public ArSonarDevice getSonar() {
 		return sonar;
+	}
+
+	public ArRangeDevice getRangeSonar() {
+		return rangeSonar;
 	}
 
 	public ArArchitecture(String name, String host, int tcpPort) {
@@ -99,16 +106,16 @@ public abstract class ArArchitecture implements Comparable<ArArchitecture>, Runn
 			}
 
 			robot.addRangeDevice(sonar);
-
-			robot.addAction(getBehavior(), 100);
-
+			rangeSonar = robot.findRangeDevice("sonar");
 			robot.enableMotors();
-
+			robot.runAsync(true);
+			run = true;
 			thread.start();
 		}
 	}
 
 	public void stop() {
+		run = false;
 		try {
 			if (isAlive()) {
 				robot.stopRunning(true);
@@ -121,9 +128,11 @@ public abstract class ArArchitecture implements Comparable<ArArchitecture>, Runn
 
 	@Override
 	public void run() {
-		robot.run(true);
+		while (run) {
+			behavior();
+		}
 	}
 
-	public abstract ArBehavior getBehavior();
+	public abstract void behavior();
 
 }

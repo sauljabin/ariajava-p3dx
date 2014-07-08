@@ -1,5 +1,5 @@
 2D-Map
-Cairn: RobotHome -5500 -5500 0 "" ICON ""
+Cairn: RobotHome 0 0 0 "" ICON ""
 LINES
 -6000 6000 6000 6000
 -6000 -6000 6000 -6000
