@@ -22,11 +22,9 @@
 package app.aria.architecture.aura;
 
 import app.aria.architecture.ArArchitecture;
-import app.aria.architecture.ArBehavior;
 
 public class ArArchitectureAuRA extends ArArchitecture {
 
-	private ArBehaviorAuRA arBehaviorAuRA;
 	private ArMisionPlanner arMisionPlanner;
 	private ArPlanSequencer arPlanSequencer;
 	private ArSpatialReasoner arSpatialReasoner;
@@ -57,12 +55,11 @@ public class ArArchitectureAuRA extends ArArchitecture {
 
 	public ArArchitectureAuRA(String host, int tcpPort) {
 		super("AuRA", host, tcpPort);
-		arBehaviorAuRA = new ArBehaviorAuRA(this);
 	}
 
 	@Override
-	public ArBehavior getBehavior() {
-		return arBehaviorAuRA;
+	public void behavior() {
+
 	}
 
 }
