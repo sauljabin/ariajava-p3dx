@@ -16,7 +16,7 @@
  *  
  */
 
-package app.animation;
+package app.gui.animation;
 
 import java.awt.Canvas;
 import java.awt.Graphics2D;

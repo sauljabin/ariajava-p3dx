@@ -19,7 +19,7 @@
  *		2014
  */
 
-package app.aria.architecture;
+package app.aria;
 
 import app.Translate;
 import app.aria.exception.ArException;

@@ -21,7 +21,7 @@
 
 package app.aria.architecture.aura;
 
-import app.aria.architecture.ArArchitecture;
+import app.aria.ArArchitecture;
 
 public class ArArchitectureAuRA extends ArArchitecture {
 

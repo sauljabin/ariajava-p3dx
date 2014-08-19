@@ -33,6 +33,7 @@ GUI_LOADMAP=Cargar Mapa
 ERROR_NOSAVECONFIG=No se pudo actualizar el archivo de configuración
 ERROR_NOARCHINSTANCE=No se puede instanciar la arquitectura
 ERROR_PARSEARGS=Error al ejecutar comandos
+ERROR_MAPLOADED=Error al cargar mapa
 INFO_SUCCESSFULCONN=Conexión exitosa
 INFO_UNSUCCESSFULCONN=Conexión no exitosa
 INFO_CLOSECONN=Conexión cerrada
