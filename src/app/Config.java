@@ -40,6 +40,7 @@ public class Config {
 		properties.load(new InputStreamReader(new FileInputStream(configPath), "UTF-8"));
 		properties.put("OS", System.getProperty("os.name"));
 		properties.put("OS_ARCH", System.getProperty("os.arch"));
+		properties.put("JAVA_VERSION",System.getProperty("java.version"));
 	}
 
 	public static String get(String key) {

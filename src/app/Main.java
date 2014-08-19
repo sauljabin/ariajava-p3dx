@@ -140,6 +140,7 @@ public class Main {
 	private static void loadFeatures() {
 		try {
 			Config.load();
+			Config.save();
 			Translate.load();
 			Library.load();
 		} catch (Exception e) {
@@ -151,6 +152,7 @@ public class Main {
 	private static void loadFeaturesGUI() {
 		try {
 			Config.load();
+			Config.save();
 			Translate.load();
 			Library.load();
 		} catch (Exception e) {

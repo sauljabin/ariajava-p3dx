@@ -163,9 +163,11 @@ public class ViewApp extends JFrame {
 		pnlCenter.setBorder(BorderFactory.createEmptyBorder(8, 10, 0, 7));
 		add(pnlCenter, BorderLayout.CENTER);
 
+		JScrollPane scrollPanelCanvas = new JScrollPane();
 		canvasAnimation = new Canvas();
 		canvasAnimation.setBackground(Color.WHITE);
-		pnlCenter.add(canvasAnimation, BorderLayout.CENTER);
+		pnlCenter.add(scrollPanelCanvas, BorderLayout.CENTER);
+		scrollPanelCanvas.setViewportView(canvasAnimation);
 
 		pnlSouth = new JPanel();
 		pnlSouth.setLayout(new MigLayout());
