@@ -36,10 +36,13 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import app.Config;
 import app.Log;
 import app.Translate;
+import app.animation.AnimatedTest;
+import app.animation.Animator;
 import app.aria.architecture.ArArchitecture;
 import app.aria.architecture.aura.ArArchitectureAuRA;
 import app.aria.architecture.reactive.ArArchitectureReactive;
 import app.aria.exception.ArException;
+import app.map.Map;
 import app.util.ClassW;
 
 public class ControllerViewApp implements ActionListener {
@@ -47,6 +50,7 @@ public class ControllerViewApp implements ActionListener {
 	private ViewApp viewApp;
 	private DefaultComboBoxModel<ClassW> modelCmbArch;
 	private ArArchitecture arch;
+	private Animator animator;
 
 	public ControllerViewApp() {
 		viewApp = new ViewApp();
@@ -70,6 +74,12 @@ public class ControllerViewApp implements ActionListener {
 		viewApp.getTxtHost().setText(Config.get("HOST_SERVER"));
 		viewApp.getTxtPort().setText(Config.get("HOST_PORT"));
 		viewApp.getBtnStopSimulation().setEnabled(false);
+
+		viewApp.getCanvasAnimation().setSize(1500, 2000);
+		
+		animator = new Animator(viewApp.getCanvasAnimation());
+		animator.addAnimated(new AnimatedTest());
+		animator.start();
 	}
 
 	@Override
@@ -104,6 +114,9 @@ public class ControllerViewApp implements ActionListener {
 			return;
 
 		String fileName = path.getAbsolutePath();
+
+		Map map = new Map();
+		map.load(path.getAbsolutePath());
 
 		Log.info(getClass(), Translate.get("INFO_MAPLOADED") + ": " + fileName);
 
@@ -179,6 +192,7 @@ public class ControllerViewApp implements ActionListener {
 	}
 
 	public void close() {
+		animator.stop();
 		disconnect();
 		viewApp.dispose();
 		System.exit(0);
