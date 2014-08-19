@@ -23,7 +23,7 @@ package app.aria.architecture.reactive;
 
 import com.mobilerobots.Aria.ArUtil;
 
-import app.aria.architecture.ArArchitecture;
+import app.aria.ArArchitecture;
 
 public class ArArchitectureReactive extends ArArchitecture {
 

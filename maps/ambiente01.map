@@ -1,5 +1,6 @@
 2D-Map
 Cairn: RobotHome 0 0 0 "" ICON ""
+NumLines: 4
 LINES
 -6000 6000 6000 6000
 -6000 -6000 6000 -6000

@@ -25,7 +25,7 @@ import java.util.Vector;
 
 import javax.swing.JOptionPane;
 
-import app.aria.architecture.ArArchitecture;
+import app.aria.ArArchitecture;
 import app.aria.architecture.aura.ArArchitectureAuRA;
 import app.aria.architecture.reactive.ArArchitectureReactive;
 import app.aria.exception.ArException;
@@ -154,7 +154,7 @@ public class Main {
 			Config.load();
 			Config.save();
 			Translate.load();
-			Library.load();
+			//Library.load();
 		} catch (Exception e) {
 			Log.error(Main.class, "loadFeaturesGUI()", e);
 			JOptionPane.showMessageDialog(null, "loadFeaturesGUI()", "Error", JOptionPane.ERROR_MESSAGE);

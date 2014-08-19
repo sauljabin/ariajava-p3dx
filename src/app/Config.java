@@ -34,7 +34,7 @@ import java.util.Vector;
 public class Config {
 
 	private static Properties properties = new Properties();
-	public static String configPath = "CONFIG";
+	public static String configPath = "CONFIG.properties";
 
 	public static void load() throws FileNotFoundException, IOException {
 		properties.load(new InputStreamReader(new FileInputStream(configPath), "UTF-8"));

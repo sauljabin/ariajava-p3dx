@@ -1,9 +1,12 @@
-package app.animation;
+package app.gui.animation.test;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 
-public class AnimatedTest implements Animated {
+import app.gui.animation.Animated;
+import app.gui.animation.Animator;
+
+public class AnTest implements Animated {
 
 	@Override
 	public void init() {

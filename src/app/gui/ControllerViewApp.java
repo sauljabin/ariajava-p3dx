@@ -26,6 +26,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
+import java.io.IOException;
 import java.util.Vector;
 
 import javax.swing.DefaultComboBoxModel;
@@ -36,12 +37,12 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import app.Config;
 import app.Log;
 import app.Translate;
-import app.animation.AnimatedTest;
-import app.animation.Animator;
-import app.aria.architecture.ArArchitecture;
+import app.aria.ArArchitecture;
 import app.aria.architecture.aura.ArArchitectureAuRA;
 import app.aria.architecture.reactive.ArArchitectureReactive;
 import app.aria.exception.ArException;
+import app.gui.animation.Animator;
+import app.gui.animation.test.AnTest;
 import app.map.Map;
 import app.util.ClassW;
 
@@ -78,7 +79,7 @@ public class ControllerViewApp implements ActionListener {
 		viewApp.getCanvasAnimation().setSize(1500, 2000);
 		
 		animator = new Animator(viewApp.getCanvasAnimation());
-		animator.addAnimated(new AnimatedTest());
+		animator.addAnimated(new AnTest());
 		animator.start();
 	}
 
@@ -116,7 +117,12 @@ public class ControllerViewApp implements ActionListener {
 		String fileName = path.getAbsolutePath();
 
 		Map map = new Map();
-		map.load(path.getAbsolutePath());
+		try {
+			map.load(path.getAbsolutePath());
+		} catch (IOException e) {
+			Log.error(getClass(), Translate.get("ERROR_MAPLOADED"), e);
+			e.printStackTrace();
+		}
 
 		Log.info(getClass(), Translate.get("INFO_MAPLOADED") + ": " + fileName);
 
