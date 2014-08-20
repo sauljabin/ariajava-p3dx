@@ -24,7 +24,6 @@ import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.Vector;
 
@@ -43,6 +42,15 @@ public class Animator implements Runnable {
 	private Graphics2D graphics;
 	private boolean antialiasing;
 	private Canvas canvas;
+	private double scale;
+	
+	public double getScale() {
+		return scale;
+	}
+
+	public void setScale(double scale) {
+		this.scale = scale;
+	}
 
 	public Canvas getCanvas() {
 		return canvas;
@@ -54,6 +62,7 @@ public class Animator implements Runnable {
 
 	public Animator(Canvas canvas) {
 		this.canvas = canvas;
+		scale=1;
 		FPS = 24;
 		animateds = new Vector<Animated>();
 		thread = new Thread(this);
@@ -114,10 +123,8 @@ public class Animator implements Runnable {
 
 	public synchronized void makeImage() {
 		image = new BufferedImage(canvas.getWidth(), canvas.getHeight(), 1);
-		graphics = (Graphics2D) image.getGraphics();
-		
-		
-		
+		graphics = (Graphics2D) image.getGraphics();		
+		graphics.scale(scale, scale);		
 		setAntialiasing(true);
 	}
 
