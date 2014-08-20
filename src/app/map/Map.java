@@ -13,6 +13,10 @@ public class Map {
 	private int mmWidth;
 	private int mmHeight;
 
+	public List<Line> getLines() {
+		return lines;
+	}
+
 	public RobotHome getRobotHome() {
 		return robotHome;
 	}

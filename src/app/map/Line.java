@@ -1,10 +1,19 @@
 package app.map;
 
-public class Line {
+import java.awt.Color;
+import java.awt.Graphics2D;
+import java.awt.geom.AffineTransform;
+
+import app.gui.animation.Animated;
+import app.gui.animation.Animator;
+
+public class Line implements Animated {
+
 	private int x1;
 	private int y1;
 	private int x2;
 	private int y2;
+	private Animator animator;
 
 	public Line() {
 
@@ -52,6 +61,41 @@ public class Line {
 	@Override
 	public String toString() {
 		return String.format("Line [x1=%s, y1=%s, x2=%s, y2=%s]", x1, y1, x2, y2);
+	}
+
+	@Override
+	public void init() {
+
+	}
+
+	@Override
+	public void paint(Graphics2D g) {
+		g.setColor(Color.BLACK);
+		g.drawLine(x1, y1, x2, y2);
+		
+		AffineTransform transformer = new AffineTransform();
+		transformer.scale(.5,.5);
+		g.setTransform(transformer);
+	}
+
+	@Override
+	public void animate() {
+
+	}
+
+	@Override
+	public int getZIndex() {
+		return 1;
+	}
+
+	@Override
+	public void setAnimator(Animator animator) {
+		this.animator = animator;
+	}
+
+	@Override
+	public Animator getAnimator() {
+		return animator;
 	}
 
 }

@@ -12,4 +12,6 @@ public interface Animated {
 	public int getZIndex();
 	
 	public void setAnimator(Animator animator);
+	
+	public Animator getAnimator();
 }
