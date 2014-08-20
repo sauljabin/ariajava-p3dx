@@ -42,7 +42,7 @@ import app.aria.architecture.aura.ArArchitectureAuRA;
 import app.aria.architecture.reactive.ArArchitectureReactive;
 import app.aria.exception.ArException;
 import app.gui.animation.Animator;
-import app.gui.animation.test.AnTest;
+import app.map.Line;
 import app.map.Map;
 import app.util.ClassW;
 
@@ -77,9 +77,8 @@ public class ControllerViewApp implements ActionListener {
 		viewApp.getBtnStopSimulation().setEnabled(false);
 
 		viewApp.getCanvasAnimation().setSize(1500, 2000);
-		
+
 		animator = new Animator(viewApp.getCanvasAnimation());
-		animator.addAnimated(new AnTest());
 		animator.start();
 	}
 
@@ -119,6 +118,9 @@ public class ControllerViewApp implements ActionListener {
 		Map map = new Map();
 		try {
 			map.load(path.getAbsolutePath());
+			for (Line line : map.getLines()) {
+				animator.addAnimated(line);
+			}
 		} catch (IOException e) {
 			Log.error(getClass(), Translate.get("ERROR_MAPLOADED"), e);
 			e.printStackTrace();

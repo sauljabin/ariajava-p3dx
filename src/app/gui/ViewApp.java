@@ -81,7 +81,6 @@ public class ViewApp extends JFrame {
 		buttons = new Vector<JButton>();
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		init();
-		setResizable(false);
 		setLocationRelativeTo(this);
 		setVisible(true);
 	}

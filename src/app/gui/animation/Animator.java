@@ -24,6 +24,7 @@ import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.Vector;
 
@@ -97,7 +98,7 @@ public class Animator implements Runnable {
 		animateds.add(animated);
 		animated.setAnimator(this);
 		animated.init();
-	}
+	}	
 
 	public synchronized void removeAnimated(Animated animated) {
 		animateds.remove(animated);
@@ -114,6 +115,9 @@ public class Animator implements Runnable {
 	public synchronized void makeImage() {
 		image = new BufferedImage(canvas.getWidth(), canvas.getHeight(), 1);
 		graphics = (Graphics2D) image.getGraphics();
+		
+		
+		
 		setAntialiasing(true);
 	}
 
