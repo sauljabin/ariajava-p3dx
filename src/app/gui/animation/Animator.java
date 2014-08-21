@@ -19,11 +19,13 @@
 package app.gui.animation;
 
 import java.awt.Canvas;
+import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.Vector;
 
@@ -43,13 +45,42 @@ public class Animator implements Runnable {
 	private boolean antialiasing;
 	private Canvas canvas;
 	private double scale;
-	
+	private int height;
+	private int width;
+	private int translateX;
+	private int translateY;
+	private int scaleW;
+	private int scaleH;
+
+	public void setSize(int height, int width) {
+		setHeight(height);
+		setWidth(width);
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public void setHeight(int height) {
+		this.height = height;
+	}
+
+	public int getWidth() {
+		return width;
+	}
+
+	public void setWidth(int width) {
+		this.width = width;
+	}
+
 	public double getScale() {
 		return scale;
 	}
 
 	public void setScale(double scale) {
 		this.scale = scale;
+		scaleW = 200;
+		scaleH = 200;
 	}
 
 	public Canvas getCanvas() {
@@ -62,8 +93,10 @@ public class Animator implements Runnable {
 
 	public Animator(Canvas canvas) {
 		this.canvas = canvas;
-		scale=1;
+		scale = 1;
 		FPS = 24;
+		width = canvas.getWidth();
+		height = canvas.getHeight();
 		animateds = new Vector<Animated>();
 		thread = new Thread(this);
 		canvas.addComponentListener(new ComponentAdapter() {
@@ -80,6 +113,9 @@ public class Animator implements Runnable {
 
 	public void setAntialiasing(boolean antialiasing) {
 		this.antialiasing = antialiasing;
+	}
+
+	public void antialiasing() {
 		if (graphics != null) {
 			if (antialiasing) {
 				graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
@@ -107,7 +143,7 @@ public class Animator implements Runnable {
 		animateds.add(animated);
 		animated.setAnimator(this);
 		animated.init();
-	}	
+	}
 
 	public synchronized void removeAnimated(Animated animated) {
 		animateds.remove(animated);
@@ -122,10 +158,9 @@ public class Animator implements Runnable {
 	}
 
 	public synchronized void makeImage() {
-		image = new BufferedImage(canvas.getWidth(), canvas.getHeight(), 1);
-		graphics = (Graphics2D) image.getGraphics();		
-		graphics.scale(scale, scale);		
-		setAntialiasing(true);
+		image = new BufferedImage(width, height, 1);
+		graphics = (Graphics2D) image.getGraphics();
+		antialiasing();
 	}
 
 	public synchronized void start() {
@@ -192,13 +227,13 @@ public class Animator implements Runnable {
 	}
 
 	public synchronized void rendering() {
-		graphics.setBackground(canvas.getBackground());
-		graphics.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
+		graphics.setBackground(Color.WHITE);
+		graphics.clearRect(0, 0, width, height);
 		for (int i = 0; i < animateds.size(); i++) {
 			Animated animate = animateds.get(i);
 			animate.paint(graphics);
 		}
-		canvas.getGraphics().drawImage(image, 0, 0, canvas);
+		canvas.getGraphics().drawImage(image, translateX, translateY, width, height, null);
 	}
 
 	public synchronized void restart() {
@@ -210,5 +245,10 @@ public class Animator implements Runnable {
 		for (int i = 0; i < animateds.size(); i++) {
 			animateds.get(i).init();
 		}
+	}
+
+	public void setTranslate(int x, int y) {
+		translateX = translateX + x;
+		translateY = translateY + y;
 	}
 }
