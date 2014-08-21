@@ -29,6 +29,8 @@ GUI_STOP=Detener
 GUI_ACTION=Acción
 GUI_SETTINGS=Ajustes
 GUI_LOADMAP=Cargar Mapa
+GUI_FPS=FPS
+GUI_ANIMATION=Animación
 
 ERROR_NOSAVECONFIG=No se pudo actualizar el archivo de configuración
 ERROR_NOARCHINSTANCE=No se puede instanciar la arquitectura

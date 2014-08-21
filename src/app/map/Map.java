@@ -10,8 +10,24 @@ public class Map {
 	private String path;
 	private List<Line> lines;
 	private RobotHome robotHome;
-	private int mmWidth;
-	private int mmHeight;
+	private int width;
+	private int height;
+
+	public int getWidth() {
+		return width;
+	}
+
+	public void setWidth(int width) {
+		this.width = width;
+	}
+
+	public int getHeight() {
+		return height;
+	}
+
+	public void setHeight(int height) {
+		this.height = height;
+	}
 
 	public List<Line> getLines() {
 		return lines;
@@ -23,38 +39,6 @@ public class Map {
 
 	public void setRobotHome(RobotHome robotHome) {
 		this.robotHome = robotHome;
-	}
-
-	public int getMmWidth() {
-		return mmWidth;
-	}
-
-	public void setMmWidth(int mmWidth) {
-		this.mmWidth = mmWidth;
-	}
-
-	public int getMmHeight() {
-		return mmHeight;
-	}
-
-	public void setMmHeight(int mmHeight) {
-		this.mmHeight = mmHeight;
-	}
-
-	public int pxX(int mmX) {
-		return 0;
-	}
-
-	public int pxY(int mmY) {
-		return 0;
-	}
-
-	public int mmX(int pxX) {
-		return 0;
-	}
-
-	public int mmY(int pxY) {
-		return 0;
 	}
 
 	public Map() {

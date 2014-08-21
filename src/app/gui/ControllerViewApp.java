@@ -21,8 +21,15 @@
 
 package app.gui;
 
+import java.awt.Color;
+import java.awt.Graphics2D;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.io.File;
@@ -32,6 +39,8 @@ import java.util.Vector;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
 import javax.swing.SwingUtilities;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
 import app.Config;
@@ -41,17 +50,20 @@ import app.aria.ArArchitecture;
 import app.aria.architecture.aura.ArArchitectureAuRA;
 import app.aria.architecture.reactive.ArArchitectureReactive;
 import app.aria.exception.ArException;
+import app.gui.animation.Animated;
 import app.gui.animation.Animator;
 import app.map.Line;
 import app.map.Map;
 import app.util.ClassW;
 
-public class ControllerViewApp implements ActionListener {
+public class ControllerViewApp implements ActionListener, ChangeListener, MouseWheelListener, MouseMotionListener, MouseListener {
 
 	private ViewApp viewApp;
 	private DefaultComboBoxModel<ClassW> modelCmbArch;
 	private ArArchitecture arch;
 	private Animator animator;
+	private int mouseX;
+	private int mouseY;
 
 	public ControllerViewApp() {
 		viewApp = new ViewApp();
@@ -65,12 +77,20 @@ public class ControllerViewApp implements ActionListener {
 		});
 		Log.setLogTextArea(viewApp.getTarConsole());
 
-		Vector<ClassW> archs = new Vector<>();
+		viewApp.getCanvasAnimation().addMouseWheelListener(this);
+		viewApp.getCanvasAnimation().addMouseListener(this);
+		viewApp.getCanvasAnimation().addMouseMotionListener(this);
+		
+		viewApp.getCanvasAnimation().setBackground(Color.GRAY);
+
+		Vector<ClassW> archs = new Vector<ClassW>();
 		archs.add(new ClassW(ArArchitectureReactive.class, "Reactive"));
 		archs.add(new ClassW(ArArchitectureAuRA.class, "AuRA"));
 
 		modelCmbArch = new DefaultComboBoxModel<ClassW>(archs);
 		viewApp.getCmbArch().setModel(modelCmbArch);
+
+		viewApp.getSpnFPS().addChangeListener(this);
 
 		viewApp.getTxtHost().setText(Config.get("HOST_SERVER"));
 		viewApp.getTxtPort().setText(Config.get("HOST_PORT"));
@@ -79,6 +99,48 @@ public class ControllerViewApp implements ActionListener {
 		viewApp.getCanvasAnimation().setSize(1500, 2000);
 
 		animator = new Animator(viewApp.getCanvasAnimation());
+		viewApp.getSpnFPS().setValue(animator.getFPS());
+		animator.addAnimated(new Animated() {
+			int x;
+
+			@Override
+			public void setAnimator(Animator animator) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void paint(Graphics2D g) {
+
+				g.setColor(Color.BLACK);
+				g.fillOval(10, 10, 100, 100);
+
+			}
+
+			@Override
+			public void init() {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public int getZIndex() {
+				// TODO Auto-generated method stub
+				return 0;
+			}
+
+			@Override
+			public Animator getAnimator() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			@Override
+			public void animate() {
+				
+
+			}
+		});
 		animator.start();
 	}
 
@@ -204,6 +266,55 @@ public class ControllerViewApp implements ActionListener {
 		disconnect();
 		viewApp.dispose();
 		System.exit(0);
+	}
+
+	@Override
+	public void stateChanged(ChangeEvent e) {
+		animator.setFPS((int) viewApp.getSpnFPS().getValue());
+	}
+
+	@Override
+	public void mouseWheelMoved(MouseWheelEvent e) {
+		animator.setScale(animator.getScale() - e.getPreciseWheelRotation() / 10);
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		animator.setTranslate(e.getX() - mouseX, e.getY() - mouseY);
+		
+		mouseX = e.getX();
+		mouseY = e.getY();
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		mouseX = e.getX();
+		mouseY = e.getY();
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+
 	}
 
 }

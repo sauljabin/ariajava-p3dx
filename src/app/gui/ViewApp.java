@@ -37,8 +37,10 @@ import javax.swing.JMenuItem;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSeparator;
+import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.WindowConstants;
 
 import app.Config;
@@ -75,6 +77,10 @@ public class ViewApp extends JFrame {
 	private JButton btnStopSimulation;
 	private JMenuItem menuItemLoadMap;
 	private Canvas canvasAnimation;
+	private JLabel lblFPS;
+	private JSpinner spnFPS;
+
+	private JPanel pnlAnimation;
 
 	public ViewApp() {
 		menuItems = new Vector<JMenuItem>();
@@ -152,21 +158,30 @@ public class ViewApp extends JFrame {
 		pnlConnection.add(btnStartSimulation, "grow, height 25");
 		pnlConnection.add(btnStopSimulation, "grow, height 25, wrap");
 
+		lblFPS = new JLabel(Translate.get("GUI_FPS"));
+		spnFPS = new JSpinner(new SpinnerNumberModel(24, 1, 100, 1));
+
+		pnlAnimation = new JPanel();
+		pnlAnimation.setLayout(new MigLayout());
+		pnlAnimation.setBorder(BorderFactory.createTitledBorder(Translate.get("GUI_ANIMATION")));
+
+		pnlAnimation.add(lblFPS, "width 100, height 25");
+		pnlAnimation.add(spnFPS, "width 100, height 25, wrap");
+
 		pnlWest = new JPanel();
 		pnlWest.setLayout(new MigLayout());
 		add(pnlWest, BorderLayout.WEST);
 		pnlWest.add(pnlConnection, "wrap 10");
+		pnlWest.add(pnlAnimation, "wrap 10");
 
 		pnlCenter = new JPanel();
 		pnlCenter.setLayout(new BorderLayout());
 		pnlCenter.setBorder(BorderFactory.createEmptyBorder(8, 10, 0, 7));
 		add(pnlCenter, BorderLayout.CENTER);
 
-		JScrollPane scrollPanelCanvas = new JScrollPane();
 		canvasAnimation = new Canvas();
 		canvasAnimation.setBackground(Color.WHITE);
-		pnlCenter.add(scrollPanelCanvas, BorderLayout.CENTER);
-		scrollPanelCanvas.setViewportView(canvasAnimation);
+		pnlCenter.add(canvasAnimation, BorderLayout.CENTER);
 
 		pnlSouth = new JPanel();
 		pnlSouth.setLayout(new MigLayout());
@@ -228,6 +243,10 @@ public class ViewApp extends JFrame {
 
 	public Canvas getCanvasAnimation() {
 		return canvasAnimation;
+	}
+
+	public JSpinner getSpnFPS() {
+		return spnFPS;
 	}
 
 }

@@ -23,28 +23,27 @@ package app.util;
 
 public class ClassW implements Comparable<ClassW> {
 
-	private Class<?> clazz;
+	private Class<?> value;
 	private String name;
 
 	public Class<?> getValue() {
-		return clazz;
+		return value;
 	}
 
-	public void setValue(Class<?> clazz) {
-		this.clazz = clazz;
+	public void setValue(Class<?> value) {
+		this.value = value;
 	}
 
-	public ClassW(Class<?> clazz) {
-		this.clazz = clazz;
+	public ClassW(Class<?> value) {
+		this.value = value;
 	}
 
-	public ClassW(Class<?> clazz, String name) {
-		this.clazz = clazz;
+	public ClassW(Class<?> value, String name) {
+		this.value = value;
 		this.name = name;
 	}
 
 	public ClassW() {
-
 	}
 
 	public String getName() {
@@ -57,7 +56,7 @@ public class ClassW implements Comparable<ClassW> {
 
 	@Override
 	public String toString() {
-		return name != null ? name : clazz.getSimpleName();
+		return name != null ? name : value.getSimpleName();
 	}
 
 	@Override

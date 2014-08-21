@@ -154,7 +154,7 @@ public class Main {
 			Config.load();
 			Config.save();
 			Translate.load();
-			//Library.load();
+			Library.load();
 		} catch (Exception e) {
 			Log.error(Main.class, "loadFeaturesGUI()", e);
 			JOptionPane.showMessageDialog(null, "loadFeaturesGUI()", "Error", JOptionPane.ERROR_MESSAGE);
