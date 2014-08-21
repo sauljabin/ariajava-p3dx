@@ -18,6 +18,7 @@
 
 package app.gui.animation;
 
+import java.awt.AlphaComposite;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -25,6 +26,11 @@ import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
+import java.awt.event.MouseWheelEvent;
+import java.awt.event.MouseWheelListener;
 import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.Vector;
@@ -33,7 +39,7 @@ import java.util.Vector;
  * 
  * @author Saul Pina - sauljp07@gmail.com
  */
-public class Animator implements Runnable {
+public class Animator implements Runnable, MouseWheelListener, MouseMotionListener, MouseListener {
 
 	private Vector<Animated> animateds;
 	private int FPS;
@@ -51,6 +57,8 @@ public class Animator implements Runnable {
 	private int translateY;
 	private int scaleW;
 	private int scaleH;
+	private int mouseX;
+	private int mouseY;
 
 	public void setSize(int height, int width) {
 		setHeight(height);
@@ -78,9 +86,11 @@ public class Animator implements Runnable {
 	}
 
 	public void setScale(double scale) {
-		this.scale = scale;
-		scaleW = 200;
-		scaleH = 200;
+		//if ((width >= Math.abs(width * (scaleW + scale) / 10) + Math.abs(width * scale / 10)) && (height >= Math.abs(height * (scaleH + scale) / 10) + Math.abs(width * scale / 10))) {
+			this.scale = scale;
+			scaleW += scale;
+			scaleH += scale;
+		//}
 	}
 
 	public Canvas getCanvas() {
@@ -97,6 +107,12 @@ public class Animator implements Runnable {
 		FPS = 24;
 		width = canvas.getWidth();
 		height = canvas.getHeight();
+		translateX = (width + width * scaleW / 100) / 2;
+		translateY = (height + height * scaleH / 100) / 2;
+
+		canvas.addMouseWheelListener(this);
+		canvas.addMouseListener(this);
+		canvas.addMouseMotionListener(this);
 		animateds = new Vector<Animated>();
 		thread = new Thread(this);
 		canvas.addComponentListener(new ComponentAdapter() {
@@ -158,8 +174,9 @@ public class Animator implements Runnable {
 	}
 
 	public synchronized void makeImage() {
-		image = new BufferedImage(width, height, 1);
+		image = new BufferedImage(width+100, height, 1);
 		graphics = (Graphics2D) image.getGraphics();
+		graphics.setBackground(Color.WHITE);		
 		antialiasing();
 	}
 
@@ -227,13 +244,14 @@ public class Animator implements Runnable {
 	}
 
 	public synchronized void rendering() {
-		graphics.setBackground(Color.WHITE);
+		canvas.getGraphics().setColor(canvas.getBackground());
+		canvas.getGraphics().fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
 		graphics.clearRect(0, 0, width, height);
 		for (int i = 0; i < animateds.size(); i++) {
 			Animated animate = animateds.get(i);
 			animate.paint(graphics);
 		}
-		canvas.getGraphics().drawImage(image, translateX, translateY, width, height, null);
+		canvas.getGraphics().drawImage(image, translateX - (width + width * scaleW / 100) / 2, translateY - (height + height * scaleH / 100) / 2, width + width * scaleW / 100, height + height * scaleH / 100, null);
 	}
 
 	public synchronized void restart() {
@@ -250,5 +268,52 @@ public class Animator implements Runnable {
 	public void setTranslate(int x, int y) {
 		translateX = translateX + x;
 		translateY = translateY + y;
+	}
+
+	@Override
+	public void mouseWheelMoved(MouseWheelEvent e) {
+		setScale(-e.getPreciseWheelRotation());
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		setTranslate(e.getX() - mouseX, e.getY() - mouseY);
+		mouseX = e.getX();
+		mouseY = e.getY();
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+
+	}
+
+	@Override
+	public void mouseClicked(MouseEvent e) {
+
+	}
+
+	@Override
+	public void mousePressed(MouseEvent e) {
+		mouseX = e.getX();
+		mouseY = e.getY();
+	}
+
+	@Override
+	public void mouseReleased(MouseEvent e) {
+
+	}
+
+	@Override
+	public void mouseEntered(MouseEvent e) {
+
+	}
+
+	@Override
+	public void mouseExited(MouseEvent e) {
+
+	}
+
+	public void removeAnimateds() {
+		animateds.removeAllElements();
 	}
 }
