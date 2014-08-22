@@ -1,24 +1,27 @@
 /**
  * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * Copyright (c) 2014 Saul Piña <sauljp07@gmail.com>, Jorge Parra <thejorgemylio@gmail.com>
  * 
- * This program is distributed in the hope that it will be useful,
+ * This file is part of AriaJavaP3DX.
+ *
+ * AriaJavaP3DX is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * AriaJavaP3DX is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
- *  
+ * along with AriaJavaP3DX.  If not, see <http://www.gnu.org/licenses/>.
+ * 
  */
 
 package app.gui.animation;
 
-import java.awt.AlphaComposite;
+import java.awt.BasicStroke;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics2D;
@@ -31,12 +34,11 @@ import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
-import java.awt.geom.AffineTransform;
 import java.awt.image.BufferedImage;
 import java.util.Vector;
 
 /**
- * 
+ * Animator
  * @author Saul Pina - sauljp07@gmail.com
  */
 public class Animator implements Runnable, MouseWheelListener, MouseMotionListener, MouseListener {
@@ -61,6 +63,18 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 	private int mouseY;
 	private BufferedImage backImage;
 	private Graphics2D backGraphics;
+
+	public void antialiasing() {
+		if (graphics != null) {
+			if (antialiasing) {
+				graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+				graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+			} else {
+				graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
+				graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+			}
+		}
+	}
 
 	public void setSize(int height, int width) {
 		setHeight(height);
@@ -88,6 +102,7 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 	}
 
 	public void setScale(double scale) {
+		// TODO MEJORAR COMPARACION PARA QUE EL MAPA NO SE DE VUELTA
 		// if ((width >= Math.abs(width * (scaleW + scale) / 10) +
 		// Math.abs(width * scale / 10)) && (height >= Math.abs(height * (scaleH
 		// + scale) / 10) + Math.abs(width * scale / 10))) {
@@ -149,7 +164,6 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 
 	public synchronized void addAnimated(Animated animated) {
 		animateds.add(animated);
-		animated.setAnimator(this);
 		animated.init();
 	}
 
@@ -170,9 +184,12 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 		graphics = (Graphics2D) image.getGraphics();
 		graphics.setBackground(Color.WHITE);
 
+		BasicStroke dashed = new BasicStroke(3);
+		graphics.setStroke(dashed);
+
 		backImage = new BufferedImage(canvas.getWidth(), canvas.getHeight(), 1);
 		backGraphics = (Graphics2D) backImage.getGraphics();
-		backGraphics.setBackground(Color.gray);
+		backGraphics.setBackground(Color.GRAY);
 	}
 
 	public synchronized void start() {

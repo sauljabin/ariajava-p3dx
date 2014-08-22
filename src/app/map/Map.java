@@ -1,15 +1,32 @@
+/**
+ * 
+ * Copyright (c) 2014 Saul Piña <sauljp07@gmail.com>, Jorge Parra <thejorgemylio@gmail.com>
+ * 
+ * This file is part of AriaJavaP3DX.
+ *
+ * AriaJavaP3DX is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * AriaJavaP3DX is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with AriaJavaP3DX.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ */
+
 package app.map;
 
-import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.LinkedList;
 import java.util.List;
-
-import javax.swing.border.StrokeBorder;
-
 import app.gui.animation.Animated;
 import app.gui.animation.Animator;
 
@@ -20,7 +37,8 @@ public class Map implements Animated {
 	public static final String linesLabel = "LINES";
 	public static final String lineMinPosLabel = "LineMinPos: ";
 	public static final String lineMaxPosLabel = "LineMaxPos: ";
-	final static BasicStroke dashed = new BasicStroke(3);
+	public static final String goalLabel = "Cairn: Goal ";
+	
 	private String path;
 	private List<Line> lines;
 	private RobotHome robotHome;
@@ -28,6 +46,39 @@ public class Map implements Animated {
 	private int maxX;
 	private int minY;
 	private int maxY;
+	private Goal goal;
+
+	public Goal getGoal() {
+		return goal;
+	}
+
+	public void setGoal(Goal goal) {
+		this.goal = goal;
+	}
+
+	public void setPath(String path) {
+		this.path = path;
+	}
+
+	public void setLines(List<Line> lines) {
+		this.lines = lines;
+	}
+
+	public void setMinX(int minX) {
+		this.minX = minX;
+	}
+
+	public void setMaxX(int maxX) {
+		this.maxX = maxX;
+	}
+
+	public void setMinY(int minY) {
+		this.minY = minY;
+	}
+
+	public void setMaxY(int maxY) {
+		this.maxY = maxY;
+	}
 
 	public int getMinX() {
 		return minX;
@@ -104,8 +155,10 @@ public class Map implements Animated {
 				maxY = Integer.parseInt(tokens[1]);
 			} else if (stringRead.startsWith(robotLabel)) {
 				String[] tokens = stringRead.substring(robotLabel.length()).split(" ");
-				// CAMBIAR A DOUBLE
-				robotHome = new RobotHome(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2]));
+				robotHome = new RobotHome(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[1]), Double.parseDouble(tokens[2]));
+			} else if (stringRead.startsWith(goalLabel)) {
+				String[] tokens = stringRead.substring(goalLabel.length()).split(" ");
+				goal = new Goal(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[1]), Double.parseDouble(tokens[2]));
 			} else if (stringRead.startsWith(linesLabel)) {
 				linesSector = true;
 			} else if (linesSector) {
@@ -156,7 +209,6 @@ public class Map implements Animated {
 	@Override
 	public void paint(Graphics2D g) {
 		g.setColor(Color.RED);
-		g.setStroke(dashed);
 		for (int i = 0; i < lines.size(); i++) {
 			g.drawLine(canvasX(lines.get(i).getX1()), canvasY(lines.get(i).getY1()), canvasX(lines.get(i).getX2()), canvasY(lines.get(i).getY2()));
 		}
@@ -170,11 +222,6 @@ public class Map implements Animated {
 	@Override
 	public int getZIndex() {
 		return 0;
-	}
-
-	@Override
-	public void setAnimator(Animator animator) {
-
 	}
 
 	@Override
