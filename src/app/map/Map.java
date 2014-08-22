@@ -20,7 +20,7 @@ public class Map implements Animated {
 	public static final String linesLabel = "LINES";
 	public static final String lineMinPosLabel = "LineMinPos: ";
 	public static final String lineMaxPosLabel = "LineMaxPos: ";
-	final static BasicStroke dashed = new BasicStroke(5);
+	final static BasicStroke dashed = new BasicStroke(3);
 	private String path;
 	private List<Line> lines;
 	private RobotHome robotHome;
