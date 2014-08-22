@@ -55,10 +55,12 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 	private int width;
 	private int translateX;
 	private int translateY;
-	private int scaleW;
-	private int scaleH;
+	private int zoomW;
+	private int zoomH;
 	private int mouseX;
 	private int mouseY;
+	private BufferedImage backImage;
+	private Graphics2D backGraphics;
 
 	public void setSize(int height, int width) {
 		setHeight(height);
@@ -86,11 +88,13 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 	}
 
 	public void setScale(double scale) {
-		//if ((width >= Math.abs(width * (scaleW + scale) / 10) + Math.abs(width * scale / 10)) && (height >= Math.abs(height * (scaleH + scale) / 10) + Math.abs(width * scale / 10))) {
-			this.scale = scale;
-			scaleW += scale;
-			scaleH += scale;
-		//}
+		// if ((width >= Math.abs(width * (scaleW + scale) / 10) +
+		// Math.abs(width * scale / 10)) && (height >= Math.abs(height * (scaleH
+		// + scale) / 10) + Math.abs(width * scale / 10))) {
+		this.scale = scale;
+		zoomW += scale;
+		zoomH += scale;
+		// }
 	}
 
 	public Canvas getCanvas() {
@@ -107,8 +111,8 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 		FPS = 24;
 		width = canvas.getWidth();
 		height = canvas.getHeight();
-		translateX = (width + width * scaleW / 100) / 2;
-		translateY = (height + height * scaleH / 100) / 2;
+		translateX = (width + width * zoomW / 100) / 2;
+		translateY = (height + height * zoomH / 100) / 2;
 
 		canvas.addMouseWheelListener(this);
 		canvas.addMouseListener(this);
@@ -118,7 +122,7 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 		canvas.addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent e) {
-				makeImage();
+				refresh();
 			}
 		});
 	}
@@ -129,18 +133,6 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 
 	public void setAntialiasing(boolean antialiasing) {
 		this.antialiasing = antialiasing;
-	}
-
-	public void antialiasing() {
-		if (graphics != null) {
-			if (antialiasing) {
-				graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-				graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
-			} else {
-				graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-				graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
-			}
-		}
 	}
 
 	public Vector<Animated> getAnimateds() {
@@ -173,16 +165,19 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 		this.FPS = FPS;
 	}
 
-	public synchronized void makeImage() {
-		image = new BufferedImage(width+100, height, 1);
+	public synchronized void refresh() {
+		image = new BufferedImage(width, height, 1);
 		graphics = (Graphics2D) image.getGraphics();
-		graphics.setBackground(Color.WHITE);		
-		antialiasing();
+		graphics.setBackground(Color.WHITE);
+
+		backImage = new BufferedImage(canvas.getWidth(), canvas.getHeight(), 1);
+		backGraphics = (Graphics2D) backImage.getGraphics();
+		backGraphics.setBackground(Color.gray);
 	}
 
 	public synchronized void start() {
 		if (!thread.isAlive()) {
-			makeImage();
+			refresh();
 			thread.start();
 		}
 	}
@@ -244,18 +239,18 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 	}
 
 	public synchronized void rendering() {
-		canvas.getGraphics().setColor(canvas.getBackground());
-		canvas.getGraphics().fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
+		backGraphics.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
 		graphics.clearRect(0, 0, width, height);
 		for (int i = 0; i < animateds.size(); i++) {
 			Animated animate = animateds.get(i);
 			animate.paint(graphics);
 		}
-		canvas.getGraphics().drawImage(image, translateX - (width + width * scaleW / 100) / 2, translateY - (height + height * scaleH / 100) / 2, width + width * scaleW / 100, height + height * scaleH / 100, null);
+		backGraphics.drawImage(image, translateX - (width + width * zoomW / 100) / 2, translateY - (height + height * zoomH / 100) / 2, width + width * zoomW / 100, height + height * zoomH / 100, null);
+		canvas.getGraphics().drawImage(backImage, 0, 0, null);
 	}
 
 	public synchronized void restart() {
-		makeImage();
+		refresh();
 		initAnimateds();
 	}
 
@@ -315,5 +310,10 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 
 	public void removeAnimateds() {
 		animateds.removeAllElements();
+	}
+
+	public void setSizeAndRefresh(int scaledWidth, int scaledHeight) {
+		setSize(scaledHeight, scaledWidth);
+		refresh();
 	}
 }

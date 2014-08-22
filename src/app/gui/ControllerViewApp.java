@@ -66,7 +66,7 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 			}
 		});
 		Log.setLogTextArea(viewApp.getTarConsole());
-		
+
 		viewApp.getCanvasAnimation().setBackground(Color.GRAY);
 
 		Vector<ClassW> archs = new Vector<ClassW>();
@@ -83,7 +83,7 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		viewApp.getBtnStopSimulation().setEnabled(false);
 
 		animator = new Animator(viewApp.getCanvasAnimation());
-		viewApp.getSpnFPS().setValue(animator.getFPS());		
+		viewApp.getSpnFPS().setValue(animator.getFPS());
 		animator.start();
 	}
 
@@ -124,11 +124,9 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		try {
 			map.load(path.getAbsolutePath());
 			animator.removeAnimateds();
-			
-				animator.addAnimated(map);
-			
-			animator.setWidth(map.getScaledWidth());
-			animator.setHeight(map.getScaledHeight());
+			animator.addAnimated(map);
+			animator.setSize(map.getScaledWidth(),map.getScaledHeight());
+			animator.setSizeAndRefresh(map.getScaledWidth(),map.getScaledHeight());
 		} catch (Exception e) {
 			Log.error(getClass(), Translate.get("ERROR_MAPLOADED"), e);
 			e.printStackTrace();
@@ -218,7 +216,5 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 	public void stateChanged(ChangeEvent e) {
 		animator.setFPS((int) viewApp.getSpnFPS().getValue());
 	}
-
-
 
 }
