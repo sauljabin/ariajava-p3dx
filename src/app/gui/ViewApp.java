@@ -41,7 +41,6 @@ import javax.swing.JSeparator;
 import javax.swing.JSpinner;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.SpinnerNumberModel;
 import javax.swing.WindowConstants;
 
 import app.Config;
@@ -161,8 +160,8 @@ public class ViewApp extends JFrame {
 		pnlConnection.add(btnStopSimulation, "grow, height 25, wrap");
 
 		lblFPS = new JLabel(Translate.get("GUI_FPS"));
-		spnFPS = new JSpinner(new SpinnerNumberModel(24, 1, 100, 1));
-		
+		spnFPS = new JSpinner();
+
 		lblAntialiasing = new JLabel(Translate.get("GUI_ANTIALIASING"));
 		chkAntialiasing = new JCheckBox();
 
@@ -254,6 +253,10 @@ public class ViewApp extends JFrame {
 
 	public JSpinner getSpnFPS() {
 		return spnFPS;
+	}
+
+	public JCheckBox getChkAntialiasing() {
+		return chkAntialiasing;
 	}
 
 }

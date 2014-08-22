@@ -23,4 +23,7 @@ package app.aria;
 
 public class ArRobotP3DX {
 
+	public static final int LONG = 455;
+	public static final int WIDTH = 381;
+
 }

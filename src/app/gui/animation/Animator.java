@@ -39,9 +39,12 @@ import java.util.Vector;
 
 /**
  * Animator
+ * 
  * @author Saul Pina - sauljp07@gmail.com
  */
 public class Animator implements Runnable, MouseWheelListener, MouseMotionListener, MouseListener {
+
+	public static final int ZOOM_SCALE = 20;
 
 	private Vector<Animated> animateds;
 	private int FPS;
@@ -52,7 +55,6 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 	private Graphics2D graphics;
 	private boolean antialiasing;
 	private Canvas canvas;
-	private double scale;
 	private int height;
 	private int width;
 	private int translateX;
@@ -76,7 +78,7 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 		}
 	}
 
-	public void setSize(int height, int width) {
+	public void setSize(int width, int height) {
 		setHeight(height);
 		setWidth(width);
 	}
@@ -97,19 +99,13 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 		this.width = width;
 	}
 
-	public double getScale() {
-		return scale;
-	}
-
-	public void setScale(double scale) {
-		// TODO MEJORAR COMPARACION PARA QUE EL MAPA NO SE DE VUELTA
-		// if ((width >= Math.abs(width * (scaleW + scale) / 10) +
-		// Math.abs(width * scale / 10)) && (height >= Math.abs(height * (scaleH
-		// + scale) / 10) + Math.abs(width * scale / 10))) {
-		this.scale = scale;
-		zoomW += scale;
-		zoomH += scale;
-		// }
+	public void setZoom(double zoom) {
+		zoomW += zoom;
+		zoomH += zoom;
+		if (zoomWidth() <= 0 || zoomHeight() <= 0) {
+			zoomW -= zoom;
+			zoomH -= zoom;
+		}
 	}
 
 	public Canvas getCanvas() {
@@ -122,13 +118,10 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 
 	public Animator(Canvas canvas) {
 		this.canvas = canvas;
-		scale = 1;
 		FPS = 24;
 		width = canvas.getWidth();
 		height = canvas.getHeight();
-		translateX = (width + width * zoomW / 100) / 2;
-		translateY = (height + height * zoomH / 100) / 2;
-
+		initTranslate();
 		canvas.addMouseWheelListener(this);
 		canvas.addMouseListener(this);
 		canvas.addMouseMotionListener(this);
@@ -142,12 +135,34 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 		});
 	}
 
+	public void initTranslate() {
+		translateX = offsetWidth();
+		translateY = offsetHeight();
+	}
+
+	public int offsetWidth() {
+		return zoomWidth() / 2;
+	}
+
+	public int offsetHeight() {
+		return zoomHeight() / 2;
+	}
+
+	public int zoomWidth() {
+		return (width + width * zoomW / ZOOM_SCALE);
+	}
+
+	public int zoomHeight() {
+		return (height + height * zoomH / ZOOM_SCALE);
+	}
+
 	public boolean isAntialiasing() {
 		return antialiasing;
 	}
 
 	public void setAntialiasing(boolean antialiasing) {
 		this.antialiasing = antialiasing;
+		refresh();
 	}
 
 	public Vector<Animated> getAnimateds() {
@@ -184,12 +199,14 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 		graphics = (Graphics2D) image.getGraphics();
 		graphics.setBackground(Color.WHITE);
 
-		BasicStroke dashed = new BasicStroke(3);
+		BasicStroke dashed = new BasicStroke(4);
 		graphics.setStroke(dashed);
 
 		backImage = new BufferedImage(canvas.getWidth(), canvas.getHeight(), 1);
 		backGraphics = (Graphics2D) backImage.getGraphics();
 		backGraphics.setBackground(Color.GRAY);
+
+		antialiasing();
 	}
 
 	public synchronized void start() {
@@ -262,7 +279,7 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 			Animated animate = animateds.get(i);
 			animate.paint(graphics);
 		}
-		backGraphics.drawImage(image, translateX - (width + width * zoomW / 100) / 2, translateY - (height + height * zoomH / 100) / 2, width + width * zoomW / 100, height + height * zoomH / 100, null);
+		backGraphics.drawImage(image, translateX - offsetWidth(), translateY - offsetHeight(), zoomWidth(), zoomHeight(), null);
 		canvas.getGraphics().drawImage(backImage, 0, 0, null);
 	}
 
@@ -284,7 +301,7 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 
 	@Override
 	public void mouseWheelMoved(MouseWheelEvent e) {
-		setScale(-e.getPreciseWheelRotation());
+		setZoom(-e.getPreciseWheelRotation());
 	}
 
 	@Override
@@ -329,8 +346,15 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 		animateds.removeAllElements();
 	}
 
-	public void setSizeAndRefresh(int scaledWidth, int scaledHeight) {
-		setSize(scaledHeight, scaledWidth);
+	public void setSizeAndRefresh(int width, int height) {
+		setSize(width, height);
 		refresh();
+	}
+
+	public void centerMap() {
+		zoomH = 0;
+		zoomW = 0;
+		translateX = canvas.getWidth() / 2;
+		translateY = canvas.getHeight() / 2;
 	}
 }
