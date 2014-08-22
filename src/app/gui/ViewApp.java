@@ -1,22 +1,22 @@
 /**
  * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * Copyright (c) 2014 Saul Piña <sauljp07@gmail.com>, Jorge Parra <thejorgemylio@gmail.com>
  * 
- * This program is distributed in the hope that it will be useful,
+ * This file is part of AriaJavaP3DX.
+ *
+ * AriaJavaP3DX is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * AriaJavaP3DX is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * along with AriaJavaP3DX.  If not, see <http://www.gnu.org/licenses/>.
  * 
- *		SAUL PIÑA - SAULJP07@GMAIL.COM
- *		JORGE PARRA - THEJORGEMYLIO@GMAIL.COM
- *		2014
  */
 
 package app.gui;
@@ -28,6 +28,7 @@ import java.util.Vector;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -79,8 +80,9 @@ public class ViewApp extends JFrame {
 	private Canvas canvasAnimation;
 	private JLabel lblFPS;
 	private JSpinner spnFPS;
-
 	private JPanel pnlAnimation;
+	private JLabel lblAntialiasing;
+	private JCheckBox chkAntialiasing;
 
 	public ViewApp() {
 		menuItems = new Vector<JMenuItem>();
@@ -160,6 +162,9 @@ public class ViewApp extends JFrame {
 
 		lblFPS = new JLabel(Translate.get("GUI_FPS"));
 		spnFPS = new JSpinner(new SpinnerNumberModel(24, 1, 100, 1));
+		
+		lblAntialiasing = new JLabel(Translate.get("GUI_ANTIALIASING"));
+		chkAntialiasing = new JCheckBox();
 
 		pnlAnimation = new JPanel();
 		pnlAnimation.setLayout(new MigLayout());
@@ -167,6 +172,8 @@ public class ViewApp extends JFrame {
 
 		pnlAnimation.add(lblFPS, "width 100, height 25");
 		pnlAnimation.add(spnFPS, "width 100, height 25, wrap");
+		pnlAnimation.add(lblAntialiasing, "width 100, height 25");
+		pnlAnimation.add(chkAntialiasing, "width 100, height 25, wrap");
 
 		pnlWest = new JPanel();
 		pnlWest.setLayout(new MigLayout());

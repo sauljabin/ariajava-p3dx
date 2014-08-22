@@ -1,22 +1,22 @@
 /**
  * 
- * This program is free software; you can redistribute it and/or
- * modify it under the terms of the GNU General Public License
- * as published by the Free Software Foundation; either version 2
- * of the License, or (at your option) any later version.
+ * Copyright (c) 2014 Saul Piña <sauljp07@gmail.com>, Jorge Parra <thejorgemylio@gmail.com>
  * 
- * This program is distributed in the hope that it will be useful,
+ * This file is part of AriaJavaP3DX.
+ *
+ * AriaJavaP3DX is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * AriaJavaP3DX is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * along with AriaJavaP3DX.  If not, see <http://www.gnu.org/licenses/>.
  * 
- *		SAUL PIÑA - SAULJP07@GMAIL.COM
- *		JORGE PARRA - THEJORGEMYLIO@GMAIL.COM
- *		2014
  */
 
 package app;
@@ -60,6 +60,7 @@ public class Main {
 	}
 
 	private static void commandConsole() {
+		// TODO AGREGAR RUTA DE MAPA
 		loadFeatures();
 		System.out.println(Config.get("APP_NAME"));
 		System.out.println(Translate.get("CONSOLE_MSGSELECTARCH"));
@@ -130,10 +131,11 @@ public class Main {
 	private static void commandHelp() {
 		loadFeatures();
 		System.out.println(Config.get("APP_NAME"));
-		System.out.println(String.format("%10s\t%s", "-help", Translate.get("CONSOLE_MSGSHOWHELP")));
-		System.out.println(String.format("%10s\t%s", "-console", Translate.get("CONSOLE_MSGEXECTCONSOLE")));
-		System.out.println(String.format("%10s\t%s", "-gui", Translate.get("CONSOLE_MSGEXECTGUI")));
-		System.out.println(String.format("%10s\t%s", "", Translate.get("CONSOLE_MSGPARAMEMPTY")));
+		System.out.println(String.format("%s", Translate.get("CONSOLE_MSGPARAMEMPTY")));
+		System.out.println();
+		System.out.println(String.format("%15s\t%s", "-help -h", Translate.get("CONSOLE_MSGSHOWHELP")));
+		System.out.println(String.format("%15s\t%s", "-console -c", Translate.get("CONSOLE_MSGEXECTCONSOLE")));
+		System.out.println(String.format("%15s\t%s", "-gui -g", Translate.get("CONSOLE_MSGEXECTGUI")));
 		System.out.println();
 	}
 
@@ -150,14 +152,15 @@ public class Main {
 	}
 
 	private static void loadFeaturesGUI() {
+		// TODO DESCOMENTAR LIBRARY
 		try {
 			Config.load();
 			Config.save();
 			Translate.load();
-			//Library.load();
+			// Library.load();
 		} catch (Exception e) {
 			Log.error(Main.class, "loadFeaturesGUI()", e);
-			JOptionPane.showMessageDialog(null, "loadFeaturesGUI()", "Error", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, e.getMessage(), "Error loadFeaturesGUI()", JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
 		}
 	}
