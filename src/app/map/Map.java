@@ -27,10 +27,13 @@ import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.LinkedList;
 import java.util.List;
+
 import app.gui.animation.Animated;
 import app.gui.animation.Animator;
 
 public class Map implements Animated {
+
+	public static final int SCALE = 10;
 
 	public static final String numberLinesLabel = "NumLines: ";
 	public static final String robotLabel = "Cairn: RobotHome ";
@@ -38,7 +41,7 @@ public class Map implements Animated {
 	public static final String lineMinPosLabel = "LineMinPos: ";
 	public static final String lineMaxPosLabel = "LineMaxPos: ";
 	public static final String goalLabel = "Cairn: Goal ";
-	
+
 	private String path;
 	private List<Line> lines;
 	private RobotHome robotHome;
@@ -178,7 +181,7 @@ public class Map implements Animated {
 	}
 
 	public int scale(int value) {
-		return value / 10;
+		return value / SCALE;
 	}
 
 	public int canvasX(int x) {
@@ -198,7 +201,7 @@ public class Map implements Animated {
 		} else {
 			value = y;
 		}
-		return scale(value);
+		return scale(getHeight() - value);
 	}
 
 	@Override
@@ -208,10 +211,15 @@ public class Map implements Animated {
 
 	@Override
 	public void paint(Graphics2D g) {
-		g.setColor(Color.RED);
+		g.setColor(Color.BLACK);
 		for (int i = 0; i < lines.size(); i++) {
 			g.drawLine(canvasX(lines.get(i).getX1()), canvasY(lines.get(i).getY1()), canvasX(lines.get(i).getX2()), canvasY(lines.get(i).getY2()));
 		}
+		g.setColor(Color.BLUE);
+		int widthMark = 220;
+		int robotHomeX = canvasX(robotHome.getX() - widthMark / 2);
+		int robotHomeY = canvasY(robotHome.getY() - widthMark / 2);
+		g.fillRect(robotHomeX, robotHomeY, scale(widthMark), scale(widthMark));
 	}
 
 	@Override

@@ -31,6 +31,7 @@ import java.util.Vector;
 
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JFileChooser;
+import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -55,6 +56,10 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 	private Animator animator;
 
 	public ControllerViewApp() {
+		init();
+	}
+
+	public void init() {
 		viewApp = new ViewApp();
 		viewApp.setController(this);
 
@@ -75,15 +80,19 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		modelCmbArch = new DefaultComboBoxModel<ClassW>(archs);
 		viewApp.getCmbArch().setModel(modelCmbArch);
 
-		viewApp.getSpnFPS().addChangeListener(this);
-
 		viewApp.getTxtHost().setText(Config.get("HOST_SERVER"));
 		viewApp.getTxtPort().setText(Config.get("HOST_PORT"));
 		viewApp.getBtnStopSimulation().setEnabled(false);
 
 		animator = new Animator(viewApp.getCanvasAnimation());
-		viewApp.getSpnFPS().setValue(animator.getFPS());
+		animator.setAntialiasing(Boolean.parseBoolean(Config.get("ANTIALIASING")));
 		animator.start();
+
+		viewApp.getSpnFPS().addChangeListener(this);
+		viewApp.getSpnFPS().setModel(new SpinnerNumberModel(animator.getFPS(), 1, 100, 1));
+
+		viewApp.getChkAntialiasing().setSelected(Boolean.parseBoolean(Config.get("ANTIALIASING")));
+		viewApp.getChkAntialiasing().addActionListener(this);
 	}
 
 	@Override
@@ -101,6 +110,20 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 			disconnect();
 		else if (source.equals(viewApp.getMenuItemLoadMap()))
 			loadMap();
+		else if (e.getSource().equals(viewApp.getChkAntialiasing()))
+			setAntialiasing();
+
+	}
+
+	private void setAntialiasing() {
+		boolean antialiasing = viewApp.getChkAntialiasing().isSelected();
+		animator.setAntialiasing(antialiasing);
+		Config.set("ANTIALIASING", String.valueOf(antialiasing));
+		try {
+			Config.save();
+		} catch (Exception e) {
+			Log.warning(ControllerViewApp.class, Translate.get("ERROR_NOSAVECONFIG"), e);
+		}
 	}
 
 	public void loadMap() {
@@ -124,8 +147,9 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 			map.load(path.getAbsolutePath());
 			animator.removeAnimateds();
 			animator.addAnimated(map);
-			animator.setSize(map.getScaledWidth(),map.getScaledHeight());
-			animator.setSizeAndRefresh(map.getScaledWidth(),map.getScaledHeight());
+			animator.setSize(map.getScaledWidth(), map.getScaledHeight());
+			animator.centerMap();
+			animator.refresh();
 		} catch (Exception e) {
 			Log.error(getClass(), Translate.get("ERROR_MAPLOADED"), e);
 			e.printStackTrace();
@@ -213,7 +237,9 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 
 	@Override
 	public void stateChanged(ChangeEvent e) {
-		animator.setFPS((int) viewApp.getSpnFPS().getValue());
+		System.out.println(viewApp.getChkAntialiasing().isSelected());
+		if (e.getSource().equals(viewApp.getSpnFPS()))
+			animator.setFPS((int) viewApp.getSpnFPS().getValue());
 	}
 
 }
