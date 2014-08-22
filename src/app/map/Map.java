@@ -215,11 +215,13 @@ public class Map implements Animated {
 		for (int i = 0; i < lines.size(); i++) {
 			g.drawLine(canvasX(lines.get(i).getX1()), canvasY(lines.get(i).getY1()), canvasX(lines.get(i).getX2()), canvasY(lines.get(i).getY2()));
 		}
-		g.setColor(Color.BLUE);
-		int widthMark = 220;
-		int robotHomeX = canvasX(robotHome.getX() - widthMark / 2);
-		int robotHomeY = canvasY(robotHome.getY() - widthMark / 2);
-		g.fillRect(robotHomeX, robotHomeY, scale(widthMark), scale(widthMark));
+		if (robotHome != null) {
+			g.setColor(Color.BLUE);
+			int widthMark = 220;
+			int robotHomeX = canvasX(robotHome.getX() - widthMark / 2);
+			int robotHomeY = canvasY(robotHome.getY() - widthMark / 2);
+			g.fillRect(robotHomeX, robotHomeY, scale(widthMark), scale(widthMark));
+		}
 	}
 
 	@Override
