@@ -26,11 +26,14 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Vector;
 
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -39,6 +42,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 
 import app.Config;
 import app.Log;
+import app.Theme;
 import app.Translate;
 import app.aria.ArArchitecture;
 import app.aria.architecture.aura.ArArchitectureAuRA;
@@ -47,6 +51,8 @@ import app.aria.exception.ArException;
 import app.gui.animation.Animator;
 import app.map.Map;
 import app.util.ClassW;
+import app.util.UtilFile;
+import app.util.UtilImage;
 
 public class ControllerViewApp implements ActionListener, ChangeListener {
 
@@ -54,14 +60,25 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 	private DefaultComboBoxModel<ClassW> modelCmbArch;
 	private ArArchitecture arch;
 	private Animator animator;
+	public static final int TRANSLATE = 20;
+	public static final int ZOOM = 1;
 
 	public ControllerViewApp() {
 		init();
+		// TODO AGREGAR CAMPO ACTUALIZACIONES DE POSICION POR SEGUNDO PANEL
+		// ANIMACION
+		// TODO AGREGAR CAMPO ESCALA DE ANIMACION PANEL ANIMACION
+		// TODO AGREGAR CAMPO POSISIÓN INICIAL DEL ROBOT EN PANEL CONTROL
 	}
 
 	public void init() {
 		viewApp = new ViewApp();
 		viewApp.setController(this);
+
+		if (Boolean.parseBoolean(Config.get("GUI_MAXIMIZED")))
+			viewApp.setExtendedState(JFrame.MAXIMIZED_BOTH);
+
+		viewApp.setVisible(true);
 
 		viewApp.addWindowListener(new WindowAdapter() {
 			@Override
@@ -82,17 +99,13 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 
 		viewApp.getTxtHost().setText(Config.get("HOST_SERVER"));
 		viewApp.getTxtPort().setText(Config.get("HOST_PORT"));
-		viewApp.getBtnStopSimulation().setEnabled(false);
+		viewApp.getBtnDisconnect().setEnabled(false);
 
 		animator = new Animator(viewApp.getCanvasAnimation());
-		animator.setAntialiasing(Boolean.parseBoolean(Config.get("ANTIALIASING")));
+		setAntialiasing(Boolean.parseBoolean(Config.get("ANTIALIASING")));
 		animator.start();
-
 		viewApp.getSpnFPS().addChangeListener(this);
 		viewApp.getSpnFPS().setModel(new SpinnerNumberModel(animator.getFPS(), 1, 100, 1));
-
-		viewApp.getChkAntialiasing().setSelected(Boolean.parseBoolean(Config.get("ANTIALIASING")));
-		viewApp.getChkAntialiasing().addActionListener(this);
 	}
 
 	@Override
@@ -104,20 +117,93 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 			about();
 		else if (source.equals(viewApp.getMenuItemShowConfig()))
 			showConfig();
-		else if (source.equals(viewApp.getBtnStartSimulation()))
+		else if (source.equals(viewApp.getBtnConnect()))
 			connect();
-		else if (source.equals(viewApp.getBtnStopSimulation()))
+		else if (source.equals(viewApp.getBtnDisconnect()))
 			disconnect();
 		else if (source.equals(viewApp.getMenuItemLoadMap()))
 			loadMap();
-		else if (e.getSource().equals(viewApp.getChkAntialiasing()))
-			setAntialiasing();
+		else if (e.getSource().equals(viewApp.getBtnAntialiasingOnOff()))
+			setAntialiasing(!animator.isAntialiasing());
+		else if (source.equals(viewApp.getBtnSaveImage()))
+			saveImage();
+		else if (source.equals(viewApp.getBtnCenterMap()))
+			centerMap();
+		else if (source.equals(viewApp.getBtnArrowDown()))
+			translateMap(0, TRANSLATE);
+		else if (source.equals(viewApp.getBtnArrowUp()))
+			translateMap(0, -TRANSLATE);
+		else if (source.equals(viewApp.getBtnArrowLeft()))
+			translateMap(-TRANSLATE, 0);
+		else if (source.equals(viewApp.getBtnArrowRight()))
+			translateMap(TRANSLATE, 0);
+		else if (source.equals(viewApp.getBtnZoomIn()))
+			zoomMap(ZOOM);
+		else if (source.equals(viewApp.getBtnZoomOut()))
+			zoomMap(-ZOOM);
+	}
+
+	public void zoomMap(int zoom) {
+		animator.setZoom(zoom);
+	}
+
+	public void translateMap(int x, int y) {
+		animator.setTranslate(x, y);
+	}
+
+	public void centerMap() {
+		animator.centerMap();
+	}
+
+	public void saveImage() {
+		BufferedImage bImage = animator.getImage();
+
+		if (bImage == null) {
+			Log.warning(getClass(), Translate.get("INFO_NOMAPLOADED"));
+			return;
+		}
+
+		JFileChooser file = new JFileChooser();
+		file.setCurrentDirectory(new File("."));
+		file.setAcceptAllFileFilterUsed(false);
+		file.setMultiSelectionEnabled(false);
+		file.setFileFilter(new FileNameExtensionFilter("JPG", "jpg"));
+		file.setFileFilter(new FileNameExtensionFilter("PNG", "png"));
+		file.showSaveDialog(viewApp);
+		File path = file.getSelectedFile();
+		String ext = file.getFileFilter().getDescription().toLowerCase();
+
+		if (path == null)
+			return;
+
+		String fileName = path.getAbsolutePath();
+
+		if (!UtilFile.isFileType(fileName, ext))
+			fileName += "." + ext;
+
+		try {
+			UtilImage ui = new UtilImage();
+			ui.writeImage(bImage, fileName);
+			Log.info(getClass(), Translate.get("INFO_SAVEIMAGE") + " " + fileName);
+		} catch (Exception e) {
+			Log.error(getClass(), Translate.get("ERROR_SAVEIMAGE"), e);
+			return;
+		}
 
 	}
 
-	private void setAntialiasing() {
-		boolean antialiasing = viewApp.getChkAntialiasing().isSelected();
+	public void setAntialiasing(boolean antialiasing) {
 		animator.setAntialiasing(antialiasing);
+
+		if (antialiasing) {
+			viewApp.getBtnAntialiasingOnOff().setIcon(new ImageIcon(Theme.getIconPath("ANTIALIASING_OFF")));
+			viewApp.getBtnAntialiasingOnOff().setToolTipText(Translate.get("GUI_ANTIALIASINGOFF"));
+		} else {
+			viewApp.getBtnAntialiasingOnOff().setIcon(new ImageIcon(Theme.getIconPath("ANTIALIASING_ON")));
+			viewApp.getBtnAntialiasingOnOff().setToolTipText(Translate.get("GUI_ANTIALIASINGON"));
+
+		}
+
 		Config.set("ANTIALIASING", String.valueOf(antialiasing));
 		try {
 			Config.save();
@@ -145,11 +231,7 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		Map map = new Map();
 		try {
 			map.load(path.getAbsolutePath());
-			animator.removeAnimateds();
-			animator.addAnimated(map);
-			animator.setSize(map.getScaledWidth(), map.getScaledHeight());
-			animator.centerMap();
-			animator.refresh();
+			animator.showMap(map);
 		} catch (Exception e) {
 			Log.error(getClass(), Translate.get("ERROR_MAPLOADED"), e);
 			e.printStackTrace();
@@ -175,9 +257,10 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		}
 		viewApp.getTxtPort().setEnabled(true);
 		viewApp.getTxtHost().setEnabled(true);
-		viewApp.getBtnStopSimulation().setEnabled(false);
-		viewApp.getBtnStartSimulation().setEnabled(true);
+		viewApp.getBtnDisconnect().setEnabled(false);
+		viewApp.getBtnConnect().setEnabled(true);
 		viewApp.getCmbArch().setEnabled(true);
+		viewApp.getMenuItemLoadMap().setEnabled(true);
 	}
 
 	public void connect() {
@@ -214,9 +297,10 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 
 		viewApp.getTxtPort().setEnabled(false);
 		viewApp.getTxtHost().setEnabled(false);
-		viewApp.getBtnStopSimulation().setEnabled(true);
-		viewApp.getBtnStartSimulation().setEnabled(false);
+		viewApp.getBtnDisconnect().setEnabled(true);
+		viewApp.getBtnConnect().setEnabled(false);
 		viewApp.getCmbArch().setEnabled(false);
+		viewApp.getMenuItemLoadMap().setEnabled(false);
 	}
 
 	public void showConfig() {
@@ -237,7 +321,6 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 
 	@Override
 	public void stateChanged(ChangeEvent e) {
-		System.out.println(viewApp.getChkAntialiasing().isSelected());
 		if (e.getSource().equals(viewApp.getSpnFPS()))
 			animator.setFPS((int) viewApp.getSpnFPS().getValue());
 	}

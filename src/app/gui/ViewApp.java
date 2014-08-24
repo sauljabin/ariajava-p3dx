@@ -27,8 +27,8 @@ import java.awt.Color;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
-import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
@@ -44,6 +44,7 @@ import javax.swing.JTextField;
 import javax.swing.WindowConstants;
 
 import app.Config;
+import app.Theme;
 import app.Translate;
 import app.util.ClassW;
 import app.util.JIntegerField;
@@ -73,15 +74,25 @@ public class ViewApp extends JFrame {
 	private JPanel pnlCenter;
 	private JLabel lblArch;
 	private JComboBox<ClassW> cmbArch;
-	private JButton btnStartSimulation;
-	private JButton btnStopSimulation;
+	private JButton btnConnect;
+	private JButton btnDisconnect;
 	private JMenuItem menuItemLoadMap;
 	private Canvas canvasAnimation;
 	private JLabel lblFPS;
 	private JSpinner spnFPS;
 	private JPanel pnlAnimation;
-	private JLabel lblAntialiasing;
-	private JCheckBox chkAntialiasing;
+	private JPanel pnlAnimationControl;
+	private JButton btnZoomIn;
+	private JButton btnZoomOut;
+	private JButton btnSaveImage;
+	private JButton btnArrowUp;
+	private JButton btnArrowDown;
+	private JButton btnArrowLeft;
+	private JButton btnArrowRight;
+	private JButton btnShowHidePath;
+	private JButton btnCenterMap;
+	private JButton btnAntialiasingOnOff;
+	private JPanel pnlRobotControl;
 
 	public ViewApp() {
 		menuItems = new Vector<JMenuItem>();
@@ -89,7 +100,6 @@ public class ViewApp extends JFrame {
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		init();
 		setLocationRelativeTo(this);
-		setVisible(true);
 	}
 
 	public ControllerViewApp getController() {
@@ -144,8 +154,8 @@ public class ViewApp extends JFrame {
 		txtHost = new JTextField();
 		txtPort = new JIntegerField();
 
-		btnStartSimulation = new JButton(Translate.get("GUI_STARTSIMULATION"));
-		btnStopSimulation = new JButton(Translate.get("GUI_STOPSIMULATION"));
+		btnConnect = new JButton(Translate.get("GUI_CONNECT"));
+		btnDisconnect = new JButton(Translate.get("GUI_DISCONNECT"));
 
 		lblArch = new JLabel(Translate.get("GUI_ARCH"));
 		cmbArch = new JComboBox<ClassW>();
@@ -154,16 +164,11 @@ public class ViewApp extends JFrame {
 		pnlConnection.add(txtHost, "width 100, height 25, wrap");
 		pnlConnection.add(lblPort, "grow, height 25");
 		pnlConnection.add(txtPort, "grow, height 25, wrap 10");
-		pnlConnection.add(lblArch, "width 100, height 25");
-		pnlConnection.add(cmbArch, "width 100, height 25, wrap 10");
-		pnlConnection.add(btnStartSimulation, "grow, height 25");
-		pnlConnection.add(btnStopSimulation, "grow, height 25, wrap");
+		pnlConnection.add(btnConnect, "grow, height 25");
+		pnlConnection.add(btnDisconnect, "grow, height 25, wrap");
 
 		lblFPS = new JLabel(Translate.get("GUI_FPS"));
 		spnFPS = new JSpinner();
-
-		lblAntialiasing = new JLabel(Translate.get("GUI_ANTIALIASING"));
-		chkAntialiasing = new JCheckBox();
 
 		pnlAnimation = new JPanel();
 		pnlAnimation.setLayout(new MigLayout());
@@ -171,23 +176,70 @@ public class ViewApp extends JFrame {
 
 		pnlAnimation.add(lblFPS, "width 100, height 25");
 		pnlAnimation.add(spnFPS, "width 100, height 25, wrap");
-		pnlAnimation.add(lblAntialiasing, "width 100, height 25");
-		pnlAnimation.add(chkAntialiasing, "width 100, height 25, wrap");
+
+		pnlRobotControl = new JPanel();
+		pnlRobotControl.setLayout(new MigLayout());
+		pnlRobotControl.setBorder(BorderFactory.createTitledBorder(Translate.get("GUI_CONTROL")));
+
+		pnlRobotControl.add(lblArch, "width 100, height 25");
+		pnlRobotControl.add(cmbArch, "width 100, height 25, wrap 10");
 
 		pnlWest = new JPanel();
 		pnlWest.setLayout(new MigLayout());
 		add(pnlWest, BorderLayout.WEST);
-		pnlWest.add(pnlConnection, "wrap 10");
 		pnlWest.add(pnlAnimation, "wrap 10");
+		pnlWest.add(pnlRobotControl, "wrap 10");
+		pnlWest.add(pnlConnection, "wrap 10");
 
 		pnlCenter = new JPanel();
 		pnlCenter.setLayout(new BorderLayout());
-		pnlCenter.setBorder(BorderFactory.createEmptyBorder(8, 10, 0, 7));
+		pnlCenter.setBorder(BorderFactory.createEmptyBorder(8, 0, 0, 7));
 		add(pnlCenter, BorderLayout.CENTER);
 
 		canvasAnimation = new Canvas();
 		canvasAnimation.setBackground(Color.WHITE);
 		pnlCenter.add(canvasAnimation, BorderLayout.CENTER);
+
+		pnlAnimationControl = new JPanel(new MigLayout("insets 0 7 0 0"));
+
+		btnZoomIn = new JButton(new ImageIcon(Theme.getIconPath("ZOOM_IN")));
+		btnZoomIn.setToolTipText(Translate.get("GUI_ZOOMIN"));
+		btnZoomOut = new JButton(new ImageIcon(Theme.getIconPath("ZOOM_OUT")));
+		btnZoomOut.setToolTipText(Translate.get("GUI_ZOOMOUT"));
+
+		btnArrowUp = new JButton(new ImageIcon(Theme.getIconPath("ARROW_UP")));
+		btnArrowUp.setToolTipText(Translate.get("GUI_ARROWUP"));
+		btnArrowDown = new JButton(new ImageIcon(Theme.getIconPath("ARROW_DOWN")));
+		btnArrowDown.setToolTipText(Translate.get("GUI_ARROWDOWN"));
+		btnArrowLeft = new JButton(new ImageIcon(Theme.getIconPath("ARROW_LEFT")));
+		btnArrowLeft.setToolTipText(Translate.get("GUI_ARROWLEFT"));
+		btnArrowRight = new JButton(new ImageIcon(Theme.getIconPath("ARROW_RIGHT")));
+		btnArrowRight.setToolTipText(Translate.get("GUI_ARROWRIGHT"));
+
+		btnSaveImage = new JButton(new ImageIcon(Theme.getIconPath("SAVE_IMAGE")));
+		btnSaveImage.setToolTipText(Translate.get("GUI_SAVEIMAGE"));
+
+		btnShowHidePath = new JButton(new ImageIcon(Theme.getIconPath("HIDE_PATH")));
+		btnShowHidePath.setToolTipText(Translate.get("GUI_HIDEPATH"));
+
+		btnCenterMap = new JButton(new ImageIcon(Theme.getIconPath("CENTER_MAP")));
+		btnCenterMap.setToolTipText(Translate.get("GUI_CENTERMAP"));
+
+		btnAntialiasingOnOff = new JButton(new ImageIcon(Theme.getIconPath("ANTIALIASING_ON")));
+		btnAntialiasingOnOff.setToolTipText(Translate.get("GUI_ANTIALIASINGON"));
+
+		pnlAnimationControl.add(btnZoomIn, "wrap");
+		pnlAnimationControl.add(btnZoomOut, "wrap 15");
+		pnlAnimationControl.add(btnArrowDown, "wrap");
+		pnlAnimationControl.add(btnArrowUp, "wrap");
+		pnlAnimationControl.add(btnArrowLeft, "wrap");
+		pnlAnimationControl.add(btnArrowRight, "wrap 15");
+		pnlAnimationControl.add(btnCenterMap, "wrap");
+		pnlAnimationControl.add(btnSaveImage, "wrap 15");
+		pnlAnimationControl.add(btnShowHidePath, "wrap");
+		pnlAnimationControl.add(btnAntialiasingOnOff, "wrap");
+
+		pnlCenter.add(pnlAnimationControl, BorderLayout.EAST);
 
 		pnlSouth = new JPanel();
 		pnlSouth.setLayout(new MigLayout());
@@ -203,8 +255,18 @@ public class ViewApp extends JFrame {
 		menuItems.add(menuItemAbout);
 		menuItems.add(menuItemLoadMap);
 
-		buttons.add(btnStartSimulation);
-		buttons.add(btnStopSimulation);
+		buttons.add(btnConnect);
+		buttons.add(btnDisconnect);
+		buttons.add(btnAntialiasingOnOff);
+		buttons.add(btnArrowDown);
+		buttons.add(btnArrowLeft);
+		buttons.add(btnArrowRight);
+		buttons.add(btnArrowUp);
+		buttons.add(btnCenterMap);
+		buttons.add(btnSaveImage);
+		buttons.add(btnShowHidePath);
+		buttons.add(btnZoomIn);
+		buttons.add(btnZoomOut);
 	}
 
 	public JMenuItem getMenuItemClose() {
@@ -235,12 +297,12 @@ public class ViewApp extends JFrame {
 		return cmbArch;
 	}
 
-	public JButton getBtnStartSimulation() {
-		return btnStartSimulation;
+	public JButton getBtnConnect() {
+		return btnConnect;
 	}
 
-	public JButton getBtnStopSimulation() {
-		return btnStopSimulation;
+	public JButton getBtnDisconnect() {
+		return btnDisconnect;
 	}
 
 	public JMenuItem getMenuItemLoadMap() {
@@ -255,8 +317,44 @@ public class ViewApp extends JFrame {
 		return spnFPS;
 	}
 
-	public JCheckBox getChkAntialiasing() {
-		return chkAntialiasing;
+	public JButton getBtnZoomIn() {
+		return btnZoomIn;
+	}
+
+	public JButton getBtnZoomOut() {
+		return btnZoomOut;
+	}
+
+	public JButton getBtnSaveImage() {
+		return btnSaveImage;
+	}
+
+	public JButton getBtnArrowUp() {
+		return btnArrowUp;
+	}
+
+	public JButton getBtnArrowDown() {
+		return btnArrowDown;
+	}
+
+	public JButton getBtnArrowLeft() {
+		return btnArrowLeft;
+	}
+
+	public JButton getBtnArrowRight() {
+		return btnArrowRight;
+	}
+
+	public JButton getBtnShowHidePath() {
+		return btnShowHidePath;
+	}
+
+	public JButton getBtnCenterMap() {
+		return btnCenterMap;
+	}
+
+	public JButton getBtnAntialiasingOnOff() {
+		return btnAntialiasingOnOff;
 	}
 
 }

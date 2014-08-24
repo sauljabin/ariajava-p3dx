@@ -33,7 +33,7 @@ public class Translate {
 	private static Properties properties = new Properties();
 
 	public static void load() throws FileNotFoundException, IOException {
-		properties.load(new InputStreamReader(new FileInputStream(String.format("%s%s", Config.get("TRANSLATE_PATH"), Config.get("TRANSLATE"))), "UTF-8"));
+		properties.load(new InputStreamReader(new FileInputStream(String.format("%s%s", Config.get("PATH_TRANSLATE"), Config.get("TRANSLATE"))), "UTF-8"));
 	}
 
 	public static String get(String key) {
