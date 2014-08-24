@@ -31,12 +31,12 @@ public class Main {
 	}
 
 	private static void loadFeaturesGUI() {
-		// TODO DESCOMENTAR LIBRARY
 		try {
 			Config.load();
 			Config.save();
 			Translate.load();
-			// Library.load();
+			Theme.load();
+			Library.load();
 		} catch (Exception e) {
 			Log.error(Main.class, "loadFeaturesGUI()", e);
 			JOptionPane.showMessageDialog(null, e.getMessage(), "Error loadFeaturesGUI()", JOptionPane.ERROR_MESSAGE);

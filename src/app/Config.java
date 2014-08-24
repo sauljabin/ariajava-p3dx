@@ -37,7 +37,7 @@ public class Config {
 	public static String configPath = "CONFIG.properties";
 
 	public static void load() throws FileNotFoundException, IOException {
-		properties.load(new InputStreamReader(new FileInputStream(configPath), "UTF-8"));
+		properties.load(new InputStreamReader(new FileInputStream(configPath), "UTF8"));
 		properties.put("OS", System.getProperty("os.name"));
 		properties.put("OS_ARCH", System.getProperty("os.arch"));
 		properties.put("JAVA_VERSION",System.getProperty("java.version"));
@@ -61,7 +61,7 @@ public class Config {
 	}
 
 	public static void save() throws FileNotFoundException, IOException {
-		properties.store(new OutputStreamWriter(new FileOutputStream(configPath), "UTF-8"), "CONFIGURATION");
+		properties.store(new OutputStreamWriter(new FileOutputStream(configPath), "UTF8"), "CONFIGURATION");
 	}
 
 }

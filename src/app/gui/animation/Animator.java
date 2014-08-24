@@ -25,7 +25,6 @@ import java.awt.BasicStroke;
 import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics2D;
-import java.awt.Image;
 import java.awt.RenderingHints;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
@@ -36,6 +35,10 @@ import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 import java.util.Vector;
+
+import javax.swing.SwingUtilities;
+
+import app.map.Map;
 
 /**
  * Animator
@@ -51,7 +54,7 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 	private boolean pause;
 	private Thread thread;
 	private boolean stop;
-	private Image image;
+	private BufferedImage image;
 	private Graphics2D graphics;
 	private boolean antialiasing;
 	private Canvas canvas;
@@ -119,13 +122,11 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 	public Animator(Canvas canvas) {
 		this.canvas = canvas;
 		FPS = 24;
-		width = canvas.getWidth();
-		height = canvas.getHeight();
-		initTranslate();
 		canvas.addMouseWheelListener(this);
 		canvas.addMouseListener(this);
 		canvas.addMouseMotionListener(this);
 		animateds = new Vector<Animated>();
+		initState();
 		thread = new Thread(this);
 		canvas.addComponentListener(new ComponentAdapter() {
 			@Override
@@ -135,7 +136,9 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 		});
 	}
 
-	public void initTranslate() {
+	public void initState() {
+		width = 0;
+		height = 0;
 		translateX = offsetWidth();
 		translateY = offsetHeight();
 	}
@@ -195,13 +198,13 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 	}
 
 	public synchronized void refresh() {
-		image = new BufferedImage(width, height, 1);
-		graphics = (Graphics2D) image.getGraphics();
-		graphics.setBackground(Color.WHITE);
-
-		BasicStroke dashed = new BasicStroke(4);
-		graphics.setStroke(dashed);
-
+		if (width > 0 && height > 0) {
+			image = new BufferedImage(width, height, 1);
+			graphics = (Graphics2D) image.getGraphics();
+			graphics.setBackground(Color.WHITE);
+			BasicStroke dashed = new BasicStroke(4);
+			graphics.setStroke(dashed);
+		}
 		backImage = new BufferedImage(canvas.getWidth(), canvas.getHeight(), 1);
 		backGraphics = (Graphics2D) backImage.getGraphics();
 		backGraphics.setBackground(Color.GRAY);
@@ -274,12 +277,14 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 
 	public synchronized void rendering() {
 		backGraphics.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-		graphics.clearRect(0, 0, width, height);
-		for (int i = 0; i < animateds.size(); i++) {
-			Animated animate = animateds.get(i);
-			animate.paint(graphics);
+		if (width > 0 && height > 0) {
+			graphics.clearRect(0, 0, width, height);
+			for (int i = 0; i < animateds.size(); i++) {
+				Animated animate = animateds.get(i);
+				animate.paint(graphics);
+			}
+			backGraphics.drawImage(image, translateX - offsetWidth(), translateY - offsetHeight(), zoomWidth(), zoomHeight(), null);
 		}
-		backGraphics.drawImage(image, translateX - offsetWidth(), translateY - offsetHeight(), zoomWidth(), zoomHeight(), null);
 		canvas.getGraphics().drawImage(backImage, 0, 0, null);
 	}
 
@@ -306,9 +311,11 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 
 	@Override
 	public void mouseDragged(MouseEvent e) {
-		setTranslate(e.getX() - mouseX, e.getY() - mouseY);
-		mouseX = e.getX();
-		mouseY = e.getY();
+		if (SwingUtilities.isRightMouseButton(e)) {
+			setTranslate(e.getX() - mouseX, e.getY() - mouseY);
+			mouseX = e.getX();
+			mouseY = e.getY();
+		}
 	}
 
 	@Override
@@ -323,8 +330,10 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 
 	@Override
 	public void mousePressed(MouseEvent e) {
-		mouseX = e.getX();
-		mouseY = e.getY();
+		if (SwingUtilities.isRightMouseButton(e)) {
+			mouseX = e.getX();
+			mouseY = e.getY();
+		}
 	}
 
 	@Override
@@ -356,5 +365,21 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 		zoomW = 0;
 		translateX = canvas.getWidth() / 2;
 		translateY = canvas.getHeight() / 2;
+	}
+
+	public void showMap(Map map) {
+		removeAnimateds();
+		addAnimated(map);
+		setSize(map.getScaledWidth(), map.getScaledHeight());
+		centerMap();
+		refresh();
+	}
+
+	public synchronized BufferedImage getImage() {
+		if (image == null)
+			return null;
+		BufferedImage bi = new BufferedImage(width, height, 1);
+		bi.getGraphics().drawImage(image, 0, 0, null);
+		return bi;
 	}
 }
