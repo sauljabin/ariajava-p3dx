@@ -36,7 +36,7 @@ public class Main {
 			Config.save();
 			Translate.load();
 			Theme.load();
-			Library.load();
+			//Library.load();
 		} catch (Exception e) {
 			Log.error(Main.class, "loadFeaturesGUI()", e);
 			JOptionPane.showMessageDialog(null, e.getClass().getName() + "\n" + e.getMessage(), "Error loadFeaturesGUI()", JOptionPane.ERROR_MESSAGE);

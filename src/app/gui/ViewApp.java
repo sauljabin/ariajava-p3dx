@@ -93,6 +93,8 @@ public class ViewApp extends JFrame {
 	private JButton btnCenterMap;
 	private JButton btnAntialiasingOnOff;
 	private JPanel pnlRobotControl;
+	private JLabel lblProportion;
+	private JSpinner spnProportion;
 
 	public ViewApp() {
 		menuItems = new Vector<JMenuItem>();
@@ -170,12 +172,20 @@ public class ViewApp extends JFrame {
 		lblFPS = new JLabel(Translate.get("GUI_FPS"));
 		spnFPS = new JSpinner();
 
+		lblFPS = new JLabel(Translate.get("GUI_FPS"));
+		spnFPS = new JSpinner();
+
+		lblProportion = new JLabel(Translate.get("GUI_PROPORTION"));
+		spnProportion = new JSpinner();
+
 		pnlAnimation = new JPanel();
 		pnlAnimation.setLayout(new MigLayout());
 		pnlAnimation.setBorder(BorderFactory.createTitledBorder(Translate.get("GUI_ANIMATION")));
 
 		pnlAnimation.add(lblFPS, "width 100, height 25");
 		pnlAnimation.add(spnFPS, "width 100, height 25, wrap");
+		pnlAnimation.add(lblProportion, "grow, height 25");
+		pnlAnimation.add(spnProportion, "grow, height 25, wrap 10");
 
 		pnlRobotControl = new JPanel();
 		pnlRobotControl.setLayout(new MigLayout());
@@ -355,6 +365,10 @@ public class ViewApp extends JFrame {
 
 	public JButton getBtnAntialiasingOnOff() {
 		return btnAntialiasingOnOff;
+	}
+
+	public JSpinner getSpnProportion() {
+		return spnProportion;
 	}
 
 }

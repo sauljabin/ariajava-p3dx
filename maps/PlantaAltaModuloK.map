@@ -1,5 +1,5 @@
 ﻿2D-Map
-Cairn: RobotHome 0 0 0 "" ICON ""
+Cairn: RobotHome 1000 1000 0 "" ICON ""
 NumLines: 52
 LineMinPos: 0 0
 LineMaxPos: 62950 33800

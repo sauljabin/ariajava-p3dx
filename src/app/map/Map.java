@@ -28,12 +28,10 @@ import java.io.FileReader;
 import java.util.LinkedList;
 import java.util.List;
 
+import app.aria.ArRobotP3DX;
 import app.gui.animation.Animated;
-import app.gui.animation.Animator;
 
 public class Map implements Animated {
-
-	public static final int SCALE = 10;
 
 	public static final String numberLinesLabel = "NumLines: ";
 	public static final String robotLabel = "Cairn: RobotHome ";
@@ -50,6 +48,15 @@ public class Map implements Animated {
 	private int minY;
 	private int maxY;
 	private Goal goal;
+	public int proportion;
+
+	public int getProportion() {
+		return proportion;
+	}
+
+	public void setProportion(int proportion) {
+		this.proportion = proportion;
+	}
 
 	public Goal getGoal() {
 		return goal;
@@ -107,12 +114,12 @@ public class Map implements Animated {
 		return maxY - minY;
 	}
 
-	public int getScaledWidth() {
-		return scale(maxX - minX);
+	public int getProportionalWidth() {
+		return proportionalValue(maxX - minX);
 	}
 
-	public int getScaledHeight() {
-		return scale(maxY - minY);
+	public int getProportionalHeight() {
+		return proportionalValue(maxY - minY);
 	}
 
 	public List<Line> getLines() {
@@ -129,6 +136,7 @@ public class Map implements Animated {
 
 	public Map() {
 		lines = new LinkedList<>();
+		proportion = 10;
 	}
 
 	public String getPath() {
@@ -180,8 +188,8 @@ public class Map implements Animated {
 		lines.add(line);
 	}
 
-	public int scale(int value) {
-		return value / SCALE;
+	public int proportionalValue(int value) {
+		return value / proportion;
 	}
 
 	public int canvasX(int x) {
@@ -191,7 +199,7 @@ public class Map implements Animated {
 		} else {
 			value = x;
 		}
-		return scale(value);
+		return proportionalValue(value);
 	}
 
 	public int canvasY(int y) {
@@ -201,7 +209,7 @@ public class Map implements Animated {
 		} else {
 			value = y;
 		}
-		return scale(getHeight() - value);
+		return proportionalValue(getHeight() - value);
 	}
 
 	@Override
@@ -217,10 +225,13 @@ public class Map implements Animated {
 		}
 		if (robotHome != null) {
 			g.setColor(Color.BLUE);
-			int widthMark = 220;
-			int robotHomeX = canvasX(robotHome.getX() - widthMark / 2);
-			int robotHomeY = canvasY(robotHome.getY() - widthMark / 2);
-			g.fillRect(robotHomeX, robotHomeY, scale(widthMark), scale(widthMark));
+			int widthRobot = ArRobotP3DX.WIDTH;
+			int longRobot = ArRobotP3DX.LONG;
+			int robotHomeX = canvasX(robotHome.getX() - widthRobot / 2);
+			int robotHomeY = canvasY(robotHome.getY() + longRobot / 2);
+			g.rotate(-Math.toRadians(robotHome.getAngle() - 90), canvasX(robotHome.getX()), canvasY(robotHome.getY()));
+			g.fillRect(robotHomeX, robotHomeY, proportionalValue(widthRobot), proportionalValue(longRobot));
+			g.rotate(Math.toRadians(robotHome.getAngle() - 90), canvasX(robotHome.getX()), canvasY(robotHome.getY()));
 		}
 	}
 
@@ -232,11 +243,6 @@ public class Map implements Animated {
 	@Override
 	public int getZIndex() {
 		return 0;
-	}
-
-	@Override
-	public Animator getAnimator() {
-		return null;
 	}
 
 }

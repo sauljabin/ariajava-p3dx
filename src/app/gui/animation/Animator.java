@@ -47,7 +47,7 @@ import app.map.Map;
  */
 public class Animator implements Runnable, MouseWheelListener, MouseMotionListener, MouseListener {
 
-	public static final int ZOOM_SCALE = 20;
+	public static final int ZOOM_PROPORTION = 20;
 
 	private Vector<Animated> animateds;
 	private int FPS;
@@ -154,11 +154,11 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 	}
 
 	public int zoomWidth() {
-		return (width + width * zoomW / ZOOM_SCALE);
+		return (width + width * zoomW / ZOOM_PROPORTION);
 	}
 
 	public int zoomHeight() {
-		return (height + height * zoomH / ZOOM_SCALE);
+		return (height + height * zoomH / ZOOM_PROPORTION);
 	}
 
 	public boolean isAntialiasing() {
@@ -373,9 +373,13 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 		this.map = map;
 		removeAnimateds();
 		addAnimated(map);
-		setSize(map.getScaledWidth(), map.getScaledHeight());
+		setSize(map.getProportionalWidth(), map.getProportionalHeight());
 		centerMap();
 		refresh();
+	}
+	
+	public void updateMapSize(){
+		setSizeAndRefresh(map.getProportionalWidth(), map.getProportionalHeight());
 	}
 
 	public synchronized BufferedImage getImage() {

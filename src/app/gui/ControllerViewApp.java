@@ -66,11 +66,12 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 
 	public ControllerViewApp() {
 		init();
-		// TODO AGREGAR CAMPO ACTUALIZACIONES DE POSICION POR SEGUNDO PANEL
+		// TODO AGREGAR CAMPO ACTUALIZACIONES POR SEGUNDO DE POSICION PANEL
 		// ANIMACION
-		// TODO AGREGAR CAMPO ESCALA DE ANIMACION PANEL ANIMACION
-		// TODO AGREGAR CAMPO POSISIÓN INICIAL DEL ROBOT EN PANEL CONTROL
-		// TODO AGREGAR CAMPO POSISIÓN DEL OBJETIVO EN PANEL CONTROL
+		// TODO AGREGAR CAMPO POSICION INICIAL DEL ROBOT EN PANEL CONTROL (Y CON
+		// RATON)
+		// TODO AGREGAR CAMPO POSICION DEL OBJETIVO EN PANEL CONTROL (Y CON
+		// RATON)
 	}
 
 	public void init() {
@@ -106,8 +107,12 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		animator = new Animator(viewApp.getCanvasAnimation());
 		setAntialiasing(Boolean.parseBoolean(Config.get("ANTIALIASING")));
 		animator.start();
+
 		viewApp.getSpnFPS().addChangeListener(this);
 		viewApp.getSpnFPS().setModel(new SpinnerNumberModel(animator.getFPS(), 1, 100, 1));
+
+		viewApp.getSpnProportion().addChangeListener(this);
+		viewApp.getSpnProportion().setModel(new SpinnerNumberModel(Integer.parseInt(Config.get("ANIMATION_PROPORTION")), 1, 100, 1));
 	}
 
 	@Override
@@ -233,6 +238,7 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		Map map = new Map();
 		try {
 			map.load(path.getAbsolutePath());
+			map.setProportion((int) viewApp.getSpnProportion().getValue());
 			animator.showMap(map);
 		} catch (Exception e) {
 			Log.error(getClass(), Translate.get("ERROR_MAPLOADED"), e);
@@ -330,6 +336,20 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 	public void stateChanged(ChangeEvent e) {
 		if (e.getSource().equals(viewApp.getSpnFPS()))
 			animator.setFPS((int) viewApp.getSpnFPS().getValue());
+		else if (e.getSource().equals(viewApp.getSpnProportion()))
+			setAnimationProportion();
+	}
+
+	public void setAnimationProportion() {
+		animator.getMap().setProportion((int) viewApp.getSpnProportion().getValue());
+		animator.updateMapSize();
+		animator.centerMap();
+		Config.set("ANIMATION_PROPORTION", viewApp.getSpnProportion().getValue().toString());
+		try {
+			Config.save();
+		} catch (Exception e) {
+			Log.warning(ControllerViewApp.class, Translate.get("ERROR_NOSAVECONFIG"), e);
+		}
 	}
 
 }
