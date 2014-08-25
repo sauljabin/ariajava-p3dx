@@ -42,6 +42,7 @@ GUI_CENTERMAP=Centrar mapa
 GUI_CONTROL=Control
 GUI_START=Iniciar
 GUI_STOP=Parar
+GUI_PROPORTION=Proporción
 
 ERROR_NOSAVECONFIG=No se pudo actualizar el archivo de configuración
 ERROR_NOARCHINSTANCE=No se puede instanciar la arquitectura
