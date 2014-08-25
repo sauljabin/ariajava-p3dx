@@ -134,5 +134,7 @@ public abstract class ArArchitecture implements Comparable<ArArchitecture>, Runn
 	}
 
 	public abstract void behavior();
+	
+	public abstract boolean needMap();
 
 }

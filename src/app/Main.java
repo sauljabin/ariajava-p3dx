@@ -39,7 +39,7 @@ public class Main {
 			Library.load();
 		} catch (Exception e) {
 			Log.error(Main.class, "loadFeaturesGUI()", e);
-			JOptionPane.showMessageDialog(null, e.getMessage(), "Error loadFeaturesGUI()", JOptionPane.ERROR_MESSAGE);
+			JOptionPane.showMessageDialog(null, e.getClass().getName() + "\n" + e.getMessage(), "Error loadFeaturesGUI()", JOptionPane.ERROR_MESSAGE);
 			System.exit(0);
 		}
 	}

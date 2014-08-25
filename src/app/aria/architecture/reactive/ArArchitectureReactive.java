@@ -85,4 +85,9 @@ public class ArArchitectureReactive extends ArArchitecture {
 		}
 	}
 
+	@Override
+	public boolean needMap() {		
+		return false;
+	}
+
 }
