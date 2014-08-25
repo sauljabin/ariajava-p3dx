@@ -22,6 +22,8 @@
 package app;
 
 import javax.swing.JOptionPane;
+import javax.swing.SwingUtilities;
+
 import app.gui.ControllerViewApp;
 
 public class Main {
@@ -36,7 +38,7 @@ public class Main {
 			Config.save();
 			Translate.load();
 			Theme.load();
-			//Library.load();
+			Library.load();
 		} catch (Exception e) {
 			Log.error(Main.class, "loadFeaturesGUI()", e);
 			JOptionPane.showMessageDialog(null, e.getClass().getName() + "\n" + e.getMessage(), "Error loadFeaturesGUI()", JOptionPane.ERROR_MESSAGE);
@@ -46,7 +48,12 @@ public class Main {
 
 	private static void initGUI() {
 		loadFeaturesGUI();
-		new ControllerViewApp();
+		SwingUtilities.invokeLater(new Runnable() {
+			@Override
+			public void run() {
+				new ControllerViewApp();
+			}
+		});
 	}
 
 }

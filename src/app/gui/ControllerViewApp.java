@@ -24,8 +24,6 @@ package app.gui;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Vector;
@@ -66,12 +64,6 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 
 	public ControllerViewApp() {
 		init();
-		// TODO AGREGAR CAMPO ACTUALIZACIONES POR SEGUNDO DE POSICION PANEL
-		// ANIMACION
-		// TODO AGREGAR CAMPO POSICION INICIAL DEL ROBOT EN PANEL CONTROL (Y CON
-		// RATON)
-		// TODO AGREGAR CAMPO POSICION DEL OBJETIVO EN PANEL CONTROL (Y CON
-		// RATON)
 	}
 
 	public void init() {
@@ -83,12 +75,6 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 
 		viewApp.setVisible(true);
 
-		viewApp.addWindowListener(new WindowAdapter() {
-			@Override
-			public void windowClosing(WindowEvent e) {
-				close();
-			}
-		});
 		Log.setLogTextArea(viewApp.getTarConsole());
 
 		viewApp.getCanvasAnimation().setBackground(Color.GRAY);
@@ -105,14 +91,13 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		viewApp.getBtnDisconnect().setEnabled(false);
 
 		animator = new Animator(viewApp.getCanvasAnimation());
-		setAntialiasing(Boolean.parseBoolean(Config.get("ANTIALIASING")));
+		setAntialiasing(Boolean.parseBoolean(Config.get("ANIMATION_ANTIALIASING")));
+		animator.setStrokeSize(Integer.parseInt(Config.get("ANIMATION_STROKESIZE")));
 		animator.start();
 
-		viewApp.getSpnFPS().addChangeListener(this);
 		viewApp.getSpnFPS().setModel(new SpinnerNumberModel(animator.getFPS(), 1, 100, 1));
-
-		viewApp.getSpnProportion().addChangeListener(this);
 		viewApp.getSpnProportion().setModel(new SpinnerNumberModel(Integer.parseInt(Config.get("ANIMATION_PROPORTION")), 1, 100, 1));
+		viewApp.getSpnStrokeSize().setModel(new SpinnerNumberModel(Integer.parseInt(Config.get("ANIMATION_STROKESIZE")), 1, 100, 1));
 	}
 
 	@Override
@@ -211,7 +196,7 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 
 		}
 
-		Config.set("ANTIALIASING", String.valueOf(antialiasing));
+		Config.set("ANIMATION_ANTIALIASING", String.valueOf(antialiasing));
 		try {
 			Config.save();
 		} catch (Exception e) {
@@ -338,13 +323,23 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 			animator.setFPS((int) viewApp.getSpnFPS().getValue());
 		else if (e.getSource().equals(viewApp.getSpnProportion()))
 			setAnimationProportion();
+		else if (e.getSource().equals(viewApp.getSpnStrokeSize()))
+			setAnimationStrokeSize();
 	}
 
 	public void setAnimationProportion() {
-		animator.getMap().setProportion((int) viewApp.getSpnProportion().getValue());
-		animator.updateMapSize();
-		animator.centerMap();
+		animator.updateMapProportion((int) viewApp.getSpnProportion().getValue());
 		Config.set("ANIMATION_PROPORTION", viewApp.getSpnProportion().getValue().toString());
+		try {
+			Config.save();
+		} catch (Exception e) {
+			Log.warning(ControllerViewApp.class, Translate.get("ERROR_NOSAVECONFIG"), e);
+		}
+	}
+
+	public void setAnimationStrokeSize() {
+		animator.setStrokeSize((int) viewApp.getSpnStrokeSize().getValue());
+		Config.set("ANIMATION_STROKESIZE", viewApp.getSpnStrokeSize().getValue().toString());
 		try {
 			Config.save();
 		} catch (Exception e) {

@@ -68,8 +68,17 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 	private int mouseY;
 	private BufferedImage backImage;
 	private Graphics2D backGraphics;
-
 	private Map map;
+	private int strokeSize;
+
+	public int getStrokeSize() {
+		return strokeSize;
+	}
+
+	public void setStrokeSize(int strokeSize) {
+		this.strokeSize = strokeSize;
+		refresh();
+	}
 
 	public void antialiasing() {
 		if (graphics != null) {
@@ -124,6 +133,7 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 	public Animator(Canvas canvas) {
 		this.canvas = canvas;
 		FPS = 24;
+		strokeSize = 1;
 		canvas.addMouseWheelListener(this);
 		canvas.addMouseListener(this);
 		canvas.addMouseMotionListener(this);
@@ -204,8 +214,8 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 			image = new BufferedImage(width, height, 1);
 			graphics = (Graphics2D) image.getGraphics();
 			graphics.setBackground(Color.WHITE);
-			BasicStroke dashed = new BasicStroke(4);
-			graphics.setStroke(dashed);
+			BasicStroke stroke = new BasicStroke(strokeSize);
+			graphics.setStroke(stroke);
 		}
 		backImage = new BufferedImage(canvas.getWidth(), canvas.getHeight(), 1);
 		backGraphics = (Graphics2D) backImage.getGraphics();
@@ -377,9 +387,13 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 		centerMap();
 		refresh();
 	}
-	
-	public void updateMapSize(){
+
+	public void updateMapProportion(int proportion) {
+		if (map == null)
+			return;
+		map.setProportion(proportion);
 		setSizeAndRefresh(map.getProportionalWidth(), map.getProportionalHeight());
+		centerMap();
 	}
 
 	public synchronized BufferedImage getImage() {
