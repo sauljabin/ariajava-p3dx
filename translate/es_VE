@@ -48,6 +48,7 @@ ERROR_NOARCHINSTANCE=No se puede instanciar la arquitectura
 ERROR_PARSEARGS=Error al ejecutar comandos
 ERROR_MAPLOADED=Error al cargar mapa
 ERROR_SAVEIMAGE=Error al guardar imagen
+ERROR_ARCHNEEDMAP=Esta arquitectura necesita un mapa
 INFO_SUCCESSFULCONN=Conexión exitosa
 INFO_UNSUCCESSFULCONN=Conexión no exitosa
 INFO_CLOSECONN=Conexión cerrada

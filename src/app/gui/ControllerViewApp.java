@@ -34,6 +34,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.ImageIcon;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -69,6 +70,7 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		// ANIMACION
 		// TODO AGREGAR CAMPO ESCALA DE ANIMACION PANEL ANIMACION
 		// TODO AGREGAR CAMPO POSISIÓN INICIAL DEL ROBOT EN PANEL CONTROL
+		// TODO AGREGAR CAMPO POSISIÓN DEL OBJETIVO EN PANEL CONTROL
 	}
 
 	public void init() {
@@ -283,6 +285,11 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 			arch = new ArArchitectureReactive(host, port);
 		} else {
 			Log.error(getClass(), Translate.get("ERROR_NOARCHINSTANCE"));
+			return;
+		}
+
+		if (arch.needMap() && animator.getMap() == null) {
+			JOptionPane.showMessageDialog(viewApp, Translate.get("ERROR_ARCHNEEDMAP"), "Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 

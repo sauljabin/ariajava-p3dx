@@ -69,6 +69,8 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 	private BufferedImage backImage;
 	private Graphics2D backGraphics;
 
+	private Map map;
+
 	public void antialiasing() {
 		if (graphics != null) {
 			if (antialiasing) {
@@ -368,6 +370,7 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 	}
 
 	public void showMap(Map map) {
+		this.map = map;
 		removeAnimateds();
 		addAnimated(map);
 		setSize(map.getScaledWidth(), map.getScaledHeight());
@@ -381,5 +384,9 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 		BufferedImage bi = new BufferedImage(width, height, 1);
 		bi.getGraphics().drawImage(image, 0, 0, null);
 		return bi;
+	}
+
+	public Map getMap() {
+		return map;
 	}
 }

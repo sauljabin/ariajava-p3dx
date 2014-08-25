@@ -62,4 +62,9 @@ public class ArArchitectureAuRA extends ArArchitecture {
 
 	}
 
+	@Override
+	public boolean needMap() {
+		return true;
+	}
+
 }
