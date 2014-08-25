@@ -24,6 +24,8 @@ package app.gui;
 import java.awt.BorderLayout;
 import java.awt.Canvas;
 import java.awt.Color;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.util.Vector;
 
 import javax.swing.BorderFactory;
@@ -57,6 +59,7 @@ public class ViewApp extends JFrame {
 	private ControllerViewApp controller;
 	private Vector<JMenuItem> menuItems;
 	private Vector<JButton> buttons;
+	private Vector<JSpinner> spinners;
 	private JMenuBar menuBar;
 	private JMenu menuOptions;
 	private JMenuItem menuItemShowConfig;
@@ -95,10 +98,13 @@ public class ViewApp extends JFrame {
 	private JPanel pnlRobotControl;
 	private JLabel lblProportion;
 	private JSpinner spnProportion;
+	private JLabel lblStrokeSize;
+	private JSpinner spnStrokeSize;
 
 	public ViewApp() {
 		menuItems = new Vector<JMenuItem>();
 		buttons = new Vector<JButton>();
+		spinners = new Vector<JSpinner>();
 		setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
 		init();
 		setLocationRelativeTo(this);
@@ -110,17 +116,31 @@ public class ViewApp extends JFrame {
 
 	public void setController(ControllerViewApp controller) {
 		this.controller = controller;
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				close();
+			}
+		});
 		for (int i = 0; i < menuItems.size(); i++) {
 			menuItems.get(i).addActionListener(controller);
 		}
 		for (int i = 0; i < buttons.size(); i++) {
 			buttons.get(i).addActionListener(controller);
 		}
+		for (int i = 0; i < spinners.size(); i++) {
+			spinners.get(i).addChangeListener(controller);
+		}
+	}
+
+	public void close() {
+		if (controller != null)
+			controller.close();
 	}
 
 	private void init() {
 		setLayout(new BorderLayout());
-		setSize(800, 600);
+		setSize(800, 700);
 		setTitle(Config.get("APP_NAME"));
 
 		menuBar = new JMenuBar();
@@ -178,6 +198,9 @@ public class ViewApp extends JFrame {
 		lblProportion = new JLabel(Translate.get("GUI_PROPORTION"));
 		spnProportion = new JSpinner();
 
+		lblStrokeSize = new JLabel(Translate.get("GUI_STROKESIZE"));
+		spnStrokeSize = new JSpinner();
+
 		pnlAnimation = new JPanel();
 		pnlAnimation.setLayout(new MigLayout());
 		pnlAnimation.setBorder(BorderFactory.createTitledBorder(Translate.get("GUI_ANIMATION")));
@@ -186,6 +209,8 @@ public class ViewApp extends JFrame {
 		pnlAnimation.add(spnFPS, "width 100, height 25, wrap");
 		pnlAnimation.add(lblProportion, "grow, height 25");
 		pnlAnimation.add(spnProportion, "grow, height 25, wrap 10");
+		pnlAnimation.add(lblStrokeSize, "grow, height 25");
+		pnlAnimation.add(spnStrokeSize, "grow, height 25, wrap 10");
 
 		pnlRobotControl = new JPanel();
 		pnlRobotControl.setLayout(new MigLayout());
@@ -264,6 +289,10 @@ public class ViewApp extends JFrame {
 		menuItems.add(menuItemClose);
 		menuItems.add(menuItemAbout);
 		menuItems.add(menuItemLoadMap);
+		
+		spinners.add(spnStrokeSize);
+		spinners.add(spnProportion);
+		spinners.add(spnFPS);
 
 		buttons.add(btnConnect);
 		buttons.add(btnDisconnect);
@@ -369,6 +398,10 @@ public class ViewApp extends JFrame {
 
 	public JSpinner getSpnProportion() {
 		return spnProportion;
+	}
+
+	public JSpinner getSpnStrokeSize() {
+		return spnStrokeSize;
 	}
 
 }
