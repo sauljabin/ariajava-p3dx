@@ -48,7 +48,16 @@ public class Map implements Animated {
 	private int minY;
 	private int maxY;
 	private Goal goal;
-	public int proportion;
+	private int proportion;
+	private int offsetPosition;
+
+	public int getOffsetPosition() {
+		return offsetPosition;
+	}
+
+	public void setOffsetPosition(int offsetPosition) {
+		this.offsetPosition = offsetPosition;
+	}
 
 	public int getProportion() {
 		return proportion;
@@ -115,11 +124,19 @@ public class Map implements Animated {
 	}
 
 	public int getProportionalWidth() {
-		return proportionalValue(maxX - minX);
+		return proportionalValue(getWidth());
 	}
 
 	public int getProportionalHeight() {
-		return proportionalValue(maxY - minY);
+		return proportionalValue(getHeight());
+	}
+
+	public int getCanvasWidth() {
+		return getProportionalWidth() + proportionalValue(offsetPosition * 2);
+	}
+
+	public int getCanvasHeight() {
+		return getProportionalHeight() + proportionalValue(offsetPosition * 2);
 	}
 
 	public List<Line> getLines() {
@@ -137,6 +154,7 @@ public class Map implements Animated {
 	public Map() {
 		lines = new LinkedList<>();
 		proportion = 10;
+		offsetPosition = 1500;
 	}
 
 	public String getPath() {
@@ -199,7 +217,7 @@ public class Map implements Animated {
 		} else {
 			value = x;
 		}
-		return proportionalValue(value);
+		return proportionalValue(value + offsetPosition);
 	}
 
 	public int canvasY(int y) {
@@ -209,7 +227,7 @@ public class Map implements Animated {
 		} else {
 			value = y;
 		}
-		return proportionalValue(getHeight() - value);
+		return proportionalValue(getHeight() - value + offsetPosition);
 	}
 
 	@Override
