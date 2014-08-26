@@ -383,7 +383,7 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 		this.map = map;
 		removeAnimateds();
 		addAnimated(map);
-		setSize(map.getProportionalWidth(), map.getProportionalHeight());
+		setSize(map.getCanvasWidth(), map.getCanvasHeight());
 		centerMap();
 		refresh();
 	}
@@ -392,7 +392,7 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 		if (map == null)
 			return;
 		map.setProportion(proportion);
-		setSizeAndRefresh(map.getProportionalWidth(), map.getProportionalHeight());
+		setSizeAndRefresh(map.getCanvasWidth(), map.getCanvasHeight());
 		centerMap();
 	}
 
