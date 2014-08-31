@@ -46,7 +46,9 @@ public class ArArchitectureReactive extends ArArchitecture {
 
 	@Override
 	public void behavior() {
+		getRobot().lock();
 		double range = getRobot().getRangeSonar().currentReadingPolar(-angle, angle);
+		getRobot().unlock();
 		if (range <= stopDistance) {
 			getRobot().lock();
 			getRobot().setVel(0);
@@ -55,8 +57,10 @@ public class ArArchitectureReactive extends ArArchitecture {
 			if (getRobot().getVel() > 0)
 				ArUtil.sleep(2000);
 
+			getRobot().lock();
 			double leftRange = getRobot().getRangeSonar().currentReadingPolar(0, angle);
 			double rightRange = getRobot().getRangeSonar().currentReadingPolar(-angle, 0);
+			getRobot().unlock();
 
 			if (!turnRight && !turnLeft) {
 				if (leftRange <= rightRange) {

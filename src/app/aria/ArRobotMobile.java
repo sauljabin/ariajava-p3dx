@@ -57,6 +57,8 @@ public class ArRobotMobile extends ArRobot implements Animated, Runnable {
 	private double animatedX;
 	private double animatedY;
 	private double animatedAngle;
+	private int[] xRobot;
+	private int[] yRobot;
 
 	public int getUpdateAnimatedPositionRate() {
 		return updateAnimatedPositionRate;
@@ -155,7 +157,7 @@ public class ArRobotMobile extends ArRobot implements Animated, Runnable {
 		double angle = animatedAngle;
 		g.rotate(-Math.toRadians(angle), map.canvasX(animatedX), map.canvasY(animatedY));
 
-		int[] xRobot = new int[] {
+		xRobot = new int[] {
 				robotHomeX + corner
 				, robotHomeX + map.proportionalValue(longRobot * 2 / 3)
 				, robotHomeX + map.proportionalValue(longRobot)
@@ -166,7 +168,7 @@ public class ArRobotMobile extends ArRobot implements Animated, Runnable {
 				, robotHomeX + corner
 		};
 
-		int[] yRobot = new int[] {
+		yRobot = new int[] {
 				robotHomeY
 				, robotHomeY
 				, robotHomeY + map.proportionalValue(widthRobot/2 )
