@@ -53,18 +53,13 @@ public class ArArchitectureAuRA extends ArArchitecture {
 		this.arSpatialReasoner = arSpatialReasoner;
 	}
 
-	public ArArchitectureAuRA(String host, int tcpPort) {
-		super("AuRA", host, tcpPort);
+	public ArArchitectureAuRA() {
+		super("AuRA");
 	}
 
 	@Override
 	public void behavior() {
 
-	}
-
-	@Override
-	public boolean needMap() {
-		return true;
 	}
 
 }

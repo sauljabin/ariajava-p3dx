@@ -21,27 +21,12 @@
 
 package app.aria;
 
-import app.Translate;
-import app.aria.exception.ArException;
-import app.aria.exception.ArExceptionParseArgs;
-
-import com.mobilerobots.Aria.ArRangeDevice;
-import com.mobilerobots.Aria.ArRobot;
-import com.mobilerobots.Aria.ArSimpleConnector;
-import com.mobilerobots.Aria.ArSonarDevice;
-import com.mobilerobots.Aria.Aria;
-
-public abstract class ArArchitecture implements Comparable<ArArchitecture>, Runnable {
+public abstract class ArArchitecture implements Comparable<ArArchitecture> {
 
 	private String name;
 	private String host;
 	private int tcpPort;
-	private Thread thread;
-	private ArRobot robot;
-	private ArSonarDevice sonar;
-	protected ArRangeDevice rangeSonar;
-	private ArSimpleConnector conn;
-	private boolean run;
+	private ArRobotMobile robot;
 
 	public String getName() {
 		return name;
@@ -55,22 +40,16 @@ public abstract class ArArchitecture implements Comparable<ArArchitecture>, Runn
 		return tcpPort;
 	}
 
-	public ArRobot getRobot() {
+	public ArRobotMobile getRobot() {
 		return robot;
 	}
 
-	public ArSonarDevice getSonar() {
-		return sonar;
+	public void setRobot(ArRobotMobile robot) {
+		this.robot = robot;
 	}
 
-	public ArRangeDevice getRangeSonar() {
-		return rangeSonar;
-	}
-
-	public ArArchitecture(String name, String host, int tcpPort) {
+	public ArArchitecture(String name) {
 		this.name = name;
-		this.host = host;
-		this.tcpPort = tcpPort;
 	}
 
 	@Override
@@ -83,58 +62,6 @@ public abstract class ArArchitecture implements Comparable<ArArchitecture>, Runn
 		return this.toString().compareTo(o.toString());
 	}
 
-	public boolean isAlive() {
-		return thread == null ? false : thread.isAlive();
-	}
-
-	public void start() throws ArException, ArExceptionParseArgs {
-		if (!isAlive()) {
-
-			thread = new Thread(this);
-
-			Aria.init();
-			conn = new ArSimpleConnector(new String[] { "-rrtp", String.format("%d", tcpPort), "-rh", host });
-			robot = new ArRobot();
-			sonar = new ArSonarDevice();
-
-			if (!Aria.parseArgs()) {
-				throw new ArExceptionParseArgs(Translate.get("ERROR_PARSEARGS"));
-			}
-
-			if (!conn.connectRobot(robot)) {
-				throw new ArException(Translate.get("INFO_UNSUCCESSFULCONN"));
-			}
-
-			robot.addRangeDevice(sonar);
-			rangeSonar = robot.findRangeDevice("sonar");
-			robot.enableMotors();
-			robot.runAsync(true);
-			run = true;
-			thread.start();
-		}
-	}
-
-	public void stop() {
-		run = false;
-		try {
-			if (isAlive()) {
-				robot.stopRunning(true);
-				thread.join(1000);
-			}
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public void run() {
-		while (run) {
-			behavior();
-		}
-	}
-
 	public abstract void behavior();
-	
-	public abstract boolean needMap();
 
 }

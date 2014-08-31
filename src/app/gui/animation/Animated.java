@@ -24,11 +24,13 @@ package app.gui.animation;
 import java.awt.Graphics2D;
 
 public interface Animated {
-	public void init();
+	public void initAnimated();
 
 	public void paint(Graphics2D g);
 
 	public void animate();
 
-	public int getZIndex();		
+	public int getZIndex();
+
+	public boolean isVisible();
 }

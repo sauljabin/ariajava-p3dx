@@ -28,7 +28,6 @@ import java.io.FileReader;
 import java.util.LinkedList;
 import java.util.List;
 
-import app.aria.ArRobotP3DX;
 import app.gui.animation.Animated;
 
 public class Map implements Animated {
@@ -50,6 +49,7 @@ public class Map implements Animated {
 	private Goal goal;
 	private int proportion;
 	private int offsetPosition;
+	private boolean visible;
 
 	public int getOffsetPosition() {
 		return offsetPosition;
@@ -73,6 +73,7 @@ public class Map implements Animated {
 
 	public void setGoal(Goal goal) {
 		this.goal = goal;
+		goal.setMap(this);
 	}
 
 	public void setPath(String path) {
@@ -149,12 +150,44 @@ public class Map implements Animated {
 
 	public void setRobotHome(RobotHome robotHome) {
 		this.robotHome = robotHome;
+		robotHome.setMap(this);
 	}
 
-	public Map() {
+	public Map(RobotHome robotHome, Goal goal, int minX, int maxX, int minY, int maxY) {
+		this.robotHome = robotHome;
+		this.minX = minX;
+		this.maxX = maxX;
+		this.minY = minY;
+		this.maxY = maxY;
+		this.goal = goal;
 		lines = new LinkedList<>();
 		proportion = 10;
 		offsetPosition = 1500;
+		if (robotHome != null)
+			robotHome.setMap(this);
+		if (goal != null)
+			goal.setMap(this);
+		visible = true;
+	}
+
+	public Map(RobotHome robotHome, int minX, int maxX, int minY, int maxY) {
+		this(robotHome, null, minX, maxX, minY, maxY);
+		this.minX = minX;
+		this.maxX = maxX;
+		this.minY = minY;
+		this.maxY = maxY;
+	}
+
+	public Map(int minX, int maxX, int minY, int maxY) {
+		this(new RobotHome(), null, minX, maxX, minY, maxY);
+		this.minX = minX;
+		this.maxX = maxX;
+		this.minY = minY;
+		this.maxY = maxY;
+	}
+
+	public Map() {
+		this(new RobotHome(), null, 0, 0, 0, 0);
 	}
 
 	public String getPath() {
@@ -184,10 +217,10 @@ public class Map implements Animated {
 				maxY = Integer.parseInt(tokens[1]);
 			} else if (stringRead.startsWith(robotLabel)) {
 				String[] tokens = stringRead.substring(robotLabel.length()).split(" ");
-				robotHome = new RobotHome(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[1]), Double.parseDouble(tokens[2]));
+				setRobotHome(new RobotHome(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[1]), Double.parseDouble(tokens[2])));
 			} else if (stringRead.startsWith(goalLabel)) {
 				String[] tokens = stringRead.substring(goalLabel.length()).split(" ");
-				goal = new Goal(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[1]), Double.parseDouble(tokens[2]));
+				setGoal(new Goal(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[1]), Double.parseDouble(tokens[2])));
 			} else if (stringRead.startsWith(linesLabel)) {
 				linesSector = true;
 			} else if (linesSector) {
@@ -206,12 +239,16 @@ public class Map implements Animated {
 		lines.add(line);
 	}
 
-	public int proportionalValue(int value) {
+	public double proportionalDoubleValue(double value) {
 		return value / proportion;
 	}
 
-	public int canvasX(int x) {
-		int value = 0;
+	public int proportionalValue(double value) {
+		return (int) Math.round(value / proportion);
+	}
+
+	public int canvasX(double x) {
+		double value = 0;
 		if (minX < 0) {
 			value = Math.abs(minX) + x;
 		} else {
@@ -220,8 +257,8 @@ public class Map implements Animated {
 		return proportionalValue(value + offsetPosition);
 	}
 
-	public int canvasY(int y) {
-		int value = 0;
+	public int canvasY(double y) {
+		double value = 0;
 		if (minY < 0) {
 			value = Math.abs(minY) + y;
 		} else {
@@ -230,8 +267,28 @@ public class Map implements Animated {
 		return proportionalValue(getHeight() - value + offsetPosition);
 	}
 
+	public double canvasDoubleX(double x) {
+		double value = 0;
+		if (minX < 0) {
+			value = Math.abs(minX) + x;
+		} else {
+			value = x;
+		}
+		return proportionalDoubleValue(value + offsetPosition);
+	}
+
+	public double canvasDoubleY(int y) {
+		double value = 0;
+		if (minY < 0) {
+			value = Math.abs(minY) + y;
+		} else {
+			value = y;
+		}
+		return proportionalDoubleValue(getHeight() - value + offsetPosition);
+	}
+
 	@Override
-	public void init() {
+	public void initAnimated() {
 
 	}
 
@@ -240,16 +297,6 @@ public class Map implements Animated {
 		g.setColor(Color.BLACK);
 		for (int i = 0; i < lines.size(); i++) {
 			g.drawLine(canvasX(lines.get(i).getX1()), canvasY(lines.get(i).getY1()), canvasX(lines.get(i).getX2()), canvasY(lines.get(i).getY2()));
-		}
-		if (robotHome != null) {
-			g.setColor(Color.BLUE);
-			int widthRobot = ArRobotP3DX.WIDTH;
-			int longRobot = ArRobotP3DX.LONG;
-			int robotHomeX = canvasX(robotHome.getX() - widthRobot / 2);
-			int robotHomeY = canvasY(robotHome.getY() + longRobot / 2);
-			g.rotate(-Math.toRadians(robotHome.getAngle() - 90), canvasX(robotHome.getX()), canvasY(robotHome.getY()));
-			g.fillRect(robotHomeX, robotHomeY, proportionalValue(widthRobot), proportionalValue(longRobot));
-			g.rotate(Math.toRadians(robotHome.getAngle() - 90), canvasX(robotHome.getX()), canvasY(robotHome.getY()));
 		}
 	}
 
@@ -261,6 +308,15 @@ public class Map implements Animated {
 	@Override
 	public int getZIndex() {
 		return 0;
+	}
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
+	}
+
+	@Override
+	public boolean isVisible() {
+		return visible;
 	}
 
 }

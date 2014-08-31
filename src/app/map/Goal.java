@@ -21,11 +21,27 @@
 
 package app.map;
 
-public class Goal {
-	
+import java.awt.Color;
+import java.awt.Graphics2D;
+
+import app.aria.ArRobotMobile;
+import app.gui.animation.Animated;
+
+public class Goal implements Animated {
+
 	private int x;
 	private int y;
 	private double angle;
+	private boolean visible;
+	private Map map;
+
+	public Map getMap() {
+		return map;
+	}
+
+	public void setMap(Map map) {
+		this.map = map;
+	}
 
 	public int getX() {
 		return x;
@@ -52,17 +68,55 @@ public class Goal {
 	}
 
 	public Goal() {
+		this(0, 0, 0);
 	}
 
 	public Goal(int x, int y, double angle) {
 		this.x = x;
 		this.y = y;
 		this.angle = angle;
+		visible = true;
 	}
 
 	@Override
 	public String toString() {
 		return String.format("Goal [x=%s, y=%s, angle=%s]", x, y, angle);
+	}
+
+	@Override
+	public void initAnimated() {
+
+	}
+
+	@Override
+	public void paint(Graphics2D g) {
+		g.setColor(Color.RED);
+		int widthRobot = ArRobotMobile.WIDTH;
+		int longRobot = ArRobotMobile.LONG;
+		int goalX = map.canvasX(getX() - longRobot / 2);
+		int goalY = map.canvasY(getY() + widthRobot / 2);
+		g.rotate(-Math.toRadians(getAngle()), map.canvasX(getX()), map.canvasY(getY()));
+		g.drawRect(goalX, goalY, map.proportionalValue(longRobot), map.proportionalValue(widthRobot));
+		g.rotate(Math.toRadians(getAngle()), map.canvasX(getX()), map.canvasY(getY()));
+	}
+
+	@Override
+	public void animate() {
+
+	}
+
+	@Override
+	public int getZIndex() {
+		return 10;
+	}
+
+	public void setVisible(boolean visible) {
+		this.visible = visible;
+	}
+
+	@Override
+	public boolean isVisible() {
+		return visible;
 	}
 
 }
