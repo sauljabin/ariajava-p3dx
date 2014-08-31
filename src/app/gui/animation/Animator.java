@@ -77,7 +77,10 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 
 	public void setStrokeSize(int strokeSize) {
 		this.strokeSize = strokeSize;
-		refresh();
+		if (graphics == null)
+			return;
+		BasicStroke stroke = new BasicStroke(strokeSize);
+		graphics.setStroke(stroke);
 	}
 
 	public void antialiasing() {
@@ -177,7 +180,7 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 
 	public void setAntialiasing(boolean antialiasing) {
 		this.antialiasing = antialiasing;
-		refresh();
+		antialiasing();
 	}
 
 	public Vector<Animated> getAnimateds() {
@@ -194,7 +197,7 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 
 	public synchronized void addAnimated(Animated animated) {
 		animateds.add(animated);
-		animated.init();
+		animated.initAnimated();
 	}
 
 	public synchronized void removeAnimated(Animated animated) {
@@ -293,6 +296,8 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 			graphics.clearRect(0, 0, width, height);
 			for (int i = 0; i < animateds.size(); i++) {
 				Animated animate = animateds.get(i);
+				if (!animate.isVisible())
+					continue;
 				animate.paint(graphics);
 			}
 			backGraphics.drawImage(image, translateX - offsetWidth(), translateY - offsetHeight(), zoomWidth(), zoomHeight(), null);
@@ -307,7 +312,7 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 
 	public synchronized void initAnimateds() {
 		for (int i = 0; i < animateds.size(); i++) {
-			animateds.get(i).init();
+			animateds.get(i).initAnimated();
 		}
 	}
 
@@ -383,6 +388,10 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 		this.map = map;
 		removeAnimateds();
 		addAnimated(map);
+		if (map.getRobotHome() != null)
+			addAnimated(map.getRobotHome());
+		if (map.getGoal() != null)
+			addAnimated(map.getGoal());
 		setSize(map.getCanvasWidth(), map.getCanvasHeight());
 		centerMap();
 		refresh();

@@ -34,8 +34,8 @@ public class ArArchitectureReactive extends ArArchitecture {
 	private boolean turnLeft;
 	private boolean turnRight;
 
-	public ArArchitectureReactive(String host, int tcpPort) {
-		super("Reactive", host, tcpPort);
+	public ArArchitectureReactive() {
+		super("Reactive");
 		angle = 60;
 		stopDistance = 1000;
 		turnAngle = 15;
@@ -46,7 +46,7 @@ public class ArArchitectureReactive extends ArArchitecture {
 
 	@Override
 	public void behavior() {
-		double range = getRangeSonar().currentReadingPolar(-angle, angle);
+		double range = getRobot().getRangeSonar().currentReadingPolar(-angle, angle);
 		if (range <= stopDistance) {
 			getRobot().lock();
 			getRobot().setVel(0);
@@ -55,8 +55,8 @@ public class ArArchitectureReactive extends ArArchitecture {
 			if (getRobot().getVel() > 0)
 				ArUtil.sleep(2000);
 
-			double leftRange = getRangeSonar().currentReadingPolar(0, angle);
-			double rightRange = getRangeSonar().currentReadingPolar(-angle, 0);
+			double leftRange = getRobot().getRangeSonar().currentReadingPolar(0, angle);
+			double rightRange = getRobot().getRangeSonar().currentReadingPolar(-angle, 0);
 
 			if (!turnRight && !turnLeft) {
 				if (leftRange <= rightRange) {
@@ -83,11 +83,6 @@ public class ArArchitectureReactive extends ArArchitecture {
 			turnLeft = false;
 			turnRight = false;
 		}
-	}
-
-	@Override
-	public boolean needMap() {		
-		return false;
 	}
 
 }
