@@ -24,6 +24,8 @@ package app.aria.architecture.reactive;
 import com.mobilerobots.Aria.ArUtil;
 
 import app.aria.ArArchitecture;
+import app.gui.animation.Animator;
+import app.map.Map;
 
 public class ArArchitectureReactive extends ArArchitecture {
 
@@ -34,8 +36,8 @@ public class ArArchitectureReactive extends ArArchitecture {
 	private boolean turnLeft;
 	private boolean turnRight;
 
-	public ArArchitectureReactive() {
-		super("Reactive");
+	public ArArchitectureReactive(String host, int tcpPort, Map map, Animator animator) {
+		super("Reactive", host, tcpPort, map, animator);
 		angle = 60;
 		stopDistance = 1000;
 		turnAngle = 15;
@@ -47,7 +49,7 @@ public class ArArchitectureReactive extends ArArchitecture {
 	@Override
 	public void behavior() {
 		getRobot().lock();
-		double range = getRobot().getRangeSonar().currentReadingPolar(-angle, angle);
+		double range = getRangeSonar().currentReadingPolar(-angle, angle);
 		getRobot().unlock();
 		if (range <= stopDistance) {
 			getRobot().lock();
@@ -58,8 +60,8 @@ public class ArArchitectureReactive extends ArArchitecture {
 				ArUtil.sleep(2000);
 
 			getRobot().lock();
-			double leftRange = getRobot().getRangeSonar().currentReadingPolar(0, angle);
-			double rightRange = getRobot().getRangeSonar().currentReadingPolar(-angle, 0);
+			double leftRange = getRangeSonar().currentReadingPolar(0, angle);
+			double rightRange = getRangeSonar().currentReadingPolar(-angle, 0);
 			getRobot().unlock();
 
 			if (!turnRight && !turnLeft) {
@@ -78,7 +80,7 @@ public class ArArchitectureReactive extends ArArchitecture {
 			}
 			getRobot().unlock();
 
-		} else { 
+		} else {
 			if (getRobot().getVel() == 0)
 				ArUtil.sleep(2000);
 			getRobot().lock();

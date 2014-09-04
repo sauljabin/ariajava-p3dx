@@ -22,6 +22,8 @@
 package app.aria.architecture.aura;
 
 import app.aria.ArArchitecture;
+import app.gui.animation.Animator;
+import app.map.Map;
 
 public class ArArchitectureAuRA extends ArArchitecture {
 
@@ -53,8 +55,8 @@ public class ArArchitectureAuRA extends ArArchitecture {
 		this.arSpatialReasoner = arSpatialReasoner;
 	}
 
-	public ArArchitectureAuRA() {
-		super("AuRA");
+	public ArArchitectureAuRA(String host, int tcpPort, Map map, Animator animator) {
+		super("AuRA", host, tcpPort, map, animator);
 	}
 
 	@Override

@@ -44,7 +44,6 @@ import app.Log;
 import app.Theme;
 import app.Translate;
 import app.aria.ArArchitecture;
-import app.aria.ArRobotMobile;
 import app.aria.architecture.aura.ArArchitectureAuRA;
 import app.aria.architecture.reactive.ArArchitectureReactive;
 import app.aria.exception.ArException;
@@ -61,7 +60,6 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 	private DefaultComboBoxModel<ClassW> modelCmbArch;
 	private ArArchitecture arch;
 	private Animator animator;
-	private ArRobotMobile robot;
 	private Map map;
 	public static final int TRANSLATE = 20;
 	public static final int ZOOM = 1;
@@ -254,8 +252,8 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 	}
 
 	public void disconnect() {
-		if (robot != null) {
-			robot.stop();
+		if (arch != null) {
+			arch.stop();
 			Log.info(getClass(), Translate.get("INFO_CLOSECONN") + " " + arch.getName());
 		}
 		viewApp.getTxtPort().setEnabled(true);
@@ -280,28 +278,27 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 
 		ClassW classArch = (ClassW) modelCmbArch.getSelectedItem();
 
-		if (classArch.getValue().equals(ArArchitectureAuRA.class)) {
-			arch = new ArArchitectureAuRA();
-		} else if (classArch.getValue().equals(ArArchitectureReactive.class)) {
-			arch = new ArArchitectureReactive();
-		} else {
-			Log.error(getClass(), Translate.get("ERROR_NOARCHINSTANCE"));
-			return;
-		}
-
 		if (map == null) {
 			JOptionPane.showMessageDialog(viewApp, Translate.get("ERROR_MAPNOTLOADED"), "Error", JOptionPane.ERROR_MESSAGE);
 			return;
 		}
 
-		robot = new ArRobotMobile(host, port);
+		if (classArch.getValue().equals(ArArchitectureAuRA.class)) {
+			arch = new ArArchitectureAuRA(host, port, map, animator);
+		} else if (classArch.getValue().equals(ArArchitectureReactive.class)) {
+			arch = new ArArchitectureReactive(host, port, map, animator);
+		} else {
+			Log.error(getClass(), Translate.get("ERROR_NOARCHINSTANCE"));
+			return;
+		}
 
-		robot.setUpdateAnimatedPositionRate(Integer.parseInt(Config.get("ANIMATION_POSITIONUPDATERATE")));
-		robot.setMap(map);
+		// robot = new ArRobotMobile(host, port);
+		//
+		// robot.setUpdateAnimatedPositionRate(Integer.parseInt(Config.get("ANIMATION_POSITIONUPDATERATE")));
+		// robot.setMap(map);
 
 		try {
-			robot.startBehavior(arch);
-			animator.addAnimated(robot);
+			arch.start();
 		} catch (ArException e) {
 			Log.error(getClass(), Translate.get("INFO_UNSUCCESSFULCONN"), e);
 			return;
@@ -346,10 +343,11 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 	}
 
 	public void setPositionUpdateRate() {
-		if (robot == null)
+		if (arch == null)
 			return;
 
-		robot.setUpdateAnimatedPositionRate(((int) viewApp.getSpnPositionUpdate().getValue()));
+		// arch.setUpdateAnimatedPositionRate(((int)
+		// viewApp.getSpnPositionUpdate().getValue()));
 
 		Config.set("ANIMATION_POSITIONUPDATERATE", viewApp.getSpnPositionUpdate().getValue().toString());
 

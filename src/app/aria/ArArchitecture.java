@@ -21,12 +21,42 @@
 
 package app.aria;
 
-public abstract class ArArchitecture implements Comparable<ArArchitecture> {
+import app.Translate;
+import app.aria.animation.AnRobot;
+import app.aria.exception.ArException;
+import app.aria.exception.ArExceptionParseArgs;
+import app.gui.animation.Animator;
+import app.map.Map;
+
+import com.mobilerobots.Aria.ArPose;
+import com.mobilerobots.Aria.ArRangeDevice;
+import com.mobilerobots.Aria.ArRobot;
+import com.mobilerobots.Aria.ArSimpleConnector;
+import com.mobilerobots.Aria.ArSonarDevice;
+import com.mobilerobots.Aria.Aria;
+
+public abstract class ArArchitecture implements Runnable, Comparable<ArArchitecture> {
 
 	private String name;
 	private String host;
 	private int tcpPort;
-	private ArRobotMobile robot;
+	private Thread thread;
+	private ArRobot arRobot;
+	private ArSonarDevice sonar;
+	protected ArRangeDevice rangeSonar;
+	private ArSimpleConnector conn;
+	private boolean run;
+	private Map map;
+	private Animator animator;
+	private AnRobot anRobot;
+
+	public Map getMap() {
+		return map;
+	}
+
+	public void setMap(Map map) {
+		this.map = map;
+	}
 
 	public String getName() {
 		return name;
@@ -40,16 +70,24 @@ public abstract class ArArchitecture implements Comparable<ArArchitecture> {
 		return tcpPort;
 	}
 
-	public ArRobotMobile getRobot() {
-		return robot;
+	public ArRobot getRobot() {
+		return arRobot;
 	}
 
-	public void setRobot(ArRobotMobile robot) {
-		this.robot = robot;
+	public ArSonarDevice getSonar() {
+		return sonar;
 	}
 
-	public ArArchitecture(String name) {
+	public ArRangeDevice getRangeSonar() {
+		return rangeSonar;
+	}
+
+	public ArArchitecture(String name, String host, int tcpPort, Map map, Animator animator) {
 		this.name = name;
+		this.host = host;
+		this.tcpPort = tcpPort;
+		this.map = map;
+		this.animator = animator;
 	}
 
 	@Override
@@ -60,6 +98,77 @@ public abstract class ArArchitecture implements Comparable<ArArchitecture> {
 	@Override
 	public int compareTo(ArArchitecture o) {
 		return this.toString().compareTo(o.toString());
+	}
+
+	public boolean isAlive() {
+		return thread == null ? false : thread.isAlive();
+	}
+
+	public void start() throws ArException, ArExceptionParseArgs {
+		if (!isAlive()) {
+
+			thread = new Thread(this);
+
+			Aria.init();
+			conn = new ArSimpleConnector(new String[] {
+					"-rrtp", String.format("%d", tcpPort), "-rh", host
+			});
+			arRobot = new ArRobot();
+			arRobot.setEncoderTransform(new ArPose(map.getRobotHome().getX(), map.getRobotHome().getY(), map.getRobotHome().getAngle()));
+			sonar = new ArSonarDevice();
+
+			if (!Aria.parseArgs()) {
+				throw new ArExceptionParseArgs(Translate.get("ERROR_PARSEARGS"));
+			}
+
+			if (!conn.connectRobot(arRobot)) {
+				throw new ArException(Translate.get("INFO_UNSUCCESSFULCONN"));
+			}
+
+			arRobot.addRangeDevice(sonar);
+			rangeSonar = arRobot.findRangeDevice("sonar");
+			arRobot.enableMotors();
+			arRobot.runAsync(true);
+			run = true;
+			thread.start();
+		}
+	}
+
+	public void stop() {
+		run = false;
+		try {
+			if (isAlive()) {
+				long antes = System.currentTimeMillis();
+				System.out.println("Antes: " + antes);
+				thread.join(1000);
+				Thread.sleep(1000);
+				long despues = System.currentTimeMillis();
+				System.out.println("Despues: " + despues);
+				System.out.println("Total: " + ((despues - antes) / 1000));
+				arRobot.stopRunning(true);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void run() {
+
+		if (anRobot == null) {
+			anRobot = new AnRobot(map, arRobot.getPose().getX(), arRobot.getPose().getY(), arRobot.getPose().getTh());
+			anRobot = new AnRobot(map, 0, 0, 0);
+			animator.addAnimated(anRobot);
+		}
+
+		while (run) {
+
+			arRobot.lock();
+			anRobot.updateAnimatedPosition(arRobot.getPose().getX(), arRobot.getPose().getY(), arRobot.getPose().getTh());
+			arRobot.unlock();
+
+			behavior();
+		}
 	}
 
 	public abstract void behavior();
