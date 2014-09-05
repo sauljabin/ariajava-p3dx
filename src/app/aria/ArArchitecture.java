@@ -138,13 +138,8 @@ public abstract class ArArchitecture implements Runnable, Comparable<ArArchitect
 		run = false;
 		try {
 			if (isAlive()) {
-				long antes = System.currentTimeMillis();
-				System.out.println("Antes: " + antes);
 				thread.join(1000);
 				Thread.sleep(1000);
-				long despues = System.currentTimeMillis();
-				System.out.println("Despues: " + despues);
-				System.out.println("Total: " + ((despues - antes) / 1000));
 				arRobot.stopRunning(true);
 			}
 		} catch (Exception e) {
@@ -154,18 +149,19 @@ public abstract class ArArchitecture implements Runnable, Comparable<ArArchitect
 
 	@Override
 	public void run() {
+		
+		// TODO AGREGAR ANIMABLE DEL ROBOT
 
 		if (anRobot == null) {
-			anRobot = new AnRobot(map, arRobot.getPose().getX(), arRobot.getPose().getY(), arRobot.getPose().getTh());
-			anRobot = new AnRobot(map, 0, 0, 0);
-			animator.addAnimated(anRobot);
+			//anRobot = new AnRobot(map, arRobot.getPose().getX(), arRobot.getPose().getY(), arRobot.getPose().getTh());
+			//animator.addAnimated(anRobot);
 		}
 
 		while (run) {
 
-			arRobot.lock();
-			anRobot.updateAnimatedPosition(arRobot.getPose().getX(), arRobot.getPose().getY(), arRobot.getPose().getTh());
-			arRobot.unlock();
+			//arRobot.lock();
+			//anRobot.updateAnimatedPosition(arRobot.getPose().getX(), arRobot.getPose().getY(), arRobot.getPose().getTh());
+			//arRobot.unlock();
 
 			behavior();
 		}

@@ -291,12 +291,10 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 			Log.error(getClass(), Translate.get("ERROR_NOARCHINSTANCE"));
 			return;
 		}
-
-		// robot = new ArRobotMobile(host, port);
-		//
-		// robot.setUpdateAnimatedPositionRate(Integer.parseInt(Config.get("ANIMATION_POSITIONUPDATERATE")));
-		// robot.setMap(map);
-
+		
+		// TODO INICIAR FRECUENCIA DE ACTUALIZACION DE POSICION
+		// arch.setUpdateAnimatedPositionRate(Integer.parseInt(Config.get("ANIMATION_POSITIONUPDATERATE")));
+		
 		try {
 			arch.start();
 		} catch (ArException e) {
@@ -346,8 +344,8 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		if (arch == null)
 			return;
 
-		// arch.setUpdateAnimatedPositionRate(((int)
-		// viewApp.getSpnPositionUpdate().getValue()));
+		// TODO ACTUALIZAR FRECUENCIA DE ACTUALIZACION DE POSICION
+		// arch.setUpdateAnimatedPositionRate(((int) viewApp.getSpnPositionUpdate().getValue()));
 
 		Config.set("ANIMATION_POSITIONUPDATERATE", viewApp.getSpnPositionUpdate().getValue().toString());
 
