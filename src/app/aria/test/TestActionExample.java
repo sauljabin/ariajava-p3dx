@@ -35,6 +35,7 @@ package app.aria.test;
 
 import app.Config;
 import app.Library;
+import app.Log;
 
 import com.mobilerobots.Aria.*;
 
@@ -81,6 +82,8 @@ class ExampleGoAction extends ArAction {
 		else {
 			myDesired.setVel(0);
 		}
+		
+		System.out.println(String.format("x:  %f, y: %f, angle: %f", getRobot().getX(), getRobot().getY(), getRobot().getTh()));
 		// return the actionDesired to the resolver to make our request
 		return myDesired;
 	}

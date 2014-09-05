@@ -34,41 +34,32 @@ import app.util.UtilDate;
 
 public class Log {
 
-	public static final int NONE = 2;
-	public static final int INFO = 4;
-	public static final int WARN = 8;
-	public static final int ERROR = 16;
-	public static final int ALL = 32;
-
-	private static int nivel = ALL;
+	private static LogLevel level = LogLevel.DEVEL;
 	private static JTextArea textArea;
 
-	public static int getNivel() {
-		return nivel;
+	public static LogLevel getLevel() {
+		return level;
 	}
 
-	/**
-	 * Set nivel for print: UtilLog.NONE, UtilLog.INFO, UtilLog.WARN,
-	 * UtilLog.ERROR, UtilLog.ALL
-	 * 
-	 * @param nivel
-	 */
-	public static void setNivel(int nivel) {
-		Log.nivel = nivel;
+	public static void setLevel(LogLevel level) {
+		Log.level = level;
 	}
 
-	private static void print(int printNivel, Class<?> clazz, String msg, Exception e) {
-		if (nivel == NONE)
+	public static void setLogTextArea(JTextArea textArea) {
+		Log.textArea = textArea;
+		Log.textArea.setEditable(false);
+	}
+
+	private static void print(LogLevel printLevel, Class<?> clazz, String msg, Exception e) {
+		if (level == LogLevel.NONE)
 			return;
 
-		if (printNivel > nivel)
+		if (printLevel.value > level.value)
 			return;
 
 		String type = "";
 
-		PrintStream ps = System.out;
-
-		switch (printNivel) {
+		switch (printLevel) {
 		case INFO:
 			type = "INFO";
 			break;
@@ -78,17 +69,34 @@ public class Log {
 		case ERROR:
 			type = "ERROR";
 			break;
+		case DEVEL:
+			type = "DEVEL";
+			break;
 		default:
 			break;
 		}
 
 		String string = String.format("TYPE: %s\nNAME: %s\nTIME: %s\n----> %s\n", type, clazz.getName(), UtilDate.nowFormat("yyyy-MM-dd HH:mm"), msg);
+
+		printToConsole(string, e);
+
+		if (printLevel.equals(LogLevel.DEVEL))
+			return;
+
+		printToFile(string, e);
+		printToTextArea(string);
+	}
+
+	private static void printToConsole(String string, Exception e) {
+		PrintStream ps = System.out;
 		ps.print(string);
 		if (e != null) {
 			e.printStackTrace(ps);
 		}
 		ps.println();
+	}
 
+	private static void printToFile(String string, Exception e) {
 		File folder = new File("log");
 		folder.mkdir();
 		FileOutputStream fs;
@@ -107,41 +115,45 @@ public class Log {
 		} catch (Exception ex) {
 			ex.printStackTrace();
 		}
+	}
 
+	private static void printToTextArea(String string) {
 		if (textArea != null) {
 			textArea.append(string + "\n");
 			textArea.setCaretPosition(textArea.getDocument().getLength());
 		}
-
 	}
 
-	public static void info(Class<?> clazz, String msg) {
-		print(INFO, clazz, msg, null);
+	public static synchronized void info(Class<?> clazz, String msg) {
+		print(LogLevel.INFO, clazz, msg, null);
 	}
 
-	public static void info(Class<?> clazz, String msg, Exception e) {
-		print(INFO, clazz, msg, e);
+	public static synchronized void info(Class<?> clazz, String msg, Exception e) {
+		print(LogLevel.INFO, clazz, msg, e);
 	}
 
-	public static void error(Class<?> clazz, String msg) {
-		print(ERROR, clazz, msg, null);
+	public static synchronized void error(Class<?> clazz, String msg) {
+		print(LogLevel.ERROR, clazz, msg, null);
 	}
 
-	public static void error(Class<?> clazz, String msg, Exception e) {
-		print(ERROR, clazz, msg, e);
+	public static synchronized void error(Class<?> clazz, String msg, Exception e) {
+		print(LogLevel.ERROR, clazz, msg, e);
 	}
 
-	public static void warning(Class<?> clazz, String msg) {
-		print(WARN, clazz, msg, null);
+	public static synchronized void warning(Class<?> clazz, String msg) {
+		print(LogLevel.WARN, clazz, msg, null);
 	}
 
-	public static void warning(Class<?> clazz, String msg, Exception e) {
-		print(WARN, clazz, msg, e);
+	public static synchronized void warning(Class<?> clazz, String msg, Exception e) {
+		print(LogLevel.WARN, clazz, msg, e);
 	}
 
-	public static void setLogTextArea(JTextArea textArea) {
-		Log.textArea = textArea;
-		Log.textArea.setEditable(false);
+	public static synchronized void devel(Class<?> clazz, String msg) {
+		print(LogLevel.DEVEL, clazz, msg, null);
+	}
+
+	public static synchronized void devel(Class<?> clazz, String msg, Exception e) {
+		print(LogLevel.DEVEL, clazz, msg, e);
 	}
 
 }

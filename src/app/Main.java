@@ -36,6 +36,7 @@ public class Main {
 		try {
 			Config.load();
 			Config.save();
+			Log.setLevel(LogLevel.valueOf(Config.get("LOG_LEVEL")));
 			Translate.load();
 			Theme.load();
 			Library.load();
