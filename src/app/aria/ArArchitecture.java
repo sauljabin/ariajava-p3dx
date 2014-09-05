@@ -151,6 +151,8 @@ public abstract class ArArchitecture implements Runnable, Comparable<ArArchitect
 	public void run() {
 		
 		// TODO AGREGAR ANIMABLE DEL ROBOT
+		// TODO VERIFICAR QUE EL ROBOT HAYA INICIADO, SINO SALIR Y MOSTRAR MENSAJE
+		// TODO CREAR HILO DE ACTUALIZACION DE POSICION
 
 		if (anRobot == null) {
 			//anRobot = new AnRobot(map, arRobot.getPose().getX(), arRobot.getPose().getY(), arRobot.getPose().getTh());

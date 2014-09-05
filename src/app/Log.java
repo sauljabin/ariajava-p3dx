@@ -125,7 +125,7 @@ public class Log {
 	}
 
 	public static synchronized void info(Class<?> clazz, String msg) {
-		print(LogLevel.INFO, clazz, msg, null);
+		info(clazz, msg, null);
 	}
 
 	public static synchronized void info(Class<?> clazz, String msg, Exception e) {
@@ -133,7 +133,7 @@ public class Log {
 	}
 
 	public static synchronized void error(Class<?> clazz, String msg) {
-		print(LogLevel.ERROR, clazz, msg, null);
+		error(clazz, msg, null);
 	}
 
 	public static synchronized void error(Class<?> clazz, String msg, Exception e) {
@@ -141,7 +141,7 @@ public class Log {
 	}
 
 	public static synchronized void warning(Class<?> clazz, String msg) {
-		print(LogLevel.WARN, clazz, msg, null);
+		warning(clazz, msg, null);
 	}
 
 	public static synchronized void warning(Class<?> clazz, String msg, Exception e) {
@@ -149,7 +149,7 @@ public class Log {
 	}
 
 	public static synchronized void devel(Class<?> clazz, String msg) {
-		print(LogLevel.DEVEL, clazz, msg, null);
+		devel(clazz, msg, null);
 	}
 
 	public static synchronized void devel(Class<?> clazz, String msg, Exception e) {
