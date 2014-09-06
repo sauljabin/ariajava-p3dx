@@ -1,18 +1,30 @@
 #!/bin/bash
+pathScript=$(readlink -f "$0")
+path=`dirname "$pathScript"`
+swigPath=/usr/local/swig
+ariaPath=/usr/local/Aria
+mobileSimPath=/usr/local/MobileSim
 export JAVA_INCLUDE="/usr/lib/jvm/java-7-openjdk-i386/include"
 export JAVA_BIN="/usr/lib/jvm/java-7-openjdk-i386/bin"
+echo "$ariaPath/lib" > /etc/ld.so.conf.d/aria.conf
+rm -f -R $ariaPath
+rm -f -R $mobileSimPath
+rm -f -R $swigPath
 tar xzvf ARIA-2.8.1+gcc4.6.tgz
-make -C Aria-2.8.1
-make -C Aria-2.8.1 java
-make -C Aria-2.8.1/ArNetworking
-make -C Aria-2.8.1/ArNetworking java
-rm -f -R /usr/local/Aria
-make install -C Aria-2.8.1
-rm -f -R Aria-2.8.1
-echo '/usr/local/Aria/lib' > /etc/ld.so.conf.d/aria.conf
-ldconfig
 tar xzvf MobileSim-0.7.3+gcc4.6.tgz
-rm -f -R /usr/local/MobileSim
-mv -f MobileSim-0.7.3 /usr/local/MobileSim
-sudo ln -s -f /usr/local/MobileSim/MobileSim /usr/local/bin/mobilesim
+tar xzvf swig-1.3.40.tar.gz
+mv -f Aria-2.8.1 $ariaPath
+mv -f MobileSim-0.7.3 $mobileSimPath
+mv -f swig-1.3.40 $swigPath
+cd $swigPath
+$swigPath/./configure
+make -C $swigPath
+make -C $swigPath install
+make -C $ariaPath
+make -C $ariaPath java
+make -C $ariaPath/ArNetworking
+make -C $ariaPath/ArNetworking java
+ldconfig
+sudo ln -s -f $mobileSimPath/MobileSim /usr/bin/mobilesim
+cd $path
 echo 'Librería instalada'
