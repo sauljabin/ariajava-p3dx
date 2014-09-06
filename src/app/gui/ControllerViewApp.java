@@ -44,6 +44,7 @@ import app.Log;
 import app.Theme;
 import app.Translate;
 import app.aria.ArArchitecture;
+import app.aria.animation.AnRobot;
 import app.aria.architecture.aura.ArArchitectureAuRA;
 import app.aria.architecture.reactive.ArArchitectureReactive;
 import app.aria.exception.ArException;
@@ -61,6 +62,7 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 	private ArArchitecture arch;
 	private Animator animator;
 	private Map map;
+	private AnRobot anRobot;
 	public static final int TRANSLATE = 20;
 	public static final int ZOOM = 1;
 
@@ -284,19 +286,21 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		}
 
 		if (classArch.getValue().equals(ArArchitectureAuRA.class)) {
-			arch = new ArArchitectureAuRA(host, port, map, animator);
+			arch = new ArArchitectureAuRA(host, port, map);
 		} else if (classArch.getValue().equals(ArArchitectureReactive.class)) {
-			arch = new ArArchitectureReactive(host, port, map, animator);
+			arch = new ArArchitectureReactive(host, port, map);
 		} else {
 			Log.error(getClass(), Translate.get("ERROR_NOARCHINSTANCE"));
 			return;
 		}
-		
-		// TODO INICIAR FRECUENCIA DE ACTUALIZACION DE POSICION
-		// arch.setUpdateAnimatedPositionRate(Integer.parseInt(Config.get("ANIMATION_POSITIONUPDATERATE")));
-		
+
 		try {
 			arch.start();
+			animator.removeAnimated(anRobot);
+			anRobot = new AnRobot(arch.getRobot(), map);
+			anRobot.setUpdateAnimatedPositionRate(Integer.parseInt(Config.get("ANIMATION_POSITIONUPDATERATE")));
+			anRobot.start();
+			animator.addAnimated(anRobot);
 		} catch (ArException e) {
 			Log.error(getClass(), Translate.get("INFO_UNSUCCESSFULCONN"), e);
 			return;
@@ -344,8 +348,7 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		if (arch == null)
 			return;
 
-		// TODO ACTUALIZAR FRECUENCIA DE ACTUALIZACION DE POSICION
-		// arch.setUpdateAnimatedPositionRate(((int) viewApp.getSpnPositionUpdate().getValue()));
+		anRobot.setUpdateAnimatedPositionRate(((int) viewApp.getSpnPositionUpdate().getValue()));
 
 		Config.set("ANIMATION_POSITIONUPDATERATE", viewApp.getSpnPositionUpdate().getValue().toString());
 

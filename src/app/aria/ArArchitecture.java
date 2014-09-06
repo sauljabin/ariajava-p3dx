@@ -22,10 +22,8 @@
 package app.aria;
 
 import app.Translate;
-import app.aria.animation.AnRobot;
 import app.aria.exception.ArException;
 import app.aria.exception.ArExceptionParseArgs;
-import app.gui.animation.Animator;
 import app.map.Map;
 
 import com.mobilerobots.Aria.ArPose;
@@ -47,8 +45,6 @@ public abstract class ArArchitecture implements Runnable, Comparable<ArArchitect
 	private ArSimpleConnector conn;
 	private boolean run;
 	private Map map;
-	private Animator animator;
-	private AnRobot anRobot;
 
 	public Map getMap() {
 		return map;
@@ -82,12 +78,11 @@ public abstract class ArArchitecture implements Runnable, Comparable<ArArchitect
 		return rangeSonar;
 	}
 
-	public ArArchitecture(String name, String host, int tcpPort, Map map, Animator animator) {
+	public ArArchitecture(String name, String host, int tcpPort, Map map) {
 		this.name = name;
 		this.host = host;
 		this.tcpPort = tcpPort;
 		this.map = map;
-		this.animator = animator;
 	}
 
 	@Override
@@ -110,9 +105,7 @@ public abstract class ArArchitecture implements Runnable, Comparable<ArArchitect
 			thread = new Thread(this);
 
 			Aria.init();
-			conn = new ArSimpleConnector(new String[] {
-					"-rrtp", String.format("%d", tcpPort), "-rh", host
-			});
+			conn = new ArSimpleConnector(new String[] { "-rrtp", String.format("%d", tcpPort), "-rh", host });
 			arRobot = new ArRobot();
 			arRobot.setEncoderTransform(new ArPose(map.getRobotHome().getX(), map.getRobotHome().getY(), map.getRobotHome().getAngle()));
 			sonar = new ArSonarDevice();
@@ -148,21 +141,7 @@ public abstract class ArArchitecture implements Runnable, Comparable<ArArchitect
 
 	@Override
 	public void run() {
-		// TODO AGREGAR ANIMABLE DEL ROBOT
-		// TODO VERIFICAR QUE EL ROBOT HAYA INICIADO, SINO SALIR Y MOSTRAR MENSAJE
-		// TODO CREAR HILO DE ACTUALIZACION DE POSICION
-
-		if (anRobot == null) {
-			//anRobot = new AnRobot(map, arRobot.getPose().getX(), arRobot.getPose().getY(), arRobot.getPose().getTh());
-			//animator.addAnimated(anRobot);
-		}
-
 		while (run) {
-
-			//arRobot.lock();
-			//anRobot.updateAnimatedPosition(arRobot.getPose().getX(), arRobot.getPose().getY(), arRobot.getPose().getTh());
-			//arRobot.unlock();
-
 			behavior();
 		}
 	}

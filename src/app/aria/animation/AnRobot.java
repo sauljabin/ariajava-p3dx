@@ -24,10 +24,12 @@ package app.aria.animation;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import com.mobilerobots.Aria.ArRobot;
+
 import app.gui.animation.Animated;
 import app.map.Map;
 
-public class AnRobot implements Animated {
+public class AnRobot implements Animated, Runnable {
 
 	public static final int LONG = 455;
 	public static final int WIDTH = 381;
@@ -38,12 +40,22 @@ public class AnRobot implements Animated {
 	private double animatedAngle;
 	private int[] xRobot;
 	private int[] yRobot;
+	private int updateAnimatedPositionRate;
+	private ArRobot arRobot;
+	private Thread thread;
+	private boolean run;
 
-	public AnRobot(Map map, double animatedX, double animatedY, double animatedAngle) {
+	public AnRobot(ArRobot arRobot, Map map) {
 		this.map = map;
-		this.animatedX = animatedX;
-		this.animatedY = animatedY;
-		this.animatedAngle = animatedAngle;
+		this.arRobot = arRobot;
+		updateAnimatedPositionRate = 10;
+		updateAnimatedPosition();
+	}
+
+	private void updateAnimatedPosition() {
+		arRobot.lock();
+		updateAnimatedPosition(arRobot.getX(), arRobot.getY(), arRobot.getTh());
+		arRobot.unlock();
 	}
 
 	public void updateAnimatedPosition(double x, double y, double angle) {
@@ -91,13 +103,9 @@ public class AnRobot implements Animated {
 		double angle = animatedAngle;
 		g.rotate(-Math.toRadians(angle), map.canvasX(animatedX), map.canvasY(animatedY));
 
-		xRobot = new int[] {
-				robotHomeX + corner, robotHomeX + map.proportionalValue(longRobot * 2 / 3), robotHomeX + map.proportionalValue(longRobot), robotHomeX + map.proportionalValue(longRobot * 2 / 3), robotHomeX + corner, robotHomeX, robotHomeX, robotHomeX + corner
-		};
+		xRobot = new int[] { robotHomeX + corner, robotHomeX + map.proportionalValue(longRobot * 2 / 3), robotHomeX + map.proportionalValue(longRobot), robotHomeX + map.proportionalValue(longRobot * 2 / 3), robotHomeX + corner, robotHomeX, robotHomeX, robotHomeX + corner };
 
-		yRobot = new int[] {
-				robotHomeY, robotHomeY, robotHomeY + map.proportionalValue(widthRobot / 2), robotHomeY + map.proportionalValue(widthRobot), robotHomeY + map.proportionalValue(widthRobot), robotHomeY + map.proportionalValue(widthRobot) - corner, robotHomeY + corner, robotHomeY
-		};
+		yRobot = new int[] { robotHomeY, robotHomeY, robotHomeY + map.proportionalValue(widthRobot / 2), robotHomeY + map.proportionalValue(widthRobot), robotHomeY + map.proportionalValue(widthRobot), robotHomeY + map.proportionalValue(widthRobot) - corner, robotHomeY + corner, robotHomeY };
 
 		g.fillPolygon(xRobot, yRobot, 8);
 
@@ -129,5 +137,48 @@ public class AnRobot implements Animated {
 	@Override
 	public void initAnimated() {
 		visible = true;
+	}
+
+	public synchronized void setUpdateAnimatedPositionRate(int updateAnimatedPositionRate) {
+		this.updateAnimatedPositionRate = updateAnimatedPositionRate;
+	}
+
+	public int getUpdateAnimatedPositionRate() {
+		return updateAnimatedPositionRate;
+	}
+
+	public boolean isAlive() {
+		return thread == null ? false : thread.isAlive();
+	}
+
+	public void stop() {
+		run = false;
+		try {
+			if (isAlive()) {
+				thread.join(1000);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+	@Override
+	public void run() {
+		while (run) {
+			updateAnimatedPosition();
+			try {
+				Thread.sleep(1000 / updateAnimatedPositionRate);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void start() {
+		if (!isAlive()) {
+			thread = new Thread(this);
+			run = true;
+			thread.start();
+		}
 	}
 }

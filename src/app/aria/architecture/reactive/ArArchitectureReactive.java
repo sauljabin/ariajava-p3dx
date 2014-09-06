@@ -23,9 +23,7 @@ package app.aria.architecture.reactive;
 
 import com.mobilerobots.Aria.ArUtil;
 
-import app.Log;
 import app.aria.ArArchitecture;
-import app.gui.animation.Animator;
 import app.map.Map;
 
 public class ArArchitectureReactive extends ArArchitecture {
@@ -37,8 +35,8 @@ public class ArArchitectureReactive extends ArArchitecture {
 	private boolean turnLeft;
 	private boolean turnRight;
 
-	public ArArchitectureReactive(String host, int tcpPort, Map map, Animator animator) {
-		super("Reactive", host, tcpPort, map, animator);
+	public ArArchitectureReactive(String host, int tcpPort, Map map) {
+		super("Reactive", host, tcpPort, map);
 		angle = 60;
 		stopDistance = 1000;
 		turnAngle = 15;
@@ -50,8 +48,6 @@ public class ArArchitectureReactive extends ArArchitecture {
 	@Override
 	public void behavior() {
 		getRobot().lock();
-		// TODO QUITAR ESTE LOG DEVEL
-		Log.devel(getClass(), String.format("x:  %f, y: %f, angle: %f", getRobot().getX(), getRobot().getY(), getRobot().getTh()));
 		double range = getRangeSonar().currentReadingPolar(-angle, angle);
 		getRobot().unlock();
 		if (range <= stopDistance) {
