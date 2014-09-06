@@ -296,7 +296,10 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 
 		try {
 			arch.start();
-			animator.removeAnimated(anRobot);
+			if (anRobot != null) {
+				animator.removeAnimated(anRobot);
+				anRobot.stop();
+			}
 			anRobot = new AnRobot(arch.getRobot(), map);
 			anRobot.setUpdateAnimatedPositionRate(Integer.parseInt(Config.get("ANIMATION_POSITIONUPDATERATE")));
 			anRobot.start();

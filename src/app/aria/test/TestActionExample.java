@@ -213,7 +213,7 @@ public class TestActionExample {
 	public static void main(String argv[]) {
 		Aria.init();
 
-		ArSimpleConnector conn = new ArSimpleConnector(argv);
+		ArSimpleConnector conn = new ArSimpleConnector(new String[] { "-rrtp", String.format("%d", 8101), "-rh", "10.0.126.11" });
 		ArRobot robot = new ArRobot();
 		ArSonarDevice sonar = new ArSonarDevice();
 

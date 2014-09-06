@@ -52,7 +52,7 @@ public class AnRobot implements Animated, Runnable {
 		updateAnimatedPosition();
 	}
 
-	private void updateAnimatedPosition() {
+	private synchronized void updateAnimatedPosition() {
 		arRobot.lock();
 		updateAnimatedPosition(arRobot.getX(), arRobot.getY(), arRobot.getTh());
 		arRobot.unlock();
