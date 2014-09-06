@@ -139,7 +139,6 @@ public abstract class ArArchitecture implements Runnable, Comparable<ArArchitect
 		try {
 			if (isAlive()) {
 				thread.join(1000);
-				Thread.sleep(1000);
 				arRobot.stopRunning(true);
 			}
 		} catch (Exception e) {
@@ -149,7 +148,6 @@ public abstract class ArArchitecture implements Runnable, Comparable<ArArchitect
 
 	@Override
 	public void run() {
-		
 		// TODO AGREGAR ANIMABLE DEL ROBOT
 		// TODO VERIFICAR QUE EL ROBOT HAYA INICIADO, SINO SALIR Y MOSTRAR MENSAJE
 		// TODO CREAR HILO DE ACTUALIZACION DE POSICION
