@@ -18,10 +18,11 @@
  *		JORGE PARRA - THEJORGEMYLIO@GMAIL.COM
  *		2014
  */
- 
+
 package app.aria.architecture;
 
 import app.Translate;
+import app.aria.action.ArFunctorUpdatePosition;
 import app.aria.exception.ArException;
 import app.aria.exception.ArExceptionParseArgs;
 
@@ -86,9 +87,14 @@ public abstract class ArArchitecture implements Comparable<ArArchitecture>, Runn
 			thread = new Thread(this);
 
 			Aria.init();
-			conn = new ArSimpleConnector(new String[] { "-rrtp", String.format("%d", tcpPort), "-rh", host });
+			conn = new ArSimpleConnector(new String[] {
+					"-rrtp", String.format("%d", tcpPort), "-rh", host
+			});
 			robot = new ArRobot();
+			new ArFunctorUpdatePosition(robot);
 			sonar = new ArSonarDevice();
+
+			robot.addRangeDevice(sonar);
 
 			if (!Aria.parseArgs()) {
 				throw new ArExceptionParseArgs(Translate.get("ERROR_PARSEARGS"));
@@ -97,8 +103,6 @@ public abstract class ArArchitecture implements Comparable<ArArchitecture>, Runn
 			if (!conn.connectRobot(robot)) {
 				throw new ArException(Translate.get("INFO_UNSUCCESSFULCONN"));
 			}
-
-			robot.addRangeDevice(sonar);
 
 			init();
 
@@ -111,7 +115,7 @@ public abstract class ArArchitecture implements Comparable<ArArchitecture>, Runn
 	public void stop() {
 		try {
 			if (isAlive()) {
-				robot.stopRunning(true);				
+				robot.stopRunning(true);
 				thread.join(1000);
 			}
 		} catch (Exception e) {
