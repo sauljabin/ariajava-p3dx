@@ -19,19 +19,15 @@
  * 
  */
 
-package app.aria;
+package app.aria.architecture;
 
-import app.Translate;
 import app.aria.exception.ArException;
 import app.aria.exception.ArExceptionParseArgs;
+import app.aria.robot.ArRobotMobile;
 import app.map.Map;
 
-import com.mobilerobots.Aria.ArPose;
-import com.mobilerobots.Aria.ArRangeDevice;
 import com.mobilerobots.Aria.ArRobot;
-import com.mobilerobots.Aria.ArSimpleConnector;
 import com.mobilerobots.Aria.ArSonarDevice;
-import com.mobilerobots.Aria.Aria;
 
 public abstract class ArArchitecture implements Runnable, Comparable<ArArchitecture> {
 
@@ -39,11 +35,8 @@ public abstract class ArArchitecture implements Runnable, Comparable<ArArchitect
 	private String host;
 	private int tcpPort;
 	private Thread thread;
-	private ArRobot arRobot;
+	private ArRobot robot;
 	private ArSonarDevice sonar;
-	protected ArRangeDevice rangeSonar;
-	private ArSimpleConnector conn;
-	private boolean run;
 	private Map map;
 
 	public Map getMap() {
@@ -67,21 +60,16 @@ public abstract class ArArchitecture implements Runnable, Comparable<ArArchitect
 	}
 
 	public ArRobot getRobot() {
-		return arRobot;
+		return robot;
 	}
 
 	public ArSonarDevice getSonar() {
 		return sonar;
 	}
 
-	public ArRangeDevice getRangeSonar() {
-		return rangeSonar;
-	}
-
-	public ArArchitecture(String name, String host, int tcpPort, Map map) {
+	public ArArchitecture(String name, ArRobotMobile robot, Map map) {
 		this.name = name;
-		this.host = host;
-		this.tcpPort = tcpPort;
+		this.robot = robot;
 		this.map = map;
 	}
 
@@ -101,38 +89,18 @@ public abstract class ArArchitecture implements Runnable, Comparable<ArArchitect
 
 	public void start() throws ArException, ArExceptionParseArgs {
 		if (!isAlive()) {
-
 			thread = new Thread(this);
-
-			Aria.init();
-			conn = new ArSimpleConnector(new String[] { "-rrtp", String.format("%d", tcpPort), "-rh", host });
-			arRobot = new ArRobot();
-			arRobot.setEncoderTransform(new ArPose(map.getRobotHome().getX(), map.getRobotHome().getY(), map.getRobotHome().getAngle()));
-			sonar = new ArSonarDevice();
-
-			if (!Aria.parseArgs()) {
-				throw new ArExceptionParseArgs(Translate.get("ERROR_PARSEARGS"));
-			}
-
-			if (!conn.connectRobot(arRobot)) {
-				throw new ArException(Translate.get("INFO_UNSUCCESSFULCONN"));
-			}
-
-			arRobot.addRangeDevice(sonar);
-			rangeSonar = arRobot.findRangeDevice("sonar");
-			arRobot.enableMotors();
-			arRobot.runAsync(true);
-			run = true;
+			init();
+			robot.enableMotors();
 			thread.start();
 		}
 	}
 
 	public void stop() {
-		run = false;
 		try {
 			if (isAlive()) {
+				robot.stopRunning(false);
 				thread.join(1000);
-				arRobot.stopRunning(true);
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -141,11 +109,8 @@ public abstract class ArArchitecture implements Runnable, Comparable<ArArchitect
 
 	@Override
 	public void run() {
-		while (run) {
-			behavior();
-		}
+		robot.run(true);
 	}
 
-	public abstract void behavior();
-
+	public abstract void init();
 }

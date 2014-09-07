@@ -19,7 +19,7 @@
  * 
  */
 
-package app.gui.animation;
+package app.animation;
 
 import java.awt.BasicStroke;
 import java.awt.Canvas;

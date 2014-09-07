@@ -58,7 +58,7 @@ class ExampleGoAction extends ArAction {
 	 * our desired forward velocity in the myDesired member, and return it.
 	 */
 	public ArActionDesired fire(ArActionDesired currentDesired) {
-		double speed;
+		double speed; 
 
 		// reset the actionDesired (must be done), to clear
 		// its previous values.
@@ -213,7 +213,7 @@ public class TestActionExample {
 	public static void main(String argv[]) {
 		Aria.init();
 
-		ArSimpleConnector conn = new ArSimpleConnector(new String[] { "-rrtp", String.format("%d", 8101), "-rh", "10.0.126.11" });
+		ArSimpleConnector conn = new ArSimpleConnector(new String[] { "-rrtp", String.format("%d", 8101), "-rh", "localhost" });
 		ArRobot robot = new ArRobot();
 		ArSonarDevice sonar = new ArSonarDevice();
 

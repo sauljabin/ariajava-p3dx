@@ -19,9 +19,9 @@
  * 
  */
 
-package app.aria.architecture.aura;
+package app.aria.architecture;
 
-import app.aria.ArArchitecture;
+import app.aria.robot.ArRobotMobile;
 import app.map.Map;
 
 public class ArArchitectureAuRA extends ArArchitecture {
@@ -54,12 +54,12 @@ public class ArArchitectureAuRA extends ArArchitecture {
 		this.arSpatialReasoner = arSpatialReasoner;
 	}
 
-	public ArArchitectureAuRA(String host, int tcpPort, Map map) {
-		super("AuRA", host, tcpPort, map);
+	public ArArchitectureAuRA(ArRobotMobile robot, Map map) {
+		super("AuRA", robot, map);
 	}
 
 	@Override
-	public void behavior() {
+	public void init() {
 
 	}
 

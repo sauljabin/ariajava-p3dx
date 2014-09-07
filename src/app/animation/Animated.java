@@ -19,8 +19,18 @@
  * 
  */
 
-package app.aria.architecture.aura;
+package app.animation;
 
-public class ArSpatialReasoner {
+import java.awt.Graphics2D;
 
+public interface Animated {
+	public void initAnimated();
+
+	public void paint(Graphics2D g);
+
+	public void animate();
+
+	public int getZIndex();
+
+	public boolean isVisible();
 }
