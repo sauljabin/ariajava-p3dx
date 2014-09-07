@@ -19,8 +19,8 @@
  * 
  */
 
-package app.aria.architecture.aura;
+package app.aria.architecture;
 
-public class ArMisionPlanner {
+public class ArSpatialReasoner {
 
 }

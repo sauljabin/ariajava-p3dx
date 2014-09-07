@@ -19,18 +19,23 @@
  * 
  */
 
-package app.gui.animation;
+package app.aria.architecture;
 
-import java.awt.Graphics2D;
+import app.map.Map;
+import app.aria.action.ArActionAvoid;
+import app.aria.action.ArActionMove;
+import app.aria.robot.ArRobotMobile;
 
-public interface Animated {
-	public void initAnimated();
+public class ArArchitectureReactive extends ArArchitecture {
 
-	public void paint(Graphics2D g);
+	public ArArchitectureReactive(ArRobotMobile robot, Map map) {
+		super("Reactive", robot, map);
+	}
 
-	public void animate();
+	@Override
+	public void init() {
+		getRobot().addAction(new ArActionAvoid(), 70);
+		getRobot().addAction(new ArActionMove(), 60);
+	}
 
-	public int getZIndex();
-
-	public boolean isVisible();
 }

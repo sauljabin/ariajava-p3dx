@@ -43,12 +43,14 @@ import app.Config;
 import app.Log;
 import app.Theme;
 import app.Translate;
-import app.aria.ArArchitecture;
-import app.aria.animation.AnRobot;
-import app.aria.architecture.aura.ArArchitectureAuRA;
-import app.aria.architecture.reactive.ArArchitectureReactive;
+import app.animation.AnimatedRobot;
+import app.animation.Animator;
+import app.aria.architecture.ArArchitecture;
+import app.aria.architecture.ArArchitectureAuRA;
+import app.aria.architecture.ArArchitectureReactive;
+import app.aria.connection.ArConnector;
 import app.aria.exception.ArException;
-import app.gui.animation.Animator;
+import app.aria.robot.ArRobotMobile;
 import app.map.Map;
 import app.map.RobotHome;
 import app.util.ClassW;
@@ -62,7 +64,9 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 	private ArArchitecture arch;
 	private Animator animator;
 	private Map map;
-	private AnRobot anRobot;
+	private AnimatedRobot anRobot;
+	private ArRobotMobile robot;
+	private ArConnector connector;
 	public static final int TRANSLATE = 20;
 	public static final int ZOOM = 1;
 
@@ -256,7 +260,7 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 	public void disconnect() {
 		if (arch != null) {
 			arch.stop();
-			Log.info(getClass(), Translate.get("INFO_CLOSECONN") + " " + arch.getName());
+			connector.close();
 		}
 		viewApp.getTxtPort().setEnabled(true);
 		viewApp.getTxtHost().setEnabled(true);
@@ -285,10 +289,30 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 			return;
 		}
 
+		robot = new ArRobotMobile(map.getRobotHome().getX(), map.getRobotHome().getY(), map.getRobotHome().getAngle());
+
+		if (anRobot != null) {
+			animator.removeAnimated(anRobot);
+		}
+		anRobot = new AnimatedRobot(map);
+		anRobot.updateAnimatedPosition(map.getRobotHome().getX(), map.getRobotHome().getY(), map.getRobotHome().getAngle());
+		animator.addAnimated(anRobot);
+
+		robot.setAnimatedRobot(anRobot);
+
+		connector = new ArConnector(host, port, robot);
+
+		try {
+			connector.connect();
+		} catch (ArException e) {
+			Log.error(getClass(), Translate.get("INFO_UNSUCCESSFULCONN"), e);
+			return;
+		}
+
 		if (classArch.getValue().equals(ArArchitectureAuRA.class)) {
-			arch = new ArArchitectureAuRA(host, port, map);
+			arch = new ArArchitectureAuRA(robot, map);
 		} else if (classArch.getValue().equals(ArArchitectureReactive.class)) {
-			arch = new ArArchitectureReactive(host, port, map);
+			arch = new ArArchitectureReactive(robot, map);
 		} else {
 			Log.error(getClass(), Translate.get("ERROR_NOARCHINSTANCE"));
 			return;
@@ -296,16 +320,8 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 
 		try {
 			arch.start();
-			if (anRobot != null) {
-				animator.removeAnimated(anRobot);
-				anRobot.stop();
-			}
-			anRobot = new AnRobot(arch.getRobot(), map);
-			anRobot.setUpdateAnimatedPositionRate(Integer.parseInt(Config.get("ANIMATION_POSITIONUPDATERATE")));
-			anRobot.start();
-			animator.addAnimated(anRobot);
 		} catch (ArException e) {
-			Log.error(getClass(), Translate.get("INFO_UNSUCCESSFULCONN"), e);
+			Log.error(getClass(), Translate.get("INFO_UNSUCCESSFULARCHSTART"), e);
 			return;
 		}
 
@@ -351,7 +367,8 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		if (arch == null)
 			return;
 
-		anRobot.setUpdateAnimatedPositionRate(((int) viewApp.getSpnPositionUpdate().getValue()));
+		// anRobot.setUpdateAnimatedPositionRate(((int)
+		// viewApp.getSpnPositionUpdate().getValue()));
 
 		Config.set("ANIMATION_POSITIONUPDATERATE", viewApp.getSpnPositionUpdate().getValue().toString());
 

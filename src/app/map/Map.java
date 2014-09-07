@@ -28,7 +28,7 @@ import java.io.FileReader;
 import java.util.LinkedList;
 import java.util.List;
 
-import app.gui.animation.Animated;
+import app.animation.Animated;
 
 public class Map implements Animated {
 
