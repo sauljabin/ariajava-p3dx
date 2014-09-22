@@ -25,10 +25,15 @@ import java.awt.Color;
 import java.awt.Graphics2D;
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import app.gui.animation.Animated;
+import app.path.delaunay.Triangulation;
+import app.path.geometry.Point;
+import app.path.graphs.Graph;
+import app.path.voronoi.Diagram;
 
 public class Map implements Animated {
 
@@ -50,6 +55,8 @@ public class Map implements Animated {
 	private int proportion;
 	private int offsetPosition;
 	private boolean visible;
+	private Graph graph;
+	Triangulation triangulation;
 
 	public int getOffsetPosition() {
 		return offsetPosition;
@@ -153,7 +160,8 @@ public class Map implements Animated {
 		robotHome.setMap(this);
 	}
 
-	public Map(RobotHome robotHome, Goal goal, int minX, int maxX, int minY, int maxY) {
+	public Map(RobotHome robotHome, Goal goal, int minX, int maxX, int minY,
+			int maxY) {
 		this.robotHome = robotHome;
 		this.minX = minX;
 		this.maxX = maxX;
@@ -179,7 +187,7 @@ public class Map implements Animated {
 	}
 
 	public Map(int minX, int maxX, int minY, int maxY) {
-		this(new RobotHome(), null, minX, maxX, minY, maxY);
+		this(new RobotHome(), minX, maxX, minY, maxY);
 		this.minX = minX;
 		this.maxX = maxX;
 		this.minY = minY;
@@ -187,7 +195,7 @@ public class Map implements Animated {
 	}
 
 	public Map() {
-		this(new RobotHome(), null, 0, 0, 0, 0);
+		this(0, 0, 0, 0);
 	}
 
 	public String getPath() {
@@ -206,35 +214,50 @@ public class Map implements Animated {
 
 		while ((stringRead = br.readLine()) != null) {
 			if (stringRead.startsWith(numberLinesLabel)) {
-				totalLines = Integer.parseInt(stringRead.substring(numberLinesLabel.length()));
+				totalLines = Integer.parseInt(stringRead
+						.substring(numberLinesLabel.length()));
 			} else if (stringRead.startsWith(lineMinPosLabel)) {
-				String[] tokens = stringRead.substring(lineMinPosLabel.length()).split(" ");
+				String[] tokens = stringRead
+						.substring(lineMinPosLabel.length()).split(" ");
 				minX = Integer.parseInt(tokens[0]);
 				minY = Integer.parseInt(tokens[1]);
 			} else if (stringRead.startsWith(lineMaxPosLabel)) {
-				String[] tokens = stringRead.substring(lineMaxPosLabel.length()).split(" ");
+				String[] tokens = stringRead
+						.substring(lineMaxPosLabel.length()).split(" ");
 				maxX = Integer.parseInt(tokens[0]);
 				maxY = Integer.parseInt(tokens[1]);
 			} else if (stringRead.startsWith(robotLabel)) {
-				String[] tokens = stringRead.substring(robotLabel.length()).split(" ");
-				setRobotHome(new RobotHome(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[1]), Double.parseDouble(tokens[2])));
+				String[] tokens = stringRead.substring(robotLabel.length())
+						.split(" ");
+				setRobotHome(new RobotHome(Integer.parseInt(tokens[0]),
+						Integer.parseInt(tokens[1]),
+						Double.parseDouble(tokens[2])));
 			} else if (stringRead.startsWith(goalLabel)) {
-				String[] tokens = stringRead.substring(goalLabel.length()).split(" ");
-				setGoal(new Goal(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[1]), Double.parseDouble(tokens[2])));
+				String[] tokens = stringRead.substring(goalLabel.length())
+						.split(" ");
+				setGoal(new Goal(Integer.parseInt(tokens[0]),
+						Integer.parseInt(tokens[1]),
+						Double.parseDouble(tokens[2])));
 			} else if (stringRead.startsWith(linesLabel)) {
 				linesSector = true;
 			} else if (linesSector) {
 				String[] tokens = stringRead.split(" ");
-				addLine(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2]), Integer.parseInt(tokens[3]));
+				addLine(Integer.parseInt(tokens[0]),
+						Integer.parseInt(tokens[1]),
+						Integer.parseInt(tokens[2]),
+						Integer.parseInt(tokens[3]));
 				if (++countLine == totalLines) {
 					linesSector = false;
 				}
 			}
 		}
 		br.close();
+		triangulation = new Triangulation(getPoints(), this, 15000.0);
+		Diagram diagram = new Diagram(triangulation.getTriangles(), this);
+		graph = diagram.getGraph();
 	}
 
-	public void addLine(int x1, int y1, int x2, int y2) {
+	private void addLine(int x1, int y1, int x2, int y2) {
 		Line line = new Line(x1, y1, x2, y2);
 		lines.add(line);
 	}
@@ -296,7 +319,9 @@ public class Map implements Animated {
 	public void paint(Graphics2D g) {
 		g.setColor(Color.BLACK);
 		for (int i = 0; i < lines.size(); i++) {
-			g.drawLine(canvasX(lines.get(i).getX1()), canvasY(lines.get(i).getY1()), canvasX(lines.get(i).getX2()), canvasY(lines.get(i).getY2()));
+			g.drawLine(canvasX(lines.get(i).getX1()), canvasY(lines.get(i)
+					.getY1()), canvasX(lines.get(i).getX2()), canvasY(lines
+					.get(i).getY2()));
 		}
 	}
 
@@ -317,6 +342,31 @@ public class Map implements Animated {
 	@Override
 	public boolean isVisible() {
 		return visible;
+	}
+
+	public ArrayList<Point> getPoints() {
+		ArrayList<Point> list = new ArrayList<Point>();
+		for (Line line : getLines()) {
+			Point p1 = new Point(line.getX1(), line.getY1(), "");
+			Point p5 = new Point(line.getX2(), line.getY2(), "");
+			Point p3 = p1.midpoint(p5);
+			Point p2 = p1.midpoint(p3);
+			Point p4 = p3.midpoint(p5);
+			list.add(p1);
+			list.add(p2);
+			list.add(p3);
+			list.add(p4);
+			list.add(p5);
+		}
+		return list;
+	}
+
+	public Graph getGraph() {
+		return graph;
+	}
+	
+	public Triangulation getTriangulation() {
+		return triangulation;
 	}
 
 }

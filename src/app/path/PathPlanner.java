@@ -22,6 +22,10 @@
 package app.path;
 
 public class PathPlanner {
-	// PRUEBA COMMIT
-	// NO TENGO NI IDEA DE EN QUE BRANCH ESTOY NI A DONDE VOY A SUBIR
+
+	public PathPlanner() {
+		super();
+
+	}
+
 }
