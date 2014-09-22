@@ -39,13 +39,15 @@ import java.util.Vector;
 import javax.swing.SwingUtilities;
 
 import app.map.Map;
+import app.path.geometry.Triangle;
 
 /**
  * Animator
  * 
  * @author Saul Pina - sauljp07@gmail.com
  */
-public class Animator implements Runnable, MouseWheelListener, MouseMotionListener, MouseListener {
+public class Animator implements Runnable, MouseWheelListener,
+		MouseMotionListener, MouseListener {
 
 	public static final int ZOOM_PROPORTION = 20;
 
@@ -86,11 +88,15 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 	public void antialiasing() {
 		if (graphics != null) {
 			if (antialiasing) {
-				graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
-				graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+				graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+						RenderingHints.VALUE_ANTIALIAS_ON);
+				graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+						RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 			} else {
-				graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_OFF);
-				graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
+				graphics.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
+						RenderingHints.VALUE_ANTIALIAS_OFF);
+				graphics.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING,
+						RenderingHints.VALUE_TEXT_ANTIALIAS_OFF);
 			}
 		}
 	}
@@ -277,7 +283,8 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 		for (int i = 1; i < animateds.size(); i++) {
 			Animated aux = animateds.get(i);
 			int j;
-			for (j = i - 1; j >= 0 && animateds.get(j).getZIndex() > aux.getZIndex(); j--) {
+			for (j = i - 1; j >= 0
+					&& animateds.get(j).getZIndex() > aux.getZIndex(); j--) {
 				animateds.set(j + 1, animateds.get(j));
 			}
 			animateds.set(j + 1, aux);
@@ -300,7 +307,9 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 					continue;
 				animate.paint(graphics);
 			}
-			backGraphics.drawImage(image, translateX - offsetWidth(), translateY - offsetHeight(), zoomWidth(), zoomHeight(), null);
+			backGraphics.drawImage(image, translateX - offsetWidth(),
+					translateY - offsetHeight(), zoomWidth(), zoomHeight(),
+					null);
 		}
 		canvas.getGraphics().drawImage(backImage, 0, 0, null);
 	}
@@ -384,7 +393,7 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 		translateY = canvas.getHeight() / 2;
 	}
 
-	public void showMap(Map map) {
+	public void showMap(final Map map) {
 		this.map = map;
 		removeAnimateds();
 		addAnimated(map);
@@ -392,9 +401,15 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 			addAnimated(map.getRobotHome());
 		if (map.getGoal() != null)
 			addAnimated(map.getGoal());
+		if (map.getTriangulation() != null)
+			for (Triangle t : map.getTriangulation().getTriangles())
+				addAnimated(t);
+		if (map.getGraph() != null)
+			addAnimated(map.getGraph());
 		setSize(map.getCanvasWidth(), map.getCanvasHeight());
 		centerMap();
 		refresh();
+
 	}
 
 	public void updateMapProportion(int proportion) {
