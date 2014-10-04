@@ -30,10 +30,8 @@ import java.util.LinkedList;
 import java.util.List;
 
 import app.gui.animation.Animated;
-import app.path.delaunay.Triangulation;
 import app.path.geometry.Point;
 import app.path.graphs.Graph;
-import app.path.voronoi.Diagram;
 
 public class Map implements Animated {
 
@@ -56,7 +54,6 @@ public class Map implements Animated {
 	private int offsetPosition;
 	private boolean visible;
 	private Graph graph;
-	Triangulation triangulation;
 
 	public int getOffsetPosition() {
 		return offsetPosition;
@@ -252,9 +249,6 @@ public class Map implements Animated {
 			}
 		}
 		br.close();
-		triangulation = new Triangulation(getPoints(), this, 15000.0);
-		Diagram diagram = new Diagram(triangulation.getTriangles(), this);
-		graph = diagram.getGraph();
 	}
 
 	private void addLine(int x1, int y1, int x2, int y2) {
@@ -364,9 +358,9 @@ public class Map implements Animated {
 	public Graph getGraph() {
 		return graph;
 	}
-	
-	public Triangulation getTriangulation() {
-		return triangulation;
+
+	public void setGraph(Graph graph) {
+		this.graph = graph;
 	}
 
 }

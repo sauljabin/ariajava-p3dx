@@ -39,7 +39,6 @@ import java.util.Vector;
 import javax.swing.SwingUtilities;
 
 import app.map.Map;
-import app.path.geometry.Triangle;
 
 /**
  * Animator
@@ -393,7 +392,7 @@ public class Animator implements Runnable, MouseWheelListener,
 		translateY = canvas.getHeight() / 2;
 	}
 
-	public void showMap(final Map map) {
+	public void showMap(Map map) {
 		this.map = map;
 		removeAnimateds();
 		addAnimated(map);
@@ -401,9 +400,9 @@ public class Animator implements Runnable, MouseWheelListener,
 			addAnimated(map.getRobotHome());
 		if (map.getGoal() != null)
 			addAnimated(map.getGoal());
-		if (map.getTriangulation() != null)
-			for (Triangle t : map.getTriangulation().getTriangles())
-				addAnimated(t);
+		// if (map.getTriangulation() != null)
+		// for (Triangle t : map.getTriangulation().getTriangles())
+		// addAnimated(t);
 		if (map.getGraph() != null)
 			addAnimated(map.getGraph());
 		setSize(map.getCanvasWidth(), map.getCanvasHeight());
