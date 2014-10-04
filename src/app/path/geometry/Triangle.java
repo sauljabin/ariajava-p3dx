@@ -11,20 +11,18 @@ import app.path.graphs.components.Link;
 public class Triangle implements Animated {
 
 	private ArrayList<Point> vertexes;
-	Map map;
-	private Line la;
-	private Line lb;
+	private Map map;
 
-	public Triangle(Point pointA, Point pointB, Point pointC, Map map, Line a,
-			Line b) {
+	public Triangle(Point pointA, Point pointB, Point pointC, Map map) {
 		super();
 		vertexes = new ArrayList<Point>();
 		vertexes.add(pointA);
 		vertexes.add(pointB);
 		vertexes.add(pointC);
 		this.map = map;
-		la = a;
-		lb = b;
+		System.out.println(pointA.toString());
+		System.out.println(pointB.toString());
+		System.out.println(pointC.toString());
 	}
 
 	public ArrayList<Point> getVertexes() {
@@ -81,8 +79,7 @@ public class Triangle implements Animated {
 	public String toString() {
 		return ("T: {" + vertexes.get(0).toString() + " / "
 				+ vertexes.get(1).toString() + " / "
-				+ vertexes.get(2).toString() + "}  - PEND: " + String.format(
-				"%.8f * %.8f", la.getSlope(), lb.getSlope()));
+				+ vertexes.get(2).toString() + "}");
 	}
 
 	@Override
@@ -93,7 +90,7 @@ public class Triangle implements Animated {
 
 	@Override
 	public void paint(Graphics2D g) {
-		g.setColor(new Color(0,255,0,100));
+		g.setColor(new Color(0, 255, 0, 100));
 		g.drawLine(map.canvasX(vertexes.get(0).getX()),
 				map.canvasY(vertexes.get(0).getY()),
 				map.canvasX(vertexes.get(1).getX()),

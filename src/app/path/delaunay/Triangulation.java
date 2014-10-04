@@ -5,6 +5,9 @@ import java.util.Comparator;
 import java.util.TreeSet;
 
 import app.map.Map;
+import app.path.delaunay.convex.ConvexHull;
+import app.path.delaunay.convex.Polygon;
+import app.path.delaunay.convex.Vertex;
 import app.path.geometry.Circle;
 import app.path.geometry.Line;
 import app.path.geometry.Point;
@@ -14,21 +17,20 @@ public class Triangulation {
 
 	private ArrayList<Triangle> triangles;
 
-	public Triangulation(ArrayList<Point> inicialPoints, Map map,
-			Double maxDistance) {
+	public Triangulation(Map map) {
 		super();
-		bruteForceAlgorithm(inicialPoints, map, maxDistance);
-		incrementalAlgorithm(inicialPoints, map, maxDistance);
+		// bruteForceAlgorithm(inicialPoints, map);
+		convexHullAlgorithm(map);
 	}
 
 	public ArrayList<Triangle> getTriangles() {
 		return triangles;
 	}
 
-	private void bruteForceAlgorithm(ArrayList<Point> inicialPoints, Map map,
-			Double maxDistance) {
+	@SuppressWarnings("unused")
+	private void bruteForceAlgorithm(Map map) {
 		ArrayList<Point> unorderedPoints = new ArrayList<Point>();
-		unorderedPoints.addAll(inicialPoints);
+		unorderedPoints.addAll(map.getPoints());
 		TreeSet<Point> setOrderedPoints = new TreeSet<Point>(
 				new Comparator<Point>() {
 					@Override
@@ -52,9 +54,7 @@ public class Triangulation {
 		orderedPoints.addAll(setOrderedPoints);
 		this.triangles = new ArrayList<Triangle>();
 		for (int i = 0; i < orderedPoints.size(); i++) {
-			System.out.println(orderedPoints.get(i) + "=====================");
 			for (int j = i + 1; j < orderedPoints.size(); j++) {
-				System.out.println(orderedPoints.get(j));
 				for (int k = j + 1; k < orderedPoints.size(); k++) {
 					Line line1 = new Line(orderedPoints.get(i),
 							orderedPoints.get(j));
@@ -72,8 +72,7 @@ public class Triangulation {
 									.getY() != orderedPoints.get(k).getY())
 							&& (!slope1.equals(slope2))) {
 						Triangle t = new Triangle(orderedPoints.get(i),
-								orderedPoints.get(j), orderedPoints.get(k),
-								map, line1, line2);
+								orderedPoints.get(j), orderedPoints.get(k), map);
 						Circle c = t.getCircle();
 						boolean accept = true;
 						for (Point point : orderedPoints)
@@ -93,9 +92,40 @@ public class Triangulation {
 		} // FOR i
 	}
 
-	private void incrementalAlgorithm(ArrayList<Point> inicialPoints, Map map,
-			Double maxDistance) {
-		
+	private void convexHullAlgorithm(Map map) {
+		ArrayList<Vertex> vertices = new ArrayList<Vertex>();
+		for (Point point : map.getPoints()) {
+			vertices.add(new Vertex(point.getX(), point.getY(), (Math.pow(
+					point.getX(), 2) + Math.pow(point.getY(), 2))));
+		}
+		this.triangles = new ArrayList<Triangle>();
+		try {
+			ConvexHull hull = new ConvexHull(vertices);
+			for (Polygon p : hull.getFaces()) {
+				Point p1 = new Point(p.getVertexes().get(0).getCoords()[0], p
+						.getVertexes().get(0).getCoords()[1], "");
+				Point p2 = new Point(p.getVertexes().get(1).getCoords()[0], p
+						.getVertexes().get(1).getCoords()[1], "");
+				Point p3 = new Point(p.getVertexes().get(2).getCoords()[0], p
+						.getVertexes().get(2).getCoords()[1], "");
+				if (!(p1.equals(p2) || p1.equals(p3) || p2.equals(p3))
+						&& !(p1.getX() == p2.getX() && p1.getX() == p3.getX())
+						&& !(p1.getY() == p2.getY() && p1.getY() == p3.getY())) {
+					Line line1 = new Line(p1, p2);
+					Line line2 = new Line(p1, p3);
+					String slope1 = line1.getSlope() == null ? "null" : String
+							.format("%.9f", line1.getSlope());
+					String slope2 = line2.getSlope() == null ? "null" : String
+							.format("%.9f", line2.getSlope());
+					if (!slope1.equals(slope2))
+						triangles.add(new Triangle(p1, p2, p3, map));
+				}
+			}
+			for (Triangle t : triangles)
+				System.out.println(t.toString());
+		} catch (Exception e) {
+			System.out.println("CATCH");
+			e.printStackTrace();
+		}
 	}
-
 }

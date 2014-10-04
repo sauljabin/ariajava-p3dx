@@ -6,7 +6,6 @@ import app.map.Line;
 import app.map.Map;
 import app.path.geometry.Triangle;
 import app.path.graphs.Graph;
-import app.path.graphs.components.Link;
 
 import com.sun.javafx.geom.Line2D;
 
@@ -18,8 +17,8 @@ public class Diagram {
 	public Diagram(ArrayList<Triangle> triangleList, Map map) {
 		triangles = triangleList;
 		graph = new Graph(map);
-		for (Triangle t : triangles)
-			graph.addPoint(t.getCircle().getCenter());
+//		for (Triangle t : triangles)
+//			graph.addPoint(t.getCircle().getCenter());
 		for (int i = 0; i < triangles.size(); i++) {
 			for (int j = i + 1; j < triangles.size(); j++) {
 				Triangle tA = triangles.get(i);

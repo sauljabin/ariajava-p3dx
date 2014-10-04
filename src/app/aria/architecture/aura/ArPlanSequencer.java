@@ -21,6 +21,12 @@
 
 package app.aria.architecture.aura;
 
+import app.map.Map;
+
 public class ArPlanSequencer {
+
+	public ArPlanSequencer(Map map) {
+
+	}
 
 }

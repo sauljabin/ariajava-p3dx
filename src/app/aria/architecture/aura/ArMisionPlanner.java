@@ -21,6 +21,50 @@
 
 package app.aria.architecture.aura;
 
+import app.map.Map;
+import app.path.PathPlanner;
+import app.path.geometry.Point;
+import app.path.graphs.Graph;
+
 public class ArMisionPlanner {
+
+	private Point start;
+	private Point target;
+	private boolean ready;
+	private ArPlanSequencer arPlanSequencer;
+	private PathPlanner pathPlanner;
+
+	public ArMisionPlanner(Map map) {
+		//this.arPlanSequencer = new ArPlanSequencer(map);
+		//this.pathPlanner = new PathPlanner(map);
+		//this.ready = false;
+	}
+
+	public void setStart(Point start) {
+		this.start = start;
+	}
+
+	public void setTarget(Point target) {
+		this.target = target;
+	}
+
+	public void execute() {
+//		if (!ready)
+//			calculePath();
+//		else
+//			followPath();
+	}
+
+	private void calculePath() {
+		if (start != null && target != null) {
+			pathPlanner.searchOptimalRoute(start, target);
+			//Graph graph = pathPlanner.getGraph();
+			ready = true;
+		}
+	}
+
+	private void followPath() {
+		
+	}
 
 }
