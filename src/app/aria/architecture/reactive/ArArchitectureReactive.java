@@ -38,7 +38,7 @@ public class ArArchitectureReactive extends ArArchitecture {
 
 	public ArArchitectureReactive(String host, int tcpPort, Map map) {
 		super("Reactive", host, tcpPort, map);
-		angle = 9;
+		angle = 45;
 		stopDistance = 500;
 		turnAngle = 20;
 		speed = 200;

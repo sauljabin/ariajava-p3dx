@@ -3,6 +3,8 @@ package app.path.graphs;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.TreeSet;
 
 import app.gui.animation.Animated;
 import app.map.Map;
@@ -11,7 +13,7 @@ import app.path.graphs.components.Link;
 
 public class Graph implements Animated {
 
-	private ArrayList<Point> points;
+	private TreeSet<Point> points;
 	private ArrayList<Link> links;
 	private Double greaterWeight;
 	private Double lowerWeight;
@@ -20,25 +22,21 @@ public class Graph implements Animated {
 	public Graph(Map map) {
 		super();
 		this.map = map;
-		this.points = new ArrayList<Point>();
+		this.points = new TreeSet<Point>(new Comparator<Point>() {
+			@Override
+			public int compare(Point o1, Point o2) {
+				if (o1.getX() == o2.getX() && o1.getY() == o2.getY())
+					return 0;
+				return 1;
+			}
+		});
 		this.links = new ArrayList<Link>();
 	}
 
-	public void addPoint(Point point) {
-		points.add(point);
-	}
-
 	public void addLink(Point pointA, Point pointB) {
+		points.add(pointA);
+		points.add(pointB);
 		links.add(new Link(pointA, pointB));
-	}
-
-	public void removePoint(Point point) {
-		for (Point p : points)
-			if (p.equals(point)) {
-				points.remove(p);
-				break;
-			}
-
 	}
 
 	public void removeLink(Point pointA, Point pointB) {
@@ -80,19 +78,12 @@ public class Graph implements Animated {
 		return null;
 	}
 
-	public ArrayList<Point> getPoints() {
-		return points;
-	}
-
 	public ArrayList<Link> getLinks() {
 		return links;
 	}
 
-	public Point findPointByName(String name) {
-		for (Point point : points)
-			if (point.getName().equals(name))
-				return point;
-		return null;
+	public TreeSet<Point> getPoints() {
+		return points;
 	}
 
 	public Double calculateGreaterWeight() {
@@ -139,7 +130,7 @@ public class Graph implements Animated {
 
 	@Override
 	public void paint(Graphics2D g) {
-		g.setColor(new Color(255, 0,0, 100));
+		g.setColor(new Color(255, 0, 0, 100));
 		for (int i = 0; i < links.size(); i++) {
 			g.drawLine(map.canvasX(links.get(i).getPointA().getX()),
 					map.canvasY(links.get(i).getPointA().getY()),

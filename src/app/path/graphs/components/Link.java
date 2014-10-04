@@ -7,12 +7,18 @@ public class Link {
 	private Point pointA;
 	private Point pointB;
 	private Double pheromone;
+	private String name;
 
 	public Link(Point pointA, Point pointB) {
+		this(pointA, pointB, "");
+	}
+
+	public Link(Point pointA, Point pointB, String name) {
 		super();
 		this.pointA = pointA;
 		this.pointB = pointB;
 		this.pheromone = 100.0;
+		this.name = name;
 	}
 
 	public Point getPointA() {
@@ -25,6 +31,10 @@ public class Link {
 
 	public Double getPheromone() {
 		return pheromone;
+	}
+
+	public String getName() {
+		return name;
 	}
 
 	public double getWeight() {

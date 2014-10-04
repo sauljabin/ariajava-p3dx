@@ -26,41 +26,16 @@ import app.map.Map;
 
 public class ArArchitectureAuRA extends ArArchitecture {
 
-	private ArMisionPlanner arMisionPlanner;
-	private ArPlanSequencer arPlanSequencer;
-	private ArSpatialReasoner arSpatialReasoner;
-
-	public ArMisionPlanner getArMisionPlanner() {
-		return arMisionPlanner;
-	}
-
-	public void setArMisionPlanner(ArMisionPlanner arMisionPlanner) {
-		this.arMisionPlanner = arMisionPlanner;
-	}
-
-	public ArPlanSequencer getArPlanSequencer() {
-		return arPlanSequencer;
-	}
-
-	public void setArPlanSequencer(ArPlanSequencer arPlanSequencer) {
-		this.arPlanSequencer = arPlanSequencer;
-	}
-
-	public ArSpatialReasoner getArSpatialReasoner() {
-		return arSpatialReasoner;
-	}
-
-	public void setArSpatialReasoner(ArSpatialReasoner arSpatialReasoner) {
-		this.arSpatialReasoner = arSpatialReasoner;
-	}
-
 	public ArArchitectureAuRA(String host, int tcpPort, Map map) {
 		super("AuRA", host, tcpPort, map);
+		 arMisionPlanner = new ArMisionPlanner(map);
 	}
+
+	private ArMisionPlanner arMisionPlanner;
 
 	@Override
 	public void behavior() {
-
+		arMisionPlanner.execute();
 	}
 
 }
