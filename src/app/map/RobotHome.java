@@ -24,8 +24,8 @@ package app.map;
 import java.awt.Color;
 import java.awt.Graphics2D;
 
-import app.animation.AnimatedRobot;
 import app.animation.Animated;
+import app.aria.robot.ArRobotMobile;
 
 public class RobotHome implements Animated {
 
@@ -91,8 +91,8 @@ public class RobotHome implements Animated {
 	@Override
 	public void paint(Graphics2D g) {
 		g.setColor(Color.BLUE);
-		int widthRobot = AnimatedRobot.WIDTH;
-		int longRobot = AnimatedRobot.LONG;
+		int widthRobot = ArRobotMobile.WIDTH;
+		int longRobot = ArRobotMobile.LONG;
 		int robotHomeX = map.canvasX(getX() - longRobot / 2);
 		int robotHomeY = map.canvasY(getY() + widthRobot / 2);
 		g.rotate(-Math.toRadians(getAngle()), map.canvasX(getX()), map.canvasY(getY()));
