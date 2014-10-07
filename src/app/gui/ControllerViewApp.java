@@ -46,8 +46,8 @@ import app.Translate;
 import app.animation.AnimatedRobot;
 import app.animation.Animator;
 import app.aria.architecture.ArArchitecture;
-import app.aria.architecture.ArArchitectureAuRA;
-import app.aria.architecture.ArArchitectureReactive;
+import app.aria.architecture.aura.ArArchitectureAuRA;
+import app.aria.architecture.reactive.ArArchitectureReactive;
 import app.aria.connection.ArConnector;
 import app.aria.exception.ArException;
 import app.aria.robot.ArRobotMobile;
@@ -101,12 +101,16 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		animator = new Animator(viewApp.getCanvasAnimation());
 		setAntialiasing(Boolean.parseBoolean(Config.get("ANIMATION_ANTIALIASING")));
 		animator.setStrokeSize(Integer.parseInt(Config.get("ANIMATION_STROKESIZE")));
+		animator.setFPS(Integer.parseInt(Config.get("ANIMATION_FPS")));
 		animator.start();
 
-		viewApp.getSpnFPS().setModel(new SpinnerNumberModel(animator.getFPS(), 1, 100, 1));
-		viewApp.getSpnProportion().setModel(new SpinnerNumberModel(Integer.parseInt(Config.get("ANIMATION_PROPORTION")), 1, 100, 1));
+		viewApp.getSpnFPS().setModel(new SpinnerNumberModel(Integer.parseInt(Config.get("ANIMATION_FPS")), 1, 100, 1));
+		int proportion = Integer.parseInt(Config.get("ANIMATION_PROPORTION"));
+		int minProportion = Integer.parseInt(Config.get("ANIMATION_MINPROPORTION"));
+		if (proportion < minProportion)
+			proportion = minProportion;
+		viewApp.getSpnProportion().setModel(new SpinnerNumberModel(proportion, minProportion, 100, 1));
 		viewApp.getSpnStrokeSize().setModel(new SpinnerNumberModel(Integer.parseInt(Config.get("ANIMATION_STROKESIZE")), 1, 100, 1));
-		viewApp.getSpnPositionUpdate().setModel(new SpinnerNumberModel(Integer.parseInt(Config.get("ANIMATION_POSITIONUPDATERATE")), 1, 100, 1));
 
 		int initMapSize = 6000;
 
@@ -207,7 +211,6 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		} else {
 			viewApp.getBtnAntialiasingOnOff().setIcon(new ImageIcon(Theme.getIconPath("ANTIALIASING_ON")));
 			viewApp.getBtnAntialiasingOnOff().setToolTipText(Translate.get("GUI_ANTIALIASINGON"));
-
 		}
 
 		Config.set("ANIMATION_ANTIALIASING", String.valueOf(antialiasing));
@@ -354,30 +357,21 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 	@Override
 	public void stateChanged(ChangeEvent e) {
 		if (e.getSource().equals(viewApp.getSpnFPS()))
-			animator.setFPS((int) viewApp.getSpnFPS().getValue());
+			setAnimationFPS();
 		else if (e.getSource().equals(viewApp.getSpnProportion()))
 			setAnimationProportion();
 		else if (e.getSource().equals(viewApp.getSpnStrokeSize()))
 			setAnimationStrokeSize();
-		else if (e.getSource().equals(viewApp.getSpnPositionUpdate()))
-			setPositionUpdateRate();
 	}
 
-	public void setPositionUpdateRate() {
-		if (arch == null)
-			return;
-
-		// anRobot.setUpdateAnimatedPositionRate(((int)
-		// viewApp.getSpnPositionUpdate().getValue()));
-
-		Config.set("ANIMATION_POSITIONUPDATERATE", viewApp.getSpnPositionUpdate().getValue().toString());
-
+	public void setAnimationFPS() {
+		animator.setFPS((int) viewApp.getSpnFPS().getValue());
+		Config.set("ANIMATION_FPS", viewApp.getSpnFPS().getValue().toString());
 		try {
 			Config.save();
 		} catch (Exception e) {
 			Log.warning(ControllerViewApp.class, Translate.get("ERROR_NOSAVECONFIG"), e);
 		}
-
 	}
 
 	public void setAnimationProportion() {

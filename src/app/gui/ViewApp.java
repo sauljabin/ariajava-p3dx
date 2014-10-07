@@ -100,8 +100,6 @@ public class ViewApp extends JFrame {
 	private JSpinner spnProportion;
 	private JLabel lblStrokeSize;
 	private JSpinner spnStrokeSize;
-	private JLabel lblPositionUpdate;
-	private JSpinner spnPositionUpdate;
 
 	public ViewApp() {
 		menuItems = new Vector<JMenuItem>();
@@ -194,9 +192,6 @@ public class ViewApp extends JFrame {
 		lblFPS = new JLabel(Translate.get("GUI_FPS"));
 		spnFPS = new JSpinner();
 
-		lblPositionUpdate = new JLabel(Translate.get("GUI_POSITIONUPDATE"));
-		spnPositionUpdate = new JSpinner();
-
 		lblFPS = new JLabel(Translate.get("GUI_FPS"));
 		spnFPS = new JSpinner();
 
@@ -211,9 +206,7 @@ public class ViewApp extends JFrame {
 		pnlAnimation.setBorder(BorderFactory.createTitledBorder(Translate.get("GUI_ANIMATION")));
 
 		pnlAnimation.add(lblFPS, "width 100, height 25");
-		pnlAnimation.add(spnFPS, "width 100, height 25, wrap");
-		pnlAnimation.add(lblPositionUpdate, "grow, height 25");
-		pnlAnimation.add(spnPositionUpdate, "grow, height 25, wrap 10");
+		pnlAnimation.add(spnFPS, "width 100, height 25, wrap 10");
 		pnlAnimation.add(lblProportion, "grow, height 25");
 		pnlAnimation.add(spnProportion, "grow, height 25, wrap 10");
 		pnlAnimation.add(lblStrokeSize, "grow, height 25");
@@ -300,7 +293,6 @@ public class ViewApp extends JFrame {
 		spinners.add(spnStrokeSize);
 		spinners.add(spnProportion);
 		spinners.add(spnFPS);
-		spinners.add(spnPositionUpdate);
 
 		buttons.add(btnConnect);
 		buttons.add(btnDisconnect);
@@ -410,10 +402,6 @@ public class ViewApp extends JFrame {
 
 	public JSpinner getSpnStrokeSize() {
 		return spnStrokeSize;
-	}
-
-	public JSpinner getSpnPositionUpdate() {
-		return spnPositionUpdate;
 	}
 
 }

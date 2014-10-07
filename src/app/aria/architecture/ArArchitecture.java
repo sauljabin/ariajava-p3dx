@@ -26,17 +26,13 @@ import app.aria.exception.ArExceptionParseArgs;
 import app.aria.robot.ArRobotMobile;
 import app.map.Map;
 
-import com.mobilerobots.Aria.ArRobot;
-import com.mobilerobots.Aria.ArSonarDevice;
-
 public abstract class ArArchitecture implements Runnable, Comparable<ArArchitecture> {
 
 	private String name;
 	private String host;
 	private int tcpPort;
 	private Thread thread;
-	private ArRobot robot;
-	private ArSonarDevice sonar;
+	private ArRobotMobile robot;
 	private Map map;
 
 	public Map getMap() {
@@ -59,12 +55,8 @@ public abstract class ArArchitecture implements Runnable, Comparable<ArArchitect
 		return tcpPort;
 	}
 
-	public ArRobot getRobot() {
+	public ArRobotMobile getRobot() {
 		return robot;
-	}
-
-	public ArSonarDevice getSonar() {
-		return sonar;
 	}
 
 	public ArArchitecture(String name, ArRobotMobile robot, Map map) {
@@ -110,6 +102,10 @@ public abstract class ArArchitecture implements Runnable, Comparable<ArArchitect
 	@Override
 	public void run() {
 		robot.run(true);
+	}
+
+	public void addBehavior(ArBehavior behavior, int i) {
+		robot.addAction(behavior, i);
 	}
 
 	public abstract void init();
