@@ -26,13 +26,13 @@ import java.awt.Canvas;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
+import java.awt.Shape;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
-import java.awt.event.MouseWheelListener;
+import java.awt.geom.Rectangle2D;
 import java.awt.image.BufferedImage;
 import java.util.Vector;
 
@@ -45,11 +45,12 @@ import app.map.Map;
  * 
  * @author Saul Pina - sauljp07@gmail.com
  */
-public class Animator implements Runnable, MouseWheelListener, MouseMotionListener, MouseListener {
+public class Animator implements Runnable {
 
 	public static final int ZOOM_PROPORTION = 20;
 
 	private Vector<Animated> animateds;
+	private Vector<Animated> animatedsMouseListener;
 	private int FPS;
 	private boolean pause;
 	private Thread thread;
@@ -137,16 +138,73 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 		this.canvas = canvas;
 		FPS = 24;
 		strokeSize = 1;
-		canvas.addMouseWheelListener(this);
-		canvas.addMouseListener(this);
-		canvas.addMouseMotionListener(this);
 		animateds = new Vector<Animated>();
+		animatedsMouseListener = new Vector<Animated>();
 		initState();
 		thread = new Thread(this);
+		addMouseAdapter();
+	}
+
+	private void addMouseAdapter() {
+		canvas.addMouseWheelListener(new MouseAdapter() {
+			@Override
+			public void mouseWheelMoved(MouseWheelEvent e) {
+				setZoom(-e.getPreciseWheelRotation());
+			}
+		});
+		canvas.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				if (SwingUtilities.isRightMouseButton(e)) {
+					mouseX = e.getX();
+					mouseY = e.getY();
+				}
+			}
+		});
+		canvas.addMouseMotionListener(new MouseAdapter() {
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				if (SwingUtilities.isRightMouseButton(e)) {
+					setTranslate(e.getX() - mouseX, e.getY() - mouseY);
+					mouseX = e.getX();
+					mouseY = e.getY();
+				}
+			}
+		});
 		canvas.addComponentListener(new ComponentAdapter() {
 			@Override
 			public void componentResized(ComponentEvent e) {
 				refresh();
+			}
+		});
+		canvas.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mousePressed(MouseEvent e) {
+				animatorMousePressed(e);
+			}
+
+			@Override
+			public void mouseReleased(MouseEvent e) {
+				animatorMouseReleased(e);
+			}
+
+			@Override
+			public void mouseEntered(MouseEvent e) {
+				animatorMouseEntered(e);
+			}
+
+			@Override
+			public void mouseExited(MouseEvent e) {				
+				animatorMouseExited(e);
+			}	
+			
+			
+			
+		});
+		canvas.addMouseMotionListener(new MouseAdapter() {
+			@Override
+			public void mouseDragged(MouseEvent e) {
+				animatorMouseDragged(e);
 			}
 		});
 	}
@@ -161,16 +219,32 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 	public int offsetWidth() {
 		return zoomWidth() / 2;
 	}
+	
+	public int offsetWidth(int width) {
+		return zoomWidth(width) / 2;
+	}
 
 	public int offsetHeight() {
 		return zoomHeight() / 2;
 	}
+	
+	public int offsetHeight(int height) {
+		return zoomHeight(height) / 2;
+	}
 
 	public int zoomWidth() {
+		return (width + width * zoomW / ZOOM_PROPORTION);
+	}	
+	
+	public int zoomWidth(int width) {
 		return (width + width * zoomW / ZOOM_PROPORTION);
 	}
 
 	public int zoomHeight() {
+		return (height + height * zoomH / ZOOM_PROPORTION);
+	}
+	
+	public int zoomHeight(int height) {
 		return (height + height * zoomH / ZOOM_PROPORTION);
 	}
 
@@ -198,10 +272,14 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 	public synchronized void addAnimated(Animated animated) {
 		animateds.add(animated);
 		animated.initAnimated();
+		sortAnimateds();
+		if (animated.getAnimatedMouseListener() != null)
+			animatedsMouseListener.add(animated);
 	}
 
 	public synchronized void removeAnimated(Animated animated) {
 		animateds.remove(animated);
+		animatedsMouseListener.remove(animated);
 	}
 
 	public int getFPS() {
@@ -268,7 +346,7 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 			}
 		}
 	}
-	
+
 	public synchronized void animate() {
 		for (int i = 0; i < animateds.size(); i++) {
 			animateds.get(i).animate();
@@ -304,53 +382,6 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 	public void setTranslate(int x, int y) {
 		translateX = translateX + x;
 		translateY = translateY + y;
-	}
-
-	@Override
-	public void mouseWheelMoved(MouseWheelEvent e) {
-		setZoom(-e.getPreciseWheelRotation());
-	}
-
-	@Override
-	public void mouseDragged(MouseEvent e) {
-		if (SwingUtilities.isRightMouseButton(e)) {
-			setTranslate(e.getX() - mouseX, e.getY() - mouseY);
-			mouseX = e.getX();
-			mouseY = e.getY();
-		}
-	}
-
-	@Override
-	public void mouseMoved(MouseEvent e) {
-
-	}
-
-	@Override
-	public void mouseClicked(MouseEvent e) {
-
-	}
-
-	@Override
-	public void mousePressed(MouseEvent e) {
-		if (SwingUtilities.isRightMouseButton(e)) {
-			mouseX = e.getX();
-			mouseY = e.getY();
-		}
-	}
-
-	@Override
-	public void mouseReleased(MouseEvent e) {
-
-	}
-
-	@Override
-	public void mouseEntered(MouseEvent e) {
-
-	}
-
-	@Override
-	public void mouseExited(MouseEvent e) {
-
 	}
 
 	public void removeAnimateds() {
@@ -400,5 +431,64 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 
 	public Map getMap() {
 		return map;
+	}
+
+	public synchronized void animatorMouseDragged(MouseEvent e) {
+		for (int i = 0; i < animatedsMouseListener.size(); i++) {
+			if (animatedsMouseListener.get(i).getShape() != null && animatedsMouseListener.get(i).getAnimatedMouseListener() != null) {
+				if (animatedsMouseListener.get(i).getShape().contains(e.getPoint())) {
+					animatedsMouseListener.get(i).getAnimatedMouseListener().mouseDragged(animatedsMouseListener.get(i), e);
+				}
+			}
+		}
+	}
+
+	public synchronized void animatorMouseReleased(MouseEvent e) {
+		for (int i = 0; i < animatedsMouseListener.size(); i++) {
+			if (animatedsMouseListener.get(i).getShape() != null && animatedsMouseListener.get(i).getAnimatedMouseListener() != null) {
+				if (animatedsMouseListener.get(i).getShape().contains(e.getPoint())) {
+					animatedsMouseListener.get(i).getAnimatedMouseListener().mouseReleased(animatedsMouseListener.get(i), e);
+				}
+			}
+		}
+	}
+	
+	public synchronized void animatorMouseEntered(MouseEvent e){
+		
+	}
+	
+	public synchronized void animatorMouseExited(MouseEvent e){
+		
+	}
+
+	public synchronized void animatorMousePressed(MouseEvent e) {
+		for (int i = 0; i < animatedsMouseListener.size(); i++) {
+			if (animatedsMouseListener.get(i).getShape() != null && animatedsMouseListener.get(i).getAnimatedMouseListener() != null) {
+			
+				Shape tempShape=animatedsMouseListener.get(i).getShape();
+							
+				int x = tempShape.getBounds().x  + translateX - offsetWidth();
+				int y = tempShape.getBounds().y + translateY  - offsetHeight();
+				int width = zoomWidth(tempShape.getBounds().width);
+				int height = zoomHeight(tempShape.getBounds().height);
+				
+				Shape shape = new Rectangle2D.Double(x,y,width,height);				
+				
+				if (shape.contains(e.getPoint())) {
+					animatedsMouseListener.get(i).getAnimatedMouseListener().mousePressed(animatedsMouseListener.get(i), e);
+				}
+			}
+		}
+	}
+
+	public synchronized void sortAnimateds() {
+		for (int i = 1; i < animateds.size(); i++) {
+			Animated aux = animateds.get(i);
+			int j;
+			for (j = i - 1; j >= 0 && animateds.get(j).getZ() > aux.getZ(); j--) {
+				animateds.set(j + 1, animateds.get(j));
+			}
+			animateds.set(j + 1, aux);
+		}
 	}
 }

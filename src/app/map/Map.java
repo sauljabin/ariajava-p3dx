@@ -23,12 +23,15 @@ package app.map;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Point;
+import java.awt.Shape;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.LinkedList;
 import java.util.List;
 
 import app.animation.Animated;
+import app.animation.AnimatedMouseListener;
 
 public class Map implements Animated {
 
@@ -247,6 +250,13 @@ public class Map implements Animated {
 		return (int) Math.round(value / proportion);
 	}
 
+	public Point canvasPoint(Point point) {
+		Point newPoint = new Point(point);
+		newPoint.x = canvasX(newPoint.x);
+		newPoint.y = canvasY(newPoint.y);
+		return newPoint;
+	}
+
 	public int canvasX(double x) {
 		double value = 0;
 		if (minX < 0) {
@@ -304,7 +314,7 @@ public class Map implements Animated {
 	public void animate() {
 
 	}
-	
+
 	public void setVisible(boolean visible) {
 		this.visible = visible;
 	}
@@ -312,6 +322,21 @@ public class Map implements Animated {
 	@Override
 	public boolean isVisible() {
 		return visible;
+	}
+
+	@Override
+	public Shape getShape() {
+		return null;
+	}
+
+	@Override
+	public int getZ() {
+		return 0;
+	}
+
+	@Override
+	public AnimatedMouseListener getAnimatedMouseListener() {
+		return null;
 	}
 
 }

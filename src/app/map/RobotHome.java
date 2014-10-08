@@ -23,17 +23,26 @@ package app.map;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Shape;
+import java.awt.event.MouseEvent;
+import java.awt.geom.Rectangle2D;
 
 import app.animation.Animated;
+import app.animation.AnimatedMouseListener;
 import app.aria.robot.ArRobotMobile;
 
-public class RobotHome implements Animated {
+public class RobotHome implements Animated, AnimatedMouseListener {
 
 	private int x;
 	private int y;
 	private double angle;
 	private boolean visible;
 	private Map map;
+	private int widthRobot;
+	private int longRobot;
+	private int robotHomeX;
+	private int robotHomeY;
+	private Color color;
 
 	public Map getMap() {
 		return map;
@@ -85,16 +94,14 @@ public class RobotHome implements Animated {
 
 	@Override
 	public void initAnimated() {
-
+		widthRobot = ArRobotMobile.WIDTH;
+		longRobot = ArRobotMobile.LONG;
+		animate();
 	}
 
 	@Override
 	public void paint(Graphics2D g) {
 		g.setColor(Color.BLUE);
-		int widthRobot = ArRobotMobile.WIDTH;
-		int longRobot = ArRobotMobile.LONG;
-		int robotHomeX = map.canvasX(getX() - longRobot / 2);
-		int robotHomeY = map.canvasY(getY() + widthRobot / 2);
 		g.rotate(-Math.toRadians(getAngle()), map.canvasX(getX()), map.canvasY(getY()));
 		g.drawRect(robotHomeX, robotHomeY, map.proportionalValue(longRobot), map.proportionalValue(widthRobot));
 		g.rotate(Math.toRadians(getAngle()), map.canvasX(getX()), map.canvasY(getY()));
@@ -102,7 +109,8 @@ public class RobotHome implements Animated {
 
 	@Override
 	public void animate() {
-
+		robotHomeX = map.canvasX(getX() - longRobot / 2);
+		robotHomeY = map.canvasY(getY() + widthRobot / 2);
 	}
 
 	public void setVisible(boolean visible) {
@@ -112,6 +120,46 @@ public class RobotHome implements Animated {
 	@Override
 	public boolean isVisible() {
 		return visible;
+	}
+
+	@Override
+	public Shape getShape() {
+		return new Rectangle2D.Double(robotHomeX, robotHomeY, map.proportionalValue(longRobot),map.proportionalValue(widthRobot));
+	}
+
+	@Override
+	public int getZ() {
+		return 100;
+	}
+
+	@Override
+	public AnimatedMouseListener getAnimatedMouseListener() {
+		return this;
+	}
+
+	@Override
+	public void mousePressed(Animated source, MouseEvent e) {
+		
+	}
+
+	@Override
+	public void mouseReleased(Animated source, MouseEvent e) {
+
+	}
+
+	@Override
+	public void mouseDragged(Animated source, MouseEvent e) {
+
+	}
+
+	@Override
+	public void mouseEntered(Animated source, MouseEvent e) {
+		color = Color.BLACK;
+	}
+
+	@Override
+	public void mouseExited(Animated source, MouseEvent e) {
+		color = Color.BLUE;
 	}
 
 }
