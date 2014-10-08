@@ -101,7 +101,7 @@ public class RobotHome implements Animated, AnimatedMouseListener {
 
 	@Override
 	public void paint(Graphics2D g) {
-		g.setColor(Color.BLUE);
+		g.setColor(color);
 		g.rotate(-Math.toRadians(getAngle()), map.canvasX(getX()), map.canvasY(getY()));
 		g.drawRect(robotHomeX, robotHomeY, map.proportionalValue(longRobot), map.proportionalValue(widthRobot));
 		g.rotate(Math.toRadians(getAngle()), map.canvasX(getX()), map.canvasY(getY()));
