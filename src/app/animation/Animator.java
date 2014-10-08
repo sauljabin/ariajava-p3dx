@@ -257,14 +257,10 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 		stop = false;
 		pause = false;
 		while (!stop) {
-			sortAnimateds();
-
 			rendering();
-
 			if (!pause) {
 				animate();
 			}
-
 			try {
 				Thread.sleep(1000 / FPS);
 			} catch (InterruptedException e) {
@@ -272,18 +268,7 @@ public class Animator implements Runnable, MouseWheelListener, MouseMotionListen
 			}
 		}
 	}
-
-	public synchronized void sortAnimateds() {
-		for (int i = 1; i < animateds.size(); i++) {
-			Animated aux = animateds.get(i);
-			int j;
-			for (j = i - 1; j >= 0 && animateds.get(j).getZIndex() > aux.getZIndex(); j--) {
-				animateds.set(j + 1, animateds.get(j));
-			}
-			animateds.set(j + 1, aux);
-		}
-	}
-
+	
 	public synchronized void animate() {
 		for (int i = 0; i < animateds.size(); i++) {
 			animateds.get(i).animate();

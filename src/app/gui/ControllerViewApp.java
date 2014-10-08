@@ -43,7 +43,6 @@ import app.Config;
 import app.Log;
 import app.Theme;
 import app.Translate;
-import app.animation.AnimatedRobot;
 import app.animation.Animator;
 import app.aria.architecture.ArArchitecture;
 import app.aria.architecture.aura.ArArchitectureAuRA;
@@ -51,6 +50,7 @@ import app.aria.architecture.reactive.ArArchitectureReactive;
 import app.aria.connection.ArConnector;
 import app.aria.exception.ArException;
 import app.aria.robot.ArRobotMobile;
+import app.map.Robot;
 import app.map.Map;
 import app.map.RobotHome;
 import app.util.ClassW;
@@ -64,7 +64,7 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 	private ArArchitecture arch;
 	private Animator animator;
 	private Map map;
-	private AnimatedRobot anRobot;
+	private Robot anRobot;
 	private ArRobotMobile robot;
 	private ArConnector connector;
 	public static final int TRANSLATE = 20;
@@ -297,7 +297,7 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		if (anRobot != null) {
 			animator.removeAnimated(anRobot);
 		}
-		anRobot = new AnimatedRobot(map);
+		anRobot = new Robot(map);
 		anRobot.updateAnimatedPosition(map.getRobotHome().getX(), map.getRobotHome().getY(), map.getRobotHome().getAngle());
 		animator.addAnimated(anRobot);
 

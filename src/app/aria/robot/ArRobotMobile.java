@@ -21,7 +21,7 @@
 
 package app.aria.robot;
 
-import app.animation.AnimatedRobot;
+import app.map.Robot;
 
 import com.mobilerobots.Aria.ArPose;
 import com.mobilerobots.Aria.ArRangeDevice;
@@ -41,7 +41,7 @@ public class ArRobotMobile extends ArRobot {
 	private double initY;
 	private double initAngle;
 	private ArSonarDevice sonar;
-	private AnimatedRobot animatedRobot;
+	private Robot animatedRobot;
 	protected ArRangeDevice rangeSonar;
 
 	public ArRobotMobile(double initX, double initY, double initAngle) {
@@ -111,11 +111,11 @@ public class ArRobotMobile extends ArRobot {
 		this.relativeAngle = relativeAngle;
 	}
 
-	public AnimatedRobot getAnimatedRobot() {
+	public Robot getAnimatedRobot() {
 		return animatedRobot;
 	}
 
-	public void setAnimatedRobot(AnimatedRobot animatedRobot) {
+	public void setAnimatedRobot(Robot animatedRobot) {
 		this.animatedRobot = animatedRobot;
 	}
 

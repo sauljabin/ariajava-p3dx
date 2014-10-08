@@ -19,15 +19,15 @@
  * 
  */
 
-package app.animation;
+package app.map;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
 
+import app.animation.Animated;
 import app.aria.robot.ArRobotMobile;
-import app.map.Map;
 
-public class AnimatedRobot implements Animated {
+public class Robot implements Animated {
 
 	private boolean visible;
 	private Map map;
@@ -37,7 +37,7 @@ public class AnimatedRobot implements Animated {
 	private int[] xRobot;
 	private int[] yRobot;
 
-	public AnimatedRobot(Map map) {
+	public Robot(Map map) {
 		this.map = map;
 	}
 
@@ -80,18 +80,18 @@ public class AnimatedRobot implements Animated {
 		g.setColor(Color.RED);
 		int widthRobot = ArRobotMobile.WIDTH;
 		int longRobot =  ArRobotMobile.LONG;
-		int robotHomeX = map.canvasX(animatedX - longRobot / 2);
-		int robotHomeY = map.canvasY(animatedY + widthRobot / 2);
+		int robotHomeX = map.canvasX(animatedX - longRobot / 2.);
+		int robotHomeY = map.canvasY(animatedY + widthRobot / 2.);
 		int corner = map.proportionalValue(50);
 		double angle = animatedAngle;
 		g.rotate(-Math.toRadians(angle), map.canvasX(animatedX), map.canvasY(animatedY));
 
 		xRobot = new int[] {
-				robotHomeX + corner, robotHomeX + map.proportionalValue(longRobot * 2 / 3), robotHomeX + map.proportionalValue(longRobot), robotHomeX + map.proportionalValue(longRobot * 2 / 3), robotHomeX + corner, robotHomeX, robotHomeX, robotHomeX + corner
+				robotHomeX + corner, robotHomeX + map.proportionalValue(longRobot * 2. / 3.), robotHomeX + map.proportionalValue(longRobot), robotHomeX + map.proportionalValue(longRobot * 2. / 3.), robotHomeX + corner, robotHomeX, robotHomeX, robotHomeX + corner
 		};
 
 		yRobot = new int[] {
-				robotHomeY, robotHomeY, robotHomeY + map.proportionalValue(widthRobot / 2), robotHomeY + map.proportionalValue(widthRobot), robotHomeY + map.proportionalValue(widthRobot), robotHomeY + map.proportionalValue(widthRobot) - corner, robotHomeY + corner, robotHomeY
+				robotHomeY, robotHomeY, robotHomeY + map.proportionalValue(widthRobot / 2.), robotHomeY + map.proportionalValue(widthRobot), robotHomeY + map.proportionalValue(widthRobot), robotHomeY + map.proportionalValue(widthRobot) - corner, robotHomeY + corner, robotHomeY
 		};
 
 		g.fillPolygon(xRobot, yRobot, 8);
@@ -105,11 +105,6 @@ public class AnimatedRobot implements Animated {
 	@Override
 	public void animate() {
 
-	}
-
-	@Override
-	public int getZIndex() {
-		return 100;
 	}
 
 	public void setVisible(boolean visible) {

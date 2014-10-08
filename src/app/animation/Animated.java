@@ -30,7 +30,5 @@ public interface Animated {
 
 	public void animate();
 
-	public int getZIndex();
-
 	public boolean isVisible();
 }
