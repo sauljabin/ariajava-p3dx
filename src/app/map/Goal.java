@@ -105,11 +105,6 @@ public class Goal implements Animated {
 
 	}
 
-	@Override
-	public int getZIndex() {
-		return 10;
-	}
-
 	public void setVisible(boolean visible) {
 		this.visible = visible;
 	}

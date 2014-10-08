@@ -304,12 +304,7 @@ public class Map implements Animated {
 	public void animate() {
 
 	}
-
-	@Override
-	public int getZIndex() {
-		return 0;
-	}
-
+	
 	public void setVisible(boolean visible) {
 		this.visible = visible;
 	}
