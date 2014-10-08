@@ -22,6 +22,7 @@
 package app.animation;
 
 import java.awt.Graphics2D;
+import java.awt.Shape;
 
 public interface Animated {
 	public void initAnimated();
@@ -31,4 +32,10 @@ public interface Animated {
 	public void animate();
 
 	public boolean isVisible();
+	
+	public Shape getShape();
+	
+	public int getZ();
+	
+	public AnimatedMouseListener getAnimatedMouseListener();
 }

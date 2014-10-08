@@ -23,8 +23,10 @@ package app.map;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Shape;
 
 import app.animation.Animated;
+import app.animation.AnimatedMouseListener;
 import app.aria.robot.ArRobotMobile;
 
 public class Robot implements Animated {
@@ -119,6 +121,21 @@ public class Robot implements Animated {
 	@Override
 	public void initAnimated() {
 		visible = true;
+	}
+
+	@Override
+	public Shape getShape() {
+		return null;
+	}
+
+	@Override
+	public int getZ() {
+		return 150;
+	}
+
+	@Override
+	public AnimatedMouseListener getAnimatedMouseListener() {
+		return null;
 	}
 
 }
