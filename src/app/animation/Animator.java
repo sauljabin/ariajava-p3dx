@@ -180,25 +180,25 @@ public class Animator implements Runnable {
 		canvas.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mousePressed(MouseEvent e) {
-				animatorMousePressed(e);
+				animatorMouseListener(e);
 			}
 
 			@Override
 			public void mouseReleased(MouseEvent e) {
-				animatorMouseReleased(e);
-			}	
-			
+				animatorMouseListener(e);
+			}
+
 		});
 		canvas.addMouseMotionListener(new MouseAdapter() {
 			@Override
 			public void mouseDragged(MouseEvent e) {
-				animatorMouseDragged(e);
+				animatorMouseListener(e);
 			}
-			
+
 			@Override
 			public void mouseMoved(MouseEvent e) {
-				animatorMouseMoved(e);
-			}			
+				animatorMouseListener(e);
+			}
 		});
 	}
 
@@ -212,23 +212,15 @@ public class Animator implements Runnable {
 	public int offsetWidth() {
 		return zoomWidth() / 2;
 	}
-	
-	public int offsetWidth(int width) {
-		return zoomWidth(width) / 2;
-	}
 
 	public int offsetHeight() {
 		return zoomHeight() / 2;
 	}
-	
-	public int offsetHeight(int height) {
-		return zoomHeight(height) / 2;
-	}
 
 	public int zoomWidth() {
 		return (width + width * zoomW / ZOOM_PROPORTION);
-	}	
-	
+	}
+
 	public int zoomWidth(int width) {
 		return (width + width * zoomW / ZOOM_PROPORTION);
 	}
@@ -236,7 +228,7 @@ public class Animator implements Runnable {
 	public int zoomHeight() {
 		return (height + height * zoomH / ZOOM_PROPORTION);
 	}
-	
+
 	public int zoomHeight(int height) {
 		return (height + height * zoomH / ZOOM_PROPORTION);
 	}
@@ -426,71 +418,40 @@ public class Animator implements Runnable {
 		return map;
 	}
 
-	public synchronized void animatorMouseDragged(MouseEvent e) {
+	public synchronized void animatorMouseListener(MouseEvent e) {
 		for (int i = 0; i < animatedsMouseListener.size(); i++) {
-			if (animatedsMouseListener.get(i).getShape() != null && animatedsMouseListener.get(i).getAnimatedMouseListener() != null) {
-				if (animatedsMouseListener.get(i).getShape().contains(e.getPoint())) {
-					animatedsMouseListener.get(i).getAnimatedMouseListener().mouseDragged(animatedsMouseListener.get(i), e);
-				}
-			}
-		}
-	}
+			Animated animated = animatedsMouseListener.get(i);
+			if (animated.getShape() != null && animated.getAnimatedMouseListener() != null) {
+				Shape tempShape = animated.getShape();
 
-	public synchronized void animatorMouseReleased(MouseEvent e) {
-		for (int i = 0; i < animatedsMouseListener.size(); i++) {
-			if (animatedsMouseListener.get(i).getShape() != null && animatedsMouseListener.get(i).getAnimatedMouseListener() != null) {
-				if (animatedsMouseListener.get(i).getShape().contains(e.getPoint())) {
-					animatedsMouseListener.get(i).getAnimatedMouseListener().mouseReleased(animatedsMouseListener.get(i), e);
-				}
-			}
-		}
-	}
-	
-	public synchronized void animatorMouseMoved(MouseEvent e){
-		for (int i = 0; i < animatedsMouseListener.size(); i++) {
-			if (animatedsMouseListener.get(i).getShape() != null && animatedsMouseListener.get(i).getAnimatedMouseListener() != null) {
-			
-				Shape tempShape=animatedsMouseListener.get(i).getShape();
-				
-				double widthProportion=(double)zoomWidth()/(double)this.width;
-				double heightProportion=(double)zoomHeight()/(double)this.height;
-							
-				double x = (tempShape.getBounds().x + translateX - offsetWidth())*widthProportion;
-				double y = (tempShape.getBounds().y + translateY - offsetHeight())*heightProportion;
-				
+				double x = zoomWidth(tempShape.getBounds().x) + translateX - offsetWidth();
+				double y = zoomHeight(tempShape.getBounds().y) + translateY - offsetHeight();
+
 				double width = zoomWidth(tempShape.getBounds().width);
 				double height = zoomHeight(tempShape.getBounds().height);
-				
-				Shape shape = new Rectangle2D.Double(x,y,width,height);		
-				System.out.println(e.getPoint());
-				System.out.println(shape);
-				System.out.println(this.width+" "+zoomWidth());
-				System.out.println(widthProportion+" "+ heightProportion);
+
+				Shape shape = new Rectangle2D.Double(x, y, width, height);
+
+				// (height + height * zoomH / ZOOM_PROPORTION)
+
+				double xMouse =  zoomWidth(e.getPoint().x);
+				double yMouse =  zoomHeight(e.getPoint().y);
+
+				System.out.println(xMouse + " " + yMouse);
+				System.out.println(e.getPoint().x + " " + e.getPoint().y);
+				System.out.println((double)e.getPoint().x / zoomWidth(e.getPoint().x));
+				System.out.println((double)e.getPoint().y / zoomHeight(e.getPoint().y));
 				System.out.println();
 				if (shape.contains(e.getPoint())) {
-					animatedsMouseListener.get(i).getAnimatedMouseListener().mouseEntered(animatedsMouseListener.get(i), e);
-				}else{
-					animatedsMouseListener.get(i).getAnimatedMouseListener().mouseExited(animatedsMouseListener.get(i), e);
-				}
-			}
-		}
-	}
-	
-	public synchronized void animatorMousePressed(MouseEvent e) {
-		for (int i = 0; i < animatedsMouseListener.size(); i++) {
-			if (animatedsMouseListener.get(i).getShape() != null && animatedsMouseListener.get(i).getAnimatedMouseListener() != null) {
-			
-				Shape tempShape=animatedsMouseListener.get(i).getShape();
-							
-				int x = tempShape.getBounds().x  + translateX - offsetWidth();
-				int y = tempShape.getBounds().y + translateY  - offsetHeight();
-				int width = zoomWidth(tempShape.getBounds().width);
-				int height = zoomHeight(tempShape.getBounds().height);
-				
-				Shape shape = new Rectangle2D.Double(x,y,width,height);				
-				
-				if (shape.contains(e.getPoint())) {
-					animatedsMouseListener.get(i).getAnimatedMouseListener().mousePressed(animatedsMouseListener.get(i), e);
+					if (e.getID() == MouseEvent.MOUSE_MOVED)
+						animated.getAnimatedMouseListener().mouseEntered();
+					else if (e.getID() == MouseEvent.MOUSE_DRAGGED && SwingUtilities.isLeftMouseButton(e))
+						animated.getAnimatedMouseListener().mouseDragged(xMouse, yMouse);
+					else if (e.getID() == MouseEvent.MOUSE_PRESSED && SwingUtilities.isLeftMouseButton(e))
+						animated.getAnimatedMouseListener().mousePressed(xMouse, yMouse);
+
+				} else {
+					animated.getAnimatedMouseListener().mouseExited();
 				}
 			}
 		}

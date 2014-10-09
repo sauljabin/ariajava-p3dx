@@ -24,7 +24,6 @@ package app.map;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Shape;
-import java.awt.event.MouseEvent;
 import java.awt.geom.Rectangle2D;
 
 import app.animation.Animated;
@@ -43,6 +42,9 @@ public class RobotHome implements Animated, AnimatedMouseListener {
 	private int robotHomeX;
 	private int robotHomeY;
 	private Color color;
+	private boolean mouseOver;
+	private double mouseX;
+	private double mouseY;
 
 	public Map getMap() {
 		return map;
@@ -96,21 +98,24 @@ public class RobotHome implements Animated, AnimatedMouseListener {
 	public void initAnimated() {
 		widthRobot = ArRobotMobile.WIDTH;
 		longRobot = ArRobotMobile.LONG;
-		animate();
+		color = Color.BLUE;
 	}
 
 	@Override
 	public void paint(Graphics2D g) {
+		robotHomeX = map.canvasX(getX() - longRobot / 2);
+		robotHomeY = map.canvasY(getY() + widthRobot / 2);
 		g.setColor(color);
 		g.rotate(-Math.toRadians(getAngle()), map.canvasX(getX()), map.canvasY(getY()));
+		if (mouseOver)
+			g.fillRect(robotHomeX, robotHomeY, map.proportionalValue(longRobot), map.proportionalValue(widthRobot));
 		g.drawRect(robotHomeX, robotHomeY, map.proportionalValue(longRobot), map.proportionalValue(widthRobot));
 		g.rotate(Math.toRadians(getAngle()), map.canvasX(getX()), map.canvasY(getY()));
 	}
 
 	@Override
 	public void animate() {
-		robotHomeX = map.canvasX(getX() - longRobot / 2);
-		robotHomeY = map.canvasY(getY() + widthRobot / 2);
+
 	}
 
 	public void setVisible(boolean visible) {
@@ -124,7 +129,7 @@ public class RobotHome implements Animated, AnimatedMouseListener {
 
 	@Override
 	public Shape getShape() {
-		return new Rectangle2D.Double(robotHomeX, robotHomeY, map.proportionalValue(longRobot),map.proportionalValue(widthRobot));
+		return new Rectangle2D.Double(robotHomeX, robotHomeY, map.proportionalValue(longRobot), map.proportionalValue(widthRobot));
 	}
 
 	@Override
@@ -138,28 +143,32 @@ public class RobotHome implements Animated, AnimatedMouseListener {
 	}
 
 	@Override
-	public void mousePressed(Animated source, MouseEvent e) {
-		
+	public void mousePressed(double x, double y) {
+		mouseX = x;
+		mouseY = y;
+		setTranslate(mouseX, mouseY);
 	}
 
 	@Override
-	public void mouseReleased(Animated source, MouseEvent e) {
-
+	public void mouseDragged(double x, double y) {
+		setTranslate(x - mouseX, y - mouseY);
+		mouseX = x;
+		mouseY = y;
 	}
 
 	@Override
-	public void mouseDragged(Animated source, MouseEvent e) {
-
+	public void mouseEntered() {
+		mouseOver = true;
 	}
 
 	@Override
-	public void mouseEntered(Animated source, MouseEvent e) {
-		color = Color.BLACK;
+	public void mouseExited() {
+		mouseOver = false;
 	}
 
-	@Override
-	public void mouseExited(Animated source, MouseEvent e) {
-		color = Color.BLUE;
+	public void setTranslate(double x, double y) {
+		this.x += x *(double) map.getProportion();
+		this.y -= y *(double) map.getProportion();
 	}
 
 }
