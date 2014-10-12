@@ -40,11 +40,6 @@ import javax.swing.SwingUtilities;
 
 import app.map.Map;
 
-/**
- * Animator
- * 
- * @author Saul Pina - sauljp07@gmail.com
- */
 public class Animator implements Runnable {
 
 	public static final int ZOOM_PROPORTION = 20;
@@ -71,6 +66,9 @@ public class Animator implements Runnable {
 	private Graphics2D backGraphics;
 	private Map map;
 	private int strokeSize;
+	private int yMouseAnimated;
+	private int xMouseAnimated;
+	private boolean enableMouseListenerAnimated;
 
 	public int getStrokeSize() {
 		return strokeSize;
@@ -371,6 +369,7 @@ public class Animator implements Runnable {
 
 	public void removeAnimateds() {
 		animateds.removeAllElements();
+		animatedsMouseListener.removeAllElements();
 	}
 
 	public void setSizeAndRefresh(int width, int height) {
@@ -419,6 +418,8 @@ public class Animator implements Runnable {
 	}
 
 	public synchronized void animatorMouseListener(MouseEvent e) {
+		if (!enableMouseListenerAnimated)
+			return;
 		for (int i = 0; i < animatedsMouseListener.size(); i++) {
 			Animated animated = animatedsMouseListener.get(i);
 			if (animated.getShape() != null && animated.getAnimatedMouseListener() != null) {
@@ -432,24 +433,20 @@ public class Animator implements Runnable {
 
 				Shape shape = new Rectangle2D.Double(x, y, width, height);
 
-				// (height + height * zoomH / ZOOM_PROPORTION)
-
-				double xMouse =  zoomWidth(e.getPoint().x);
-				double yMouse =  zoomHeight(e.getPoint().y);
-
-				System.out.println(xMouse + " " + yMouse);
-				System.out.println(e.getPoint().x + " " + e.getPoint().y);
-				System.out.println((double)e.getPoint().x / zoomWidth(e.getPoint().x));
-				System.out.println((double)e.getPoint().y / zoomHeight(e.getPoint().y));
-				System.out.println();
 				if (shape.contains(e.getPoint())) {
 					if (e.getID() == MouseEvent.MOUSE_MOVED)
 						animated.getAnimatedMouseListener().mouseEntered();
-					else if (e.getID() == MouseEvent.MOUSE_DRAGGED && SwingUtilities.isLeftMouseButton(e))
-						animated.getAnimatedMouseListener().mouseDragged(xMouse, yMouse);
-					else if (e.getID() == MouseEvent.MOUSE_PRESSED && SwingUtilities.isLeftMouseButton(e))
-						animated.getAnimatedMouseListener().mousePressed(xMouse, yMouse);
-
+					else if (e.getID() == MouseEvent.MOUSE_DRAGGED && SwingUtilities.isLeftMouseButton(e)) {
+						xMouseAnimated = (int) ((e.getPoint().x - xMouseAnimated) * (double) e.getPoint().x / (double) zoomHeight(e.getPoint().x));
+						yMouseAnimated = (int) ((e.getPoint().y - yMouseAnimated) * (double) e.getPoint().x / (double) zoomHeight(e.getPoint().x));
+						animated.getAnimatedMouseListener().mouseDragged(xMouseAnimated, yMouseAnimated);
+						xMouseAnimated = e.getPoint().x;
+						yMouseAnimated = e.getPoint().y;
+					} else if (e.getID() == MouseEvent.MOUSE_PRESSED && SwingUtilities.isLeftMouseButton(e)) {
+						xMouseAnimated = e.getPoint().x;
+						yMouseAnimated = e.getPoint().y;
+						animated.getAnimatedMouseListener().mousePressed();
+					}
 				} else {
 					animated.getAnimatedMouseListener().mouseExited();
 				}
@@ -466,5 +463,9 @@ public class Animator implements Runnable {
 			}
 			animateds.set(j + 1, aux);
 		}
+	}
+
+	public void enableMouseListenerAnimated(boolean b) {
+		enableMouseListenerAnimated = b;
 	}
 }

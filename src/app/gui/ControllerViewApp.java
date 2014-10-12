@@ -24,6 +24,8 @@ package app.gui;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Vector;
@@ -50,6 +52,7 @@ import app.aria.architecture.reactive.ArArchitectureReactive;
 import app.aria.connection.ArConnector;
 import app.aria.exception.ArException;
 import app.aria.robot.ArRobotMobile;
+import app.map.Goal;
 import app.map.Robot;
 import app.map.Map;
 import app.map.RobotHome;
@@ -99,10 +102,11 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		viewApp.getBtnDisconnect().setEnabled(false);
 
 		animator = new Animator(viewApp.getCanvasAnimation());
+		animator.enableMouseListenerAnimated(true);
 		setAntialiasing(Boolean.parseBoolean(Config.get("ANIMATION_ANTIALIASING")));
 		animator.setStrokeSize(Integer.parseInt(Config.get("ANIMATION_STROKESIZE")));
 		animator.setFPS(Integer.parseInt(Config.get("ANIMATION_FPS")));
-		animator.start();
+		animator.start();		
 
 		viewApp.getSpnFPS().setModel(new SpinnerNumberModel(Integer.parseInt(Config.get("ANIMATION_FPS")), 1, 100, 1));
 		int proportion = Integer.parseInt(Config.get("ANIMATION_PROPORTION"));
@@ -114,8 +118,26 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 
 		int initMapSize = 6000;
 
-		map = new Map(new RobotHome(0, 0, 0), -initMapSize, initMapSize, -initMapSize, initMapSize);
+		map = new Map(new RobotHome(0, 0, 0), new Goal(ArRobotMobile.LONG * 2, 0, 0), -initMapSize, initMapSize, -initMapSize, initMapSize);
 		animator.showMap(map);
+		updateStartEndPoint();
+		viewApp.getSpnMaxSpeed().setModel(new SpinnerNumberModel(Integer.parseInt(Config.get("ROBOT_MAXSPEED")), 1, 500, 1));
+
+		viewApp.getCanvasAnimation().addMouseMotionListener(new MouseAdapter() {
+			@Override
+			public void mouseDragged(MouseEvent arg0) {
+				updateStartEndPoint();
+			}
+		});
+	}
+
+	public void updateStartEndPoint() {
+		viewApp.getSpnEndX().setValue(map.getGoal().getX());
+		viewApp.getSpnEndY().setValue(map.getGoal().getY());
+		viewApp.getSpnEndAngle().setValue(map.getGoal().getAngle());
+		viewApp.getSpnInitX().setValue(map.getRobotHome().getX());
+		viewApp.getSpnInitY().setValue(map.getRobotHome().getY());
+		viewApp.getSpnInitAngle().setValue(map.getRobotHome().getAngle());
 	}
 
 	@Override
@@ -248,7 +270,7 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		}
 
 		Log.info(getClass(), Translate.get("INFO_MAPLOADED") + ": " + fileName);
-
+		updateStartEndPoint();
 	}
 
 	public void about() {
@@ -264,6 +286,7 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		if (arch != null) {
 			arch.stop();
 			connector.close();
+			animator.enableMouseListenerAnimated(true);
 		}
 		viewApp.getTxtPort().setEnabled(true);
 		viewApp.getTxtHost().setEnabled(true);
@@ -271,6 +294,13 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		viewApp.getBtnConnect().setEnabled(true);
 		viewApp.getCmbArch().setEnabled(true);
 		viewApp.getMenuItemLoadMap().setEnabled(true);
+
+		viewApp.getSpnEndX().setEnabled(true);
+		viewApp.getSpnEndY().setEnabled(true);
+		viewApp.getSpnEndAngle().setEnabled(true);
+		viewApp.getSpnInitX().setEnabled(true);
+		viewApp.getSpnInitY().setEnabled(true);
+		viewApp.getSpnInitAngle().setEnabled(true);
 	}
 
 	public void connect() {
@@ -323,6 +353,7 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 
 		try {
 			arch.start();
+			animator.enableMouseListenerAnimated(false);
 		} catch (ArException e) {
 			Log.error(getClass(), Translate.get("INFO_UNSUCCESSFULARCHSTART"), e);
 			return;
@@ -336,6 +367,13 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		viewApp.getBtnConnect().setEnabled(false);
 		viewApp.getCmbArch().setEnabled(false);
 		viewApp.getMenuItemLoadMap().setEnabled(false);
+
+		viewApp.getSpnEndX().setEnabled(false);
+		viewApp.getSpnEndY().setEnabled(false);
+		viewApp.getSpnEndAngle().setEnabled(false);
+		viewApp.getSpnInitX().setEnabled(false);
+		viewApp.getSpnInitY().setEnabled(false);
+		viewApp.getSpnInitAngle().setEnabled(false);
 	}
 
 	public void showConfig() {
@@ -362,6 +400,49 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 			setAnimationProportion();
 		else if (e.getSource().equals(viewApp.getSpnStrokeSize()))
 			setAnimationStrokeSize();
+		else if (e.getSource().equals(viewApp.getSpnMaxSpeed()))
+			setRobotMaxSpeed();
+		else if (e.getSource().equals(viewApp.getSpnInitAngle()))
+			setStartAngle();
+		else if (e.getSource().equals(viewApp.getSpnInitX()))
+			setStartX();
+		else if (e.getSource().equals(viewApp.getSpnInitY()))
+			setStartY();
+		else if (e.getSource().equals(viewApp.getSpnEndAngle()))
+			setEndAngle();
+		else if (e.getSource().equals(viewApp.getSpnEndX()))
+			setEndX();
+		else if (e.getSource().equals(viewApp.getSpnEndY()))
+			setEndY();
+	}
+
+	public void setEndY() {
+		map.getGoal().setY((int) viewApp.getSpnEndY().getValue());
+	}
+
+	public void setEndX() {
+		map.getGoal().setX((int) viewApp.getSpnEndX().getValue());
+	}
+
+	public void setEndAngle() {
+		map.getGoal().setAngle(Double.valueOf(viewApp.getSpnEndAngle().getValue().toString()));
+	}
+
+	public void setStartY() {
+		map.getRobotHome().setY((int) viewApp.getSpnInitY().getValue());
+	}
+
+	public void setStartX() {
+		map.getRobotHome().setX((int) viewApp.getSpnInitX().getValue());
+	}
+
+	public void setStartAngle() {
+		map.getRobotHome().setAngle(Double.valueOf(viewApp.getSpnInitAngle().getValue().toString()));
+	}
+
+	public void setRobotMaxSpeed() {
+		if (robot != null)
+			robot.setMaxSpeed((int) viewApp.getSpnMaxSpeed().getValue());
 	}
 
 	public void setAnimationFPS() {

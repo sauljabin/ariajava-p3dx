@@ -43,8 +43,6 @@ public class RobotHome implements Animated, AnimatedMouseListener {
 	private int robotHomeY;
 	private Color color;
 	private boolean mouseOver;
-	private double mouseX;
-	private double mouseY;
 
 	public Map getMap() {
 		return map;
@@ -143,17 +141,13 @@ public class RobotHome implements Animated, AnimatedMouseListener {
 	}
 
 	@Override
-	public void mousePressed(double x, double y) {
-		mouseX = x;
-		mouseY = y;
-		setTranslate(mouseX, mouseY);
+	public void mousePressed() {
+
 	}
 
 	@Override
-	public void mouseDragged(double x, double y) {
-		setTranslate(x - mouseX, y - mouseY);
-		mouseX = x;
-		mouseY = y;
+	public void mouseDragged(int x, int y) {
+		setTranslate(x, y);
 	}
 
 	@Override
@@ -167,8 +161,8 @@ public class RobotHome implements Animated, AnimatedMouseListener {
 	}
 
 	public void setTranslate(double x, double y) {
-		this.x += x *(double) map.getProportion();
-		this.y -= y *(double) map.getProportion();
+		this.x += x * map.getProportion();
+		this.y -= y * map.getProportion();
 	}
 
 }

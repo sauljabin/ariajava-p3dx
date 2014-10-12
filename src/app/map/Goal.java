@@ -24,18 +24,24 @@ package app.map;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Shape;
+import java.awt.geom.Rectangle2D;
 
 import app.animation.Animated;
 import app.animation.AnimatedMouseListener;
 import app.aria.robot.ArRobotMobile;
 
-public class Goal implements Animated {
+public class Goal implements Animated, AnimatedMouseListener {
 
 	private int x;
 	private int y;
 	private double angle;
 	private boolean visible;
 	private Map map;
+	private boolean mouseOver;
+	private int goalX;
+	private int goalY;
+	private int widthRobot;
+	private int longRobot;
 
 	public Map getMap() {
 		return map;
@@ -87,17 +93,18 @@ public class Goal implements Animated {
 
 	@Override
 	public void initAnimated() {
-
+		widthRobot = ArRobotMobile.WIDTH;
+		longRobot = ArRobotMobile.LONG;
 	}
 
 	@Override
 	public void paint(Graphics2D g) {
-		g.setColor(Color.RED);
-		int widthRobot =  ArRobotMobile.WIDTH;
-		int longRobot = ArRobotMobile.LONG;
-		int goalX = map.canvasX(getX() - longRobot / 2);
-		int goalY = map.canvasY(getY() + widthRobot / 2);
+		g.setColor(Color.RED);		
+		goalX = map.canvasX(getX() - longRobot / 2);
+		goalY = map.canvasY(getY() + widthRobot / 2);
 		g.rotate(-Math.toRadians(getAngle()), map.canvasX(getX()), map.canvasY(getY()));
+		if (mouseOver)
+			g.fillRect(goalX, goalY, map.proportionalValue(longRobot), map.proportionalValue(widthRobot));
 		g.drawRect(goalX, goalY, map.proportionalValue(longRobot), map.proportionalValue(widthRobot));
 		g.rotate(Math.toRadians(getAngle()), map.canvasX(getX()), map.canvasY(getY()));
 	}
@@ -118,7 +125,7 @@ public class Goal implements Animated {
 
 	@Override
 	public Shape getShape() {
-		return null;
+		return new Rectangle2D.Double(goalX, goalY, map.proportionalValue(longRobot), map.proportionalValue(widthRobot));
 	}
 
 	@Override
@@ -128,7 +135,32 @@ public class Goal implements Animated {
 
 	@Override
 	public AnimatedMouseListener getAnimatedMouseListener() {
-		return null;
+		return this;
+	}
+
+	@Override
+	public void mousePressed() {
+
+	}
+
+	@Override
+	public void mouseDragged(int x, int y) {
+		setTranslate(x, y);
+	}
+
+	@Override
+	public void mouseEntered() {
+		mouseOver = true;
+	}
+
+	@Override
+	public void mouseExited() {
+		mouseOver = false;
+	}
+
+	public void setTranslate(double x, double y) {
+		this.x += x * map.getProportion();
+		this.y -= y * map.getProportion();
 	}
 
 }

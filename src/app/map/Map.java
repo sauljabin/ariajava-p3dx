@@ -32,6 +32,7 @@ import java.util.List;
 
 import app.animation.Animated;
 import app.animation.AnimatedMouseListener;
+import app.aria.robot.ArRobotMobile;
 
 public class Map implements Animated {
 
@@ -235,6 +236,8 @@ public class Map implements Animated {
 			}
 		}
 		br.close();
+		if (getGoal() == null && getRobotHome() != null)
+			setGoal(new Goal(robotHome.getX() + ArRobotMobile.LONG * 2, robotHome.getY(), robotHome.getAngle()));
 	}
 
 	public void addLine(int x1, int y1, int x2, int y2) {

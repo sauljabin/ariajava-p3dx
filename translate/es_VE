@@ -45,6 +45,14 @@ GUI_STOP=Parar
 GUI_PROPORTION=Proporción
 GUI_STROKESIZE=Trazo
 GUI_POSITIONUPDATE=Act. Posición
+GUI_CALIBRATION=Calibración
+GUI_X=x
+GUI_Y=y
+GUI_ANGLE=Ángulo
+GUI_STARTPOINT=Posición inicial
+GUI_ENDPOINT=Posición final
+GUI_ROBOT=Robot
+GUI_MAXSPEED=Velocidad max.
 
 ERROR_NOSAVECONFIG=No se pudo actualizar el archivo de configuración
 ERROR_NOARCHINSTANCE=No se puede instanciar la arquitectura
