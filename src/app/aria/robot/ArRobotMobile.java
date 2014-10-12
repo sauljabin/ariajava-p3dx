@@ -29,7 +29,7 @@ import com.mobilerobots.Aria.ArRobot;
 import com.mobilerobots.Aria.ArSonarDevice;
 
 public class ArRobotMobile extends ArRobot {
-	
+
 	public static final int LONG = 455;
 	public static final int WIDTH = 381;
 	public static final int STOP_DISTANCE = 400;
@@ -43,6 +43,7 @@ public class ArRobotMobile extends ArRobot {
 	private ArSonarDevice sonar;
 	private Robot animatedRobot;
 	protected ArRangeDevice rangeSonar;
+	private int maxSpeed;
 
 	public ArRobotMobile(double initX, double initY, double initAngle) {
 		this.initX = initX;
@@ -125,6 +126,14 @@ public class ArRobotMobile extends ArRobot {
 
 	public void setRangeSonar(ArRangeDevice rangeSonar) {
 		this.rangeSonar = rangeSonar;
+	}
+
+	public void setMaxSpeed(int maxSpeed) {
+		this.maxSpeed = maxSpeed;
+	}
+
+	public int getMaxSpeed() {
+		return maxSpeed;
 	}
 
 }
