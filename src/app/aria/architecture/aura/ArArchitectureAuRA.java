@@ -26,12 +26,12 @@ import app.map.Map;
 
 public class ArArchitectureAuRA extends ArArchitecture {
 
+	private ArMisionPlanner arMisionPlanner;
+
 	public ArArchitectureAuRA(String host, int tcpPort, Map map) {
 		super("AuRA", host, tcpPort, map);
-		 arMisionPlanner = new ArMisionPlanner(map);
+		arMisionPlanner = new ArMisionPlanner(map);
 	}
-
-	private ArMisionPlanner arMisionPlanner;
 
 	@Override
 	public void behavior() {

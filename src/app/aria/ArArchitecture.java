@@ -33,7 +33,8 @@ import com.mobilerobots.Aria.ArSimpleConnector;
 import com.mobilerobots.Aria.ArSonarDevice;
 import com.mobilerobots.Aria.Aria;
 
-public abstract class ArArchitecture implements Runnable, Comparable<ArArchitecture> {
+public abstract class ArArchitecture implements Runnable,
+		Comparable<ArArchitecture> {
 
 	private String name;
 	private String host;
@@ -45,6 +46,13 @@ public abstract class ArArchitecture implements Runnable, Comparable<ArArchitect
 	private ArSimpleConnector conn;
 	private boolean run;
 	private Map map;
+
+	public ArArchitecture(String name, String host, int tcpPort, Map map) {
+		this.name = name;
+		this.host = host;
+		this.tcpPort = tcpPort;
+		this.map = map;
+	}
 
 	public Map getMap() {
 		return map;
@@ -78,13 +86,6 @@ public abstract class ArArchitecture implements Runnable, Comparable<ArArchitect
 		return rangeSonar;
 	}
 
-	public ArArchitecture(String name, String host, int tcpPort, Map map) {
-		this.name = name;
-		this.host = host;
-		this.tcpPort = tcpPort;
-		this.map = map;
-	}
-
 	@Override
 	public String toString() {
 		return name;
@@ -105,9 +106,11 @@ public abstract class ArArchitecture implements Runnable, Comparable<ArArchitect
 			thread = new Thread(this);
 
 			Aria.init();
-			conn = new ArSimpleConnector(new String[] { "-rrtp", String.format("%d", tcpPort), "-rh", host });
+			conn = new ArSimpleConnector(new String[] { "-rrtp",
+					String.format("%d", tcpPort), "-rh", host });
 			arRobot = new ArRobot();
-			arRobot.setEncoderTransform(new ArPose(map.getRobotHome().getX(), map.getRobotHome().getY(), map.getRobotHome().getAngle()));
+			arRobot.setEncoderTransform(new ArPose(map.getRobotHome().getX(),
+					map.getRobotHome().getY(), map.getRobotHome().getAngle()));
 			sonar = new ArSonarDevice();
 
 			if (!Aria.parseArgs()) {

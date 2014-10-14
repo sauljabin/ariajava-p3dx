@@ -21,12 +21,57 @@
 
 package app.aria.architecture.aura;
 
+import java.util.ArrayList;
+
 import app.map.Map;
+import app.path.geometry.Point;
 
 public class ArPlanSequencer {
 
-	public ArPlanSequencer(Map map) {
+	private ArrayList<Point> way;
+	private ArrayList<Point> path;
+	private Point start;
+	private Point finish;
 
+	public ArPlanSequencer(Map map) {
+		way = new ArrayList<Point>();
+	}
+
+	public boolean continuePath() {
+		if (start == null || finish == null) {
+			if(path != null){
+				
+			}
+		} else if (targetObtained()) {
+			way.add(start);
+			start = finish;
+			finish = path.remove(0);
+		} else if (brokenPath()) {
+			return true;
+		} else {
+			toFinish();
+		}
+		return false;
+	}
+
+	private void toFinish() {
+		// TODO Auto-generated method stub
+
+	}
+
+	private boolean brokenPath() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	private boolean targetObtained() {
+		
+		return false;
+	}
+
+	public void newPath(ArrayList<Point> path) {
+		this.path = path;
+		
 	}
 
 }

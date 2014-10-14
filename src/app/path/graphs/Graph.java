@@ -1,27 +1,21 @@
 package app.path.graphs;
 
-import java.awt.Color;
-import java.awt.Graphics2D;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.TreeSet;
 
-import app.gui.animation.Animated;
-import app.map.Map;
 import app.path.geometry.Point;
 import app.path.graphs.components.Link;
 
-public class Graph implements Animated {
+public class Graph {
 
 	private TreeSet<Point> points;
 	private ArrayList<Link> links;
 	private Double greaterWeight;
 	private Double lowerWeight;
-	private Map map;
 
-	public Graph(Map map) {
+	public Graph() {
 		super();
-		this.map = map;
 		this.points = new TreeSet<Point>(new Comparator<Point>() {
 			@Override
 			public int compare(Point o1, Point o2) {
@@ -120,40 +114,6 @@ public class Graph implements Animated {
 		double max = (1.0 / calculateLowerWeight())
 				- (1.0 / calculateGreaterWeight());
 		return (value * 0.00999 / max);
-	}
-
-	@Override
-	public void initAnimated() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public void paint(Graphics2D g) {
-		g.setColor(new Color(255, 0, 0, 100));
-		for (int i = 0; i < links.size(); i++) {
-			g.drawLine(map.canvasX(links.get(i).getPointA().getX()),
-					map.canvasY(links.get(i).getPointA().getY()),
-					map.canvasX(links.get(i).getPointB().getX()),
-					map.canvasY(links.get(i).getPointB().getY()));
-		}
-	}
-
-	@Override
-	public void animate() {
-		// TODO Auto-generated method stub
-
-	}
-
-	@Override
-	public int getZIndex() {
-		// TODO Auto-generated method stub
-		return 0;
-	}
-
-	@Override
-	public boolean isVisible() {
-		return true;
 	}
 
 }
