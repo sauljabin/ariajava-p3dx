@@ -23,17 +23,26 @@ package app.map;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Shape;
+import java.awt.geom.Rectangle2D;
 
-import app.aria.animation.AnRobot;
-import app.gui.animation.Animated;
+import app.animation.Animated;
+import app.animation.AnimatedMouseListener;
+import app.aria.robot.ArRobotMobile;
 
-public class RobotHome implements Animated {
+public class RobotHome implements Animated, AnimatedMouseListener {
 
 	private int x;
 	private int y;
 	private double angle;
 	private boolean visible;
 	private Map map;
+	private int widthRobot;
+	private int longRobot;
+	private int robotHomeX;
+	private int robotHomeY;
+	private Color color;
+	private boolean mouseOver;
 
 	public Map getMap() {
 		return map;
@@ -85,17 +94,19 @@ public class RobotHome implements Animated {
 
 	@Override
 	public void initAnimated() {
-
+		widthRobot = ArRobotMobile.WIDTH;
+		longRobot = ArRobotMobile.LONG;
+		color = Color.BLUE;
 	}
 
 	@Override
 	public void paint(Graphics2D g) {
-		g.setColor(Color.BLUE);
-		int widthRobot = AnRobot.WIDTH;
-		int longRobot = AnRobot.LONG;
-		int robotHomeX = map.canvasX(getX() - longRobot / 2);
-		int robotHomeY = map.canvasY(getY() + widthRobot / 2);
+		robotHomeX = map.canvasX(getX() - longRobot / 2);
+		robotHomeY = map.canvasY(getY() + widthRobot / 2);
+		g.setColor(color);
 		g.rotate(-Math.toRadians(getAngle()), map.canvasX(getX()), map.canvasY(getY()));
+		if (mouseOver)
+			g.fillRect(robotHomeX, robotHomeY, map.proportionalValue(longRobot), map.proportionalValue(widthRobot));
 		g.drawRect(robotHomeX, robotHomeY, map.proportionalValue(longRobot), map.proportionalValue(widthRobot));
 		g.rotate(Math.toRadians(getAngle()), map.canvasX(getX()), map.canvasY(getY()));
 	}
@@ -105,11 +116,6 @@ public class RobotHome implements Animated {
 
 	}
 
-	@Override
-	public int getZIndex() {
-		return 10;
-	}
-
 	public void setVisible(boolean visible) {
 		this.visible = visible;
 	}
@@ -117,6 +123,46 @@ public class RobotHome implements Animated {
 	@Override
 	public boolean isVisible() {
 		return visible;
+	}
+
+	@Override
+	public Shape getShape() {
+		return new Rectangle2D.Double(robotHomeX, robotHomeY, map.proportionalValue(longRobot), map.proportionalValue(widthRobot));
+	}
+
+	@Override
+	public int getZ() {
+		return 100;
+	}
+
+	@Override
+	public AnimatedMouseListener getAnimatedMouseListener() {
+		return this;
+	}
+
+	@Override
+	public void mousePressed() {
+
+	}
+
+	@Override
+	public void mouseDragged(int x, int y) {
+		setTranslate(x, y);
+	}
+
+	@Override
+	public void mouseEntered() {
+		mouseOver = true;
+	}
+
+	@Override
+	public void mouseExited() {
+		mouseOver = false;
+	}
+
+	public void setTranslate(double x, double y) {
+		this.x += x * map.getProportion();
+		this.y -= y * map.getProportion();
 	}
 
 }

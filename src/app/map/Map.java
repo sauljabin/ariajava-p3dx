@@ -23,13 +23,16 @@ package app.map;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Shape;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
-import app.gui.animation.Animated;
+import app.animation.Animated;
+import app.animation.AnimatedMouseListener;
+import app.aria.robot.ArRobotMobile;
 import app.path.geometry.Point;
 import app.path.graphs.Graph;
 
@@ -157,8 +160,7 @@ public class Map implements Animated {
 		robotHome.setMap(this);
 	}
 
-	public Map(RobotHome robotHome, Goal goal, int minX, int maxX, int minY,
-			int maxY) {
+	public Map(RobotHome robotHome, Goal goal, int minX, int maxX, int minY, int maxY) {
 		this.robotHome = robotHome;
 		this.minX = minX;
 		this.maxX = maxX;
@@ -184,7 +186,7 @@ public class Map implements Animated {
 	}
 
 	public Map(int minX, int maxX, int minY, int maxY) {
-		this(new RobotHome(), minX, maxX, minY, maxY);
+		this(new RobotHome(), null, minX, maxX, minY, maxY);
 		this.minX = minX;
 		this.maxX = maxX;
 		this.minY = minY;
@@ -192,7 +194,7 @@ public class Map implements Animated {
 	}
 
 	public Map() {
-		this(0, 0, 0, 0);
+		this(new RobotHome(), null, 0, 0, 0, 0);
 	}
 
 	public String getPath() {
@@ -211,44 +213,34 @@ public class Map implements Animated {
 
 		while ((stringRead = br.readLine()) != null) {
 			if (stringRead.startsWith(numberLinesLabel)) {
-				totalLines = Integer.parseInt(stringRead
-						.substring(numberLinesLabel.length()));
+				totalLines = Integer.parseInt(stringRead.substring(numberLinesLabel.length()));
 			} else if (stringRead.startsWith(lineMinPosLabel)) {
-				String[] tokens = stringRead
-						.substring(lineMinPosLabel.length()).split(" ");
+				String[] tokens = stringRead.substring(lineMinPosLabel.length()).split(" ");
 				minX = Integer.parseInt(tokens[0]);
 				minY = Integer.parseInt(tokens[1]);
 			} else if (stringRead.startsWith(lineMaxPosLabel)) {
-				String[] tokens = stringRead
-						.substring(lineMaxPosLabel.length()).split(" ");
+				String[] tokens = stringRead.substring(lineMaxPosLabel.length()).split(" ");
 				maxX = Integer.parseInt(tokens[0]);
 				maxY = Integer.parseInt(tokens[1]);
 			} else if (stringRead.startsWith(robotLabel)) {
-				String[] tokens = stringRead.substring(robotLabel.length())
-						.split(" ");
-				setRobotHome(new RobotHome(Integer.parseInt(tokens[0]),
-						Integer.parseInt(tokens[1]),
-						Double.parseDouble(tokens[2])));
+				String[] tokens = stringRead.substring(robotLabel.length()).split(" ");
+				setRobotHome(new RobotHome(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[1]), Double.parseDouble(tokens[2])));
 			} else if (stringRead.startsWith(goalLabel)) {
-				String[] tokens = stringRead.substring(goalLabel.length())
-						.split(" ");
-				setGoal(new Goal(Integer.parseInt(tokens[0]),
-						Integer.parseInt(tokens[1]),
-						Double.parseDouble(tokens[2])));
+				String[] tokens = stringRead.substring(goalLabel.length()).split(" ");
+				setGoal(new Goal(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[1]), Double.parseDouble(tokens[2])));
 			} else if (stringRead.startsWith(linesLabel)) {
 				linesSector = true;
 			} else if (linesSector) {
 				String[] tokens = stringRead.split(" ");
-				addLine(Integer.parseInt(tokens[0]),
-						Integer.parseInt(tokens[1]),
-						Integer.parseInt(tokens[2]),
-						Integer.parseInt(tokens[3]));
+				addLine(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2]), Integer.parseInt(tokens[3]));
 				if (++countLine == totalLines) {
 					linesSector = false;
 				}
 			}
 		}
 		br.close();
+		if (getGoal() == null && getRobotHome() != null)
+			setGoal(new Goal(robotHome.getX() + ArRobotMobile.LONG * 2, robotHome.getY(), robotHome.getAngle()));
 	}
 
 	private void addLine(int x1, int y1, int x2, int y2) {
@@ -313,17 +305,12 @@ public class Map implements Animated {
 	public void paint(Graphics2D g) {
 		g.setColor(Color.BLACK);
 		for (int i = 0; i < lines.size(); i++) {
-			g.drawLine(canvasX(lines.get(i).getX1()), canvasY(lines.get(i)
-					.getY1()), canvasX(lines.get(i).getX2()), canvasY(lines
-					.get(i).getY2()));
+			g.drawLine(canvasX(lines.get(i).getX1()), canvasY(lines.get(i).getY1()), canvasX(lines.get(i).getX2()), canvasY(lines.get(i).getY2()));
 		}
 		if (graph != null) {
 			g.setColor(new Color(255, 0, 0, 100));
 			for (int i = 0; i < graph.getLinks().size(); i++) {
-				g.drawLine(canvasX(graph.getLinks().get(i).getPointA().getX()),
-						canvasY(graph.getLinks().get(i).getPointA().getY()),
-						canvasX(graph.getLinks().get(i).getPointB().getX()),
-						canvasY(graph.getLinks().get(i).getPointB().getY()));
+				g.drawLine(canvasX(graph.getLinks().get(i).getPointA().getX()), canvasY(graph.getLinks().get(i).getPointA().getY()), canvasX(graph.getLinks().get(i).getPointB().getX()), canvasY(graph.getLinks().get(i).getPointB().getY()));
 			}
 		}
 	}
@@ -333,11 +320,6 @@ public class Map implements Animated {
 
 	}
 
-	@Override
-	public int getZIndex() {
-		return 0;
-	}
-
 	public void setVisible(boolean visible) {
 		this.visible = visible;
 	}
@@ -345,6 +327,21 @@ public class Map implements Animated {
 	@Override
 	public boolean isVisible() {
 		return visible;
+	}
+
+	@Override
+	public Shape getShape() {
+		return null;
+	}
+
+	@Override
+	public int getZ() {
+		return 0;
+	}
+
+	@Override
+	public AnimatedMouseListener getAnimatedMouseListener() {
+		return null;
 	}
 
 	public ArrayList<Point> getPoints() {

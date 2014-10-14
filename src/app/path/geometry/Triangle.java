@@ -1,10 +1,33 @@
+/**
+ * 
+ * Copyright (c) 2014 Saul Piña <sauljp07@gmail.com>, Jorge Parra <thejorgemylio@gmail.com>
+ * 
+ * This file is part of AriaJavaP3DX.
+ *
+ * AriaJavaP3DX is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * AriaJavaP3DX is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with AriaJavaP3DX.  If not, see <http://www.gnu.org/licenses/>.
+ * 
+ */
+
 package app.path.geometry;
 
 import java.awt.Color;
 import java.awt.Graphics2D;
+import java.awt.Shape;
 import java.util.ArrayList;
 
-import app.gui.animation.Animated;
+import app.animation.Animated;
+import app.animation.AnimatedMouseListener;
 import app.map.Map;
 import app.path.graphs.components.Link;
 
@@ -112,15 +135,27 @@ public class Triangle implements Animated {
 	}
 
 	@Override
-	public int getZIndex() {
+	public boolean isVisible() {
+		// TODO Auto-generated method stub
+		return true;
+	}
+
+	@Override
+	public Shape getShape() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	@Override
+	public int getZ() {
 		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
-	public boolean isVisible() {
+	public AnimatedMouseListener getAnimatedMouseListener() {
 		// TODO Auto-generated method stub
-		return true;
+		return null;
 	}
 
 }

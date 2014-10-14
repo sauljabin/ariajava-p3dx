@@ -24,6 +24,8 @@ package app.gui;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.util.Vector;
@@ -43,12 +45,16 @@ import app.Config;
 import app.Log;
 import app.Theme;
 import app.Translate;
-import app.aria.ArArchitecture;
-import app.aria.animation.AnRobot;
+import app.animation.Animator;
+import app.aria.architecture.ArArchitecture;
+import app.aria.architecture.ArUpdaterPositionAnimation;
 import app.aria.architecture.aura.ArArchitectureAuRA;
 import app.aria.architecture.reactive.ArArchitectureReactive;
+import app.aria.connection.ArConnector;
 import app.aria.exception.ArException;
-import app.gui.animation.Animator;
+import app.aria.robot.ArRobotMobile;
+import app.map.Goal;
+import app.map.Robot;
 import app.map.Map;
 import app.map.RobotHome;
 import app.util.ClassW;
@@ -62,9 +68,12 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 	private ArArchitecture arch;
 	private Animator animator;
 	private Map map;
-	private AnRobot anRobot;
+	private Robot anRobot;
+	private ArRobotMobile robot;
+	private ArConnector connector;
 	public static final int TRANSLATE = 20;
 	public static final int ZOOM = 1;
+	public ArUpdaterPositionAnimation updaterPosition;
 
 	public ControllerViewApp() {
 		init();
@@ -95,19 +104,45 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		viewApp.getBtnDisconnect().setEnabled(false);
 
 		animator = new Animator(viewApp.getCanvasAnimation());
+		animator.enableMouseListenerAnimated(true);
 		setAntialiasing(Boolean.parseBoolean(Config.get("ANIMATION_ANTIALIASING")));
 		animator.setStrokeSize(Integer.parseInt(Config.get("ANIMATION_STROKESIZE")));
-		animator.start();
+		animator.setFPS(Integer.parseInt(Config.get("ANIMATION_FPS")));
+		animator.start();		
 
-		viewApp.getSpnFPS().setModel(new SpinnerNumberModel(animator.getFPS(), 1, 100, 1));
-		viewApp.getSpnProportion().setModel(new SpinnerNumberModel(Integer.parseInt(Config.get("ANIMATION_PROPORTION")), 1, 100, 1));
+		viewApp.getSpnFPS().setModel(new SpinnerNumberModel(Integer.parseInt(Config.get("ANIMATION_FPS")), 1, 100, 1));
+		int proportion = Integer.parseInt(Config.get("ANIMATION_PROPORTION"));
+		int minProportion = Integer.parseInt(Config.get("ANIMATION_MINPROPORTION"));
+		if (proportion < minProportion)
+			proportion = minProportion;
+		viewApp.getSpnProportion().setModel(new SpinnerNumberModel(proportion, minProportion, 100, 1));
 		viewApp.getSpnStrokeSize().setModel(new SpinnerNumberModel(Integer.parseInt(Config.get("ANIMATION_STROKESIZE")), 1, 100, 1));
-		viewApp.getSpnPositionUpdate().setModel(new SpinnerNumberModel(Integer.parseInt(Config.get("ANIMATION_POSITIONUPDATERATE")), 1, 100, 1));
 
 		int initMapSize = 6000;
 
-		map = new Map(new RobotHome(0, 0, 0), -initMapSize, initMapSize, -initMapSize, initMapSize);
+		map = new Map(new RobotHome(0, 0, 0), new Goal(ArRobotMobile.LONG * 2, 0, 0), -initMapSize, initMapSize, -initMapSize, initMapSize);
 		animator.showMap(map);
+		updateStartEndPoint();
+		viewApp.getSpnMaxSpeed().setModel(new SpinnerNumberModel(Integer.parseInt(Config.get("ROBOT_MAXSPEED")), 1, 500, 1));
+
+		viewApp.getCanvasAnimation().addMouseMotionListener(new MouseAdapter() {
+			@Override
+			public void mouseDragged(MouseEvent arg0) {
+				updateStartEndPoint();
+			}
+		});		
+		
+		viewApp.getSpnPositionUpdate().setModel(new SpinnerNumberModel(Integer.parseInt(Config.get("ANIMATION_POSITIONUPDATERATE")), 1, 100, 1));
+		
+	}
+
+	public void updateStartEndPoint() {
+		viewApp.getSpnEndX().setValue(map.getGoal().getX());
+		viewApp.getSpnEndY().setValue(map.getGoal().getY());
+		viewApp.getSpnEndAngle().setValue(map.getGoal().getAngle());
+		viewApp.getSpnInitX().setValue(map.getRobotHome().getX());
+		viewApp.getSpnInitY().setValue(map.getRobotHome().getY());
+		viewApp.getSpnInitAngle().setValue(map.getRobotHome().getAngle());
 	}
 
 	@Override
@@ -203,7 +238,6 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		} else {
 			viewApp.getBtnAntialiasingOnOff().setIcon(new ImageIcon(Theme.getIconPath("ANTIALIASING_ON")));
 			viewApp.getBtnAntialiasingOnOff().setToolTipText(Translate.get("GUI_ANTIALIASINGON"));
-
 		}
 
 		Config.set("ANIMATION_ANTIALIASING", String.valueOf(antialiasing));
@@ -241,7 +275,7 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		}
 
 		Log.info(getClass(), Translate.get("INFO_MAPLOADED") + ": " + fileName);
-
+		updateStartEndPoint();
 	}
 
 	public void about() {
@@ -255,8 +289,10 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 
 	public void disconnect() {
 		if (arch != null) {
+			updaterPosition.stop();
 			arch.stop();
-			Log.info(getClass(), Translate.get("INFO_CLOSECONN") + " " + arch.getName());
+			connector.close();
+			animator.enableMouseListenerAnimated(true);
 		}
 		viewApp.getTxtPort().setEnabled(true);
 		viewApp.getTxtHost().setEnabled(true);
@@ -264,6 +300,13 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		viewApp.getBtnConnect().setEnabled(true);
 		viewApp.getCmbArch().setEnabled(true);
 		viewApp.getMenuItemLoadMap().setEnabled(true);
+
+		viewApp.getSpnEndX().setEnabled(true);
+		viewApp.getSpnEndY().setEnabled(true);
+		viewApp.getSpnEndAngle().setEnabled(true);
+		viewApp.getSpnInitX().setEnabled(true);
+		viewApp.getSpnInitY().setEnabled(true);
+		viewApp.getSpnInitAngle().setEnabled(true);
 	}
 
 	public void connect() {
@@ -285,10 +328,32 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 			return;
 		}
 
+		robot = new ArRobotMobile(map.getRobotHome().getX(), map.getRobotHome().getY(), map.getRobotHome().getAngle());
+
+		updaterPosition = new ArUpdaterPositionAnimation(robot, Integer.parseInt(Config.get("ANIMATION_POSITIONUPDATERATE")));
+		
+		if (anRobot != null) {
+			animator.removeAnimated(anRobot);
+		}
+		anRobot = new Robot(map);
+		anRobot.updateAnimatedPosition(map.getRobotHome().getX(), map.getRobotHome().getY(), map.getRobotHome().getAngle());
+		animator.addAnimated(anRobot);
+
+		robot.setAnimatedRobot(anRobot);
+
+		connector = new ArConnector(host, port, robot);
+
+		try {
+			connector.connect();
+		} catch (ArException e) {
+			Log.error(getClass(), Translate.get("INFO_UNSUCCESSFULCONN"), e);
+			return;
+		}
+
 		if (classArch.getValue().equals(ArArchitectureAuRA.class)) {
-			arch = new ArArchitectureAuRA(host, port, map);
+			arch = new ArArchitectureAuRA(robot, map);
 		} else if (classArch.getValue().equals(ArArchitectureReactive.class)) {
-			arch = new ArArchitectureReactive(host, port, map);
+			arch = new ArArchitectureReactive(robot, map);
 		} else {
 			Log.error(getClass(), Translate.get("ERROR_NOARCHINSTANCE"));
 			return;
@@ -296,16 +361,10 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 
 		try {
 			arch.start();
-			if (anRobot != null) {
-				animator.removeAnimated(anRobot);
-				anRobot.stop();
-			}
-			anRobot = new AnRobot(arch.getRobot(), map);
-			anRobot.setUpdateAnimatedPositionRate(Integer.parseInt(Config.get("ANIMATION_POSITIONUPDATERATE")));
-			anRobot.start();
-			animator.addAnimated(anRobot);
+			updaterPosition.start();
+			animator.enableMouseListenerAnimated(false);
 		} catch (ArException e) {
-			Log.error(getClass(), Translate.get("INFO_UNSUCCESSFULCONN"), e);
+			Log.error(getClass(), Translate.get("INFO_UNSUCCESSFULARCHSTART"), e);
 			return;
 		}
 
@@ -317,6 +376,13 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		viewApp.getBtnConnect().setEnabled(false);
 		viewApp.getCmbArch().setEnabled(false);
 		viewApp.getMenuItemLoadMap().setEnabled(false);
+
+		viewApp.getSpnEndX().setEnabled(false);
+		viewApp.getSpnEndY().setEnabled(false);
+		viewApp.getSpnEndAngle().setEnabled(false);
+		viewApp.getSpnInitX().setEnabled(false);
+		viewApp.getSpnInitY().setEnabled(false);
+		viewApp.getSpnInitAngle().setEnabled(false);
 	}
 
 	public void showConfig() {
@@ -338,29 +404,82 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 	@Override
 	public void stateChanged(ChangeEvent e) {
 		if (e.getSource().equals(viewApp.getSpnFPS()))
-			animator.setFPS((int) viewApp.getSpnFPS().getValue());
+			setAnimationFPS();
 		else if (e.getSource().equals(viewApp.getSpnProportion()))
 			setAnimationProportion();
 		else if (e.getSource().equals(viewApp.getSpnStrokeSize()))
 			setAnimationStrokeSize();
+		else if (e.getSource().equals(viewApp.getSpnMaxSpeed()))
+			setRobotMaxSpeed();
+		else if (e.getSource().equals(viewApp.getSpnInitAngle()))
+			setStartAngle();
+		else if (e.getSource().equals(viewApp.getSpnInitX()))
+			setStartX();
+		else if (e.getSource().equals(viewApp.getSpnInitY()))
+			setStartY();
+		else if (e.getSource().equals(viewApp.getSpnEndAngle()))
+			setEndAngle();
+		else if (e.getSource().equals(viewApp.getSpnEndX()))
+			setEndX();
+		else if (e.getSource().equals(viewApp.getSpnEndY()))
+			setEndY();
 		else if (e.getSource().equals(viewApp.getSpnPositionUpdate()))
 			setPositionUpdateRate();
 	}
-
+	
 	public void setPositionUpdateRate() {
-		if (arch == null)
-			return;
-
-		anRobot.setUpdateAnimatedPositionRate(((int) viewApp.getSpnPositionUpdate().getValue()));
-
+		
 		Config.set("ANIMATION_POSITIONUPDATERATE", viewApp.getSpnPositionUpdate().getValue().toString());
-
 		try {
 			Config.save();
 		} catch (Exception e) {
 			Log.warning(ControllerViewApp.class, Translate.get("ERROR_NOSAVECONFIG"), e);
 		}
+		
+		if (updaterPosition == null)
+			return;
+		updaterPosition.setUpdateAnimatedPositionRate(((int) viewApp.getSpnPositionUpdate().getValue()));
+		
+	}
 
+
+	public void setEndY() {
+		map.getGoal().setY((int) viewApp.getSpnEndY().getValue());
+	}
+
+	public void setEndX() {
+		map.getGoal().setX((int) viewApp.getSpnEndX().getValue());
+	}
+
+	public void setEndAngle() {
+		map.getGoal().setAngle(Double.valueOf(viewApp.getSpnEndAngle().getValue().toString()));
+	}
+
+	public void setStartY() {
+		map.getRobotHome().setY((int) viewApp.getSpnInitY().getValue());
+	}
+
+	public void setStartX() {
+		map.getRobotHome().setX((int) viewApp.getSpnInitX().getValue());
+	}
+
+	public void setStartAngle() {
+		map.getRobotHome().setAngle(Double.valueOf(viewApp.getSpnInitAngle().getValue().toString()));
+	}
+
+	public void setRobotMaxSpeed() {
+		if (robot != null)
+			robot.setMaxSpeed((int) viewApp.getSpnMaxSpeed().getValue());
+	}
+
+	public void setAnimationFPS() {
+		animator.setFPS((int) viewApp.getSpnFPS().getValue());
+		Config.set("ANIMATION_FPS", viewApp.getSpnFPS().getValue().toString());
+		try {
+			Config.save();
+		} catch (Exception e) {
+			Log.warning(ControllerViewApp.class, Translate.get("ERROR_NOSAVECONFIG"), e);
+		}
 	}
 
 	public void setAnimationProportion() {

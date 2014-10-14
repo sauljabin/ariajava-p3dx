@@ -55,12 +55,10 @@ public class ArPlanSequencer {
 	}
 
 	private void toFinish() {
-		// TODO Auto-generated method stub
 
 	}
 
 	private boolean brokenPath() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 
