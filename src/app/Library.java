@@ -22,7 +22,6 @@
 package app;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.lang.reflect.Field;
 import java.util.Collections;
 import java.util.Vector;
@@ -30,9 +29,6 @@ import java.util.Vector;
 public class Library {
 
 	public static void load() throws Exception {
-
-		if (!Library.isLinux())
-			throw new FileNotFoundException("Api library not found for os: " + Config.get("OS"));
 
 		String path = Config.get("PATH_LIBARIA");
 
@@ -50,9 +46,6 @@ public class Library {
 		System.setProperty("java.library.path", System.getProperty("java.library.path") + File.pathSeparator + file.getAbsolutePath());
 		System.loadLibrary("AriaJava");
 	}
-
-	public static boolean isLinux() {
-		return Config.get("OS").toLowerCase().contains("linux");
-	}
+	
 
 }

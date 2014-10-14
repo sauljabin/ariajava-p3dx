@@ -21,15 +21,15 @@
 
 package app.aria.architecture.aura;
 
-import app.aria.ArArchitecture;
+import app.aria.architecture.ArArchitecture;
+import app.aria.robot.ArRobotMobile;
 import app.map.Map;
 
 public class ArArchitectureAuRA extends ArArchitecture {
+	private ArMisionPlanner arMisionPlanner;	
 
-	private ArMisionPlanner arMisionPlanner;
-
-	public ArArchitectureAuRA(String host, int tcpPort, Map map) {
-		super("AuRA", host, tcpPort, map);
+	public ArArchitectureAuRA(ArRobotMobile robot, Map map) {
+		super("AuRA", robot, map);
 		arMisionPlanner = new ArMisionPlanner(map);
 	}
 
@@ -37,5 +37,4 @@ public class ArArchitectureAuRA extends ArArchitecture {
 	public void behavior() {
 		arMisionPlanner.execute();
 	}
-
 }

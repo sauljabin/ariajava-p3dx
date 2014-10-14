@@ -24,6 +24,8 @@ package app;
 import javax.swing.JOptionPane;
 import javax.swing.SwingUtilities;
 
+import com.mobilerobots.Aria.Aria;
+
 import app.gui.ControllerViewApp;
 
 public class Main {
@@ -40,6 +42,7 @@ public class Main {
 			Translate.load();
 			Theme.load();
 			Library.load();
+			Aria.init();
 		} catch (Exception e) {
 			Log.error(Main.class, "loadFeaturesGUI()", e);
 			JOptionPane.showMessageDialog(null, e.getClass().getName() + "\n" + e.getMessage(), "Error loadFeaturesGUI()", JOptionPane.ERROR_MESSAGE);

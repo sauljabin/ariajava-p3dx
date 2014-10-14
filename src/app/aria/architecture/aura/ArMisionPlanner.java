@@ -70,7 +70,7 @@ public class ArMisionPlanner {
 
 	private void continuePath() {
 		recalculate = arPlanSequencer.continuePath();
-		if(arPlanSequencer.)
+		//if(arPlanSequencer.)
 	}
 
 }
