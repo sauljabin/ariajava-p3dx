@@ -317,6 +317,15 @@ public class Map implements Animated {
 					.getY1()), canvasX(lines.get(i).getX2()), canvasY(lines
 					.get(i).getY2()));
 		}
+		if (graph != null) {
+			g.setColor(new Color(255, 0, 0, 100));
+			for (int i = 0; i < graph.getLinks().size(); i++) {
+				g.drawLine(canvasX(graph.getLinks().get(i).getPointA().getX()),
+						canvasY(graph.getLinks().get(i).getPointA().getY()),
+						canvasX(graph.getLinks().get(i).getPointB().getX()),
+						canvasY(graph.getLinks().get(i).getPointB().getY()));
+			}
+		}
 	}
 
 	@Override

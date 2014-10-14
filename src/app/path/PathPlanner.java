@@ -38,6 +38,7 @@ public class PathPlanner {
 	private Algorithm antAlgorithm;
 	private Diagram diagram;
 	private Map map;
+	private Graph graph;
 
 	public PathPlanner(Map map) {
 		super();
@@ -47,10 +48,9 @@ public class PathPlanner {
 	}
 
 	public ArrayList<Point> searchOptimalRoute(Point home, Point target) {
-		Graph graph = diagram.getGraph();
+		graph = diagram.getGraph();
 		addHomeAndTarget(home, target, graph);
 		map.setGraph(graph);
-
 		antAlgorithm = new Algorithm(graph, 20);
 		return antAlgorithm.searchOptimalRoute(home, target);
 	}

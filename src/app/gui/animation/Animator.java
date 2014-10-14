@@ -403,8 +403,6 @@ public class Animator implements Runnable, MouseWheelListener,
 		// if (map.getTriangulation() != null)
 		// for (Triangle t : map.getTriangulation().getTriangles())
 		// addAnimated(t);
-		if (map.getGraph() != null)
-			addAnimated(map.getGraph());
 		setSize(map.getCanvasWidth(), map.getCanvasHeight());
 		centerMap();
 		refresh();

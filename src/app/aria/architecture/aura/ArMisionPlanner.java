@@ -21,23 +21,25 @@
 
 package app.aria.architecture.aura;
 
+import java.util.ArrayList;
+
 import app.map.Map;
 import app.path.PathPlanner;
 import app.path.geometry.Point;
-import app.path.graphs.Graph;
 
 public class ArMisionPlanner {
 
 	private Point start;
 	private Point target;
-	private boolean ready;
 	private ArPlanSequencer arPlanSequencer;
 	private PathPlanner pathPlanner;
+	private boolean recalculate;
+	private ArrayList<Point> path;
 
 	public ArMisionPlanner(Map map) {
-		//this.arPlanSequencer = new ArPlanSequencer(map);
-		//this.pathPlanner = new PathPlanner(map);
-		//this.ready = false;
+		this.arPlanSequencer = new ArPlanSequencer(map);
+		this.pathPlanner = new PathPlanner(map);
+		this.recalculate = false;
 	}
 
 	public void setStart(Point start) {
@@ -49,22 +51,26 @@ public class ArMisionPlanner {
 	}
 
 	public void execute() {
-//		if (!ready)
-//			calculePath();
-//		else
-//			followPath();
-	}
-
-	private void calculePath() {
-		if (start != null && target != null) {
-			pathPlanner.searchOptimalRoute(start, target);
-			//Graph graph = pathPlanner.getGraph();
-			ready = true;
+		if (path == null || recalculate) {
+			path = calculePath();
+			if (recalculate) {
+				recalculate = false;
+				arPlanSequencer.newPath(path);
+			}
+		} else{
+			continuePath();
 		}
 	}
 
-	private void followPath() {
-		
+	private ArrayList<Point> calculePath() {
+		if (start != null && target != null)
+			return pathPlanner.searchOptimalRoute(start, target);
+		return null;
+	}
+
+	private void continuePath() {
+		recalculate = arPlanSequencer.continuePath();
+		if(arPlanSequencer.)
 	}
 
 }
