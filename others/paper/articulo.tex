@@ -17,6 +17,7 @@
 \usepackage{amscd}
 \usepackage{psfrag}
 \usepackage{graphicx}
+\usepackage{url}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\theoremstyle{theorem}
 \newtheorem{thm}{Theorem}[section]
@@ -77,7 +78,7 @@
 %\small{Art\'iculo en revisi\'on.  ISSN:1856-8890, Dep\'osito Legal: pp200702LA2730}
 \end{center}}
 \end{flushleft}
-\hrule \vspace{0.5in}{ARQUITECTURA DE NAVEGACIÓN HÍBRIDA PARA ROBOT PIONEER PD3X} }
+\hrule \vspace{0.5in}{ARQUITECTURA HÍBRIDA DE NAVEGACIÓN PARA ROBOT PIONEER PD3X} }
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%SECCION AUTORES Y FILIACION DE LOS MISMOS %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -118,7 +119,7 @@
 %                        MAS DE DOS 
 %                APELLIDO, INICIAL NOMBRE. et al
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\fancyhead{} \fancyhead[CE]{ ARQUITECTURA DE NAVEGACIÓN HÍBRIDA PARA ROBOT PIONEER PD3X  }
+\fancyhead{} \fancyhead[CE]{ ARQUITECTURA HÍBRIDA DE NAVEGACIÓN PARA ROBOT PIONEER PD3X  }
 \fancyhead[CO]{ Saúl Piña, Jorge Parra 
 }
 \fancyfoot{}
@@ -135,28 +136,28 @@
 
 \vspace{-3mm} \hspace{.05in}\parbox{4.5in} {{\small %\footnotesize 
 
-Cuerpo del resumen (Max 200 palabras)
+
 
  \textbf{Palabras clave}: Robótica, ARIA, AuRA, Arquitectura Híbrida, Pioneer P3DX}}
 \end{center}
 \pagebreak
 
 
-\begin{center}
-{\bf\small T\'ITULO EN INGL\'ES \\ Abstract}
-
-\vspace{-3mm} \hspace{.05in}\parbox{4.5in} {{\small %\footnotesize 
-
-Cuerpo del abstract  
-
-     \textbf{Keywords}:  kw 1, kw 2, ... .}}
-\end{center}
+%\begin{center}
+%{\bf\small T\'ITULO EN INGL\'ES \\ Abstract}
+%
+%\vspace{-3mm} \hspace{.05in}\parbox{4.5in} {{\small %\footnotesize 
+%
+%Cuerpo del abstract  
+%
+%     \textbf{Keywords}:  kw 1, kw 2, ... .}}
+%\end{center}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                           CUERPO DEL ARTICULO
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\pagebreak
 
-\section*{Introducción }
+\section*{Introducción}
 
 \section*{Pioneer P3DX}
 
@@ -170,39 +171,111 @@ Cuerpo del abstract
 
 \section*{Arquitectura AuRA}
 
-Explicar AuRA
 
 \section*{Implementación de la Arquitectura}
 
-Explicar como se programo el Aura
 
 \section*{Entorno de Desarrollo}
 
-La herramienta desarrollada 
+Para llevar a cabo la presente investigación se desarrollo una aplicación cliente
+con las siguientes herramientas de software:
 
-Explicar las herramientas usadas, aria, mobilesim, eclipse, java, windows
+\textbf{ARIA} (Advanced Robot Interface for Applications) \cite{aria2014},
+es una librería desarrollada en el lenguaje de programación C++ para todas las
+plataformas MobileRobots/ActivMedia. Provee el conjunto de herramientas necesarias
+para controlar y monitorear de forma dinámica al robot y sus elementos. Ademas, esta librería
+incluye implementaciones llamadas \textit{wrapper} en los lenguajes de programación Python y Java, siendo este último 
+el lenguaje de desarrollo para este investigación.
 
+\textbf{MobileSim} \cite{mobilesim2014}, es un software para la simulación de plataformas
+MobileRobots/ActivMedia. Permite usar la librería ARIA y sus wrappers. Es un ambiente
+ideal para realizar experimentación y pruebas de los algoritmos desarrollados antes de
+implementarlos en los robots reales.
+ 
+\textbf{Eclipse IDE} \cite{eclipse2014}, es un entorno de desarrollo integrado para múltiples lenguajes de 
+programación en los que destacan Java y C++. Provee de las herramientas necesarias para el desarrollo, depuración  
+y compilación de aplicaciones.
+
+\textbf{Java} \cite{java2014}, es un lenguaje de programación de propósito general, orientado a objetos y de alto nivel. 
+ 
 \section*{Configuración del Entorno}
 
-La herramienta de software se creo usando tecnología multiplataforma, por ende 
-el entorno de desarrollo se puede configurar en sistemas operativos Windows o Linux.
+Antes de configurar el entorno de desarrollo es necesario descargar el código fuente del proyecto,
+este está disponible al público con licencia de software \textit{GPL} en la siguiente dirección:
+\\ \url{https://bitbucket.org/sauljabin/ariajava-p3dx}.
 
+\subsubsection*{\textit{Configuración del Entorno Sobre Windows}}
 
+\begin{enumerate}
+\item Previamente instalar Java y Eclipse.
+\item Instalar \textbf{MobileSim-0.7.2-1.exe}. Disponible en: \\ \url{http://robots.mobilerobots.com/wiki/MobileSim}.
+\item Instalar \textbf{ARIA-2.7.6.exe}. Disponible en: \\ \url{http://robots.mobilerobots.com/wiki/ARIA}.
+\item Agregar a las variables de entorno del sistema la ruta \\ \url{C:\Program Files\MobileRobots\ARIA\bin\}.
+\item Dirigirse a la ruta \url{C:\Program Files\MobileRobots\ARIA\bin\}, cambiar el nombre del archivo
+	  \textbf{AriaVC10.dll} a \textbf{Aria.dll}.
+\item Importar proyecto en eclipse.
+\item Verificar que la variable \textbf{PATH\_LIBARIA} \\ del archivo \textbf{CONFIG.properties} 
+	  sea igual a: \\ \url{C\:\\Program Files\\MobileRobots\\ARIA\\bin\\}
+\end{enumerate}
 
-Instrucciones para instalar todo \url{https://bitbucket.org/sauljabin/ariajava-p3dx}
+\subsubsection*{\textit{Configuración del Entorno Sobre Debian/Ubuntu}}
+
+\begin{enumerate}
+\item Previamente instalar Java y Eclipse. 
+\item Descargar el archivo \textbf{MobileSim-0.7.3+gcc4.6.tgz}. Disponible en: \\ \url{http://robots.mobilerobots.com/wiki/MobileSim}.
+\item Ejecutar los siguientes comandos por consola para instalar MobileSim:
+{\ttfamily \footnotesize 
+\\ \$ tar xzvf MobileSim-0.7.3+gcc4.6.tgz
+\\ \# mv -f MobileSim-0.7.3 /usr/local/MobileSim
+\\ \# ln -s -f /usr/local/MobileSim/MobileSim /usr/bin/mobilesim}
+\item Descargar el archivo \textbf{ARIA-2.8.1+gcc4.6.tgz}. Disponible en: \\ \url{http://robots.mobilerobots.com/wiki/ARIA}.
+\item Ejecutar los siguientes comandos por consola para instalar ARIA:
+{\ttfamily \footnotesize 
+\\ \$ tar xzvf ARIA-2.8.1+gcc4.6.tgz
+\\ \# mv -f Aria-2.8.1 /usr/local/Aria
+\\ \# echo '/usr/local/Aria/lib' > /etc/ld.so.conf.d/aria.conf
+\\ \# ldconfig}
+\item Importar proyecto en eclipse.
+\item Verificar que la variable \textbf{PATH\_LIBARIA} \\ del archivo \textbf{CONFIG.properties} 
+	  sea igual a: \\ \url{/usr/local/Aria/lib/}
+\end{enumerate}
 
 \section*{Herramienta de Software Desarrollada}
 
 
-
 \section*{Experimentación}
 
-Explicar los experimentos realizados
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                 BIBLIOGRAFIA
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{thebibliography}{999}
+
+\bibitem{arkin1997}
+	Arkin, R. y Balch, T. (1997).
+ 	AuRA: Principles and practice in review.
+	Journal of Experimental \& Theoretical Artificial Intelligence.
+	Taylor \& Francis. Vol. 9. No. 2-3. Pp. 175-189.
+	
+\bibitem{aria2014} 
+	MobileRobots. (2014).
+	ARIA. 	
+	Disponible en: \url{http://robots.mobilerobots.com/wiki/ARIA}.
+	
+\bibitem{mobilesim2014} 
+	MobileRobots. (2014).
+	MobileSim. 	
+	Disponible en: \url{http://robots.mobilerobots.com/wiki/MobileSim}.
+	
+\bibitem{eclipse2014} 
+	Eclipse. (2014).
+	Eclipse IDE. 	
+	Disponible en: \url{https://www.eclipse.org/ide/}.
+
+\bibitem{java2014} 
+	Oracle. (2014).
+	Java. 	
+	Disponible en: \url{http://www.oracle.com/technetwork/java/index.html}.
 
 \end{thebibliography}
 \end{document}
