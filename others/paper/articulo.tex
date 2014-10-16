@@ -62,6 +62,21 @@
 \setcounter{page}{1}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
+\newcommand{\reffigure}[1]{Figura \ref{#1}}
+\newcommand{\refpfigure}[1]{(\reffigure{#1})}
+
+\newcommand{\reftable}[1]{Cuadro \ref{#1}}
+\newcommand{\refptable}[1]{(\reftable{#1})}
+
+\newcommand{\refalgorithm}[1]{Algoritmo \ref{#1}}
+\newcommand{\refpalgorithm}[1]{(\refalgorithm{#1})}
+
+\newcommand{\quotes}[1]{``#1''}
+
+\newcommand{\sourcecode}[2][\footnotesize]{{\ttfamily #1 #2}}
+
+\newcommand{\link}[1]{{\footnotesize \url{#1}}}
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \usepackage{fancyhdr}
 \pagestyle{fancy}
@@ -172,6 +187,7 @@
 \section*{Arquitectura AuRA}
 
 
+
 \section*{Implementación de la Arquitectura}
 
 
@@ -202,42 +218,42 @@ y compilación de aplicaciones.
 
 Antes de configurar el entorno de desarrollo es necesario descargar el código fuente del proyecto,
 este está disponible al público con licencia de software \textit{GPL} en la siguiente dirección:
-\\ \url{https://bitbucket.org/sauljabin/ariajava-p3dx}.
+\\ \link{https://bitbucket.org/sauljabin/ariajava-p3dx}.
 
 \subsubsection*{\textit{Configuración del Entorno Sobre Windows}}
 
 \begin{enumerate}
 \item Previamente instalar Java y Eclipse.
-\item Instalar \textbf{MobileSim-0.7.2-1.exe}. Disponible en: \\ \url{http://robots.mobilerobots.com/wiki/MobileSim}.
-\item Instalar \textbf{ARIA-2.7.6.exe}. Disponible en: \\ \url{http://robots.mobilerobots.com/wiki/ARIA}.
-\item Agregar a las variables de entorno del sistema la ruta \\ \url{C:\Program Files\MobileRobots\ARIA\bin\}.
-\item Dirigirse a la ruta \url{C:\Program Files\MobileRobots\ARIA\bin\}, cambiar el nombre del archivo
-	  \textbf{AriaVC10.dll} a \textbf{Aria.dll}.
+\item Instalar \sourcecode{MobileSim-0.7.2-1.exe}, disponible en: \\ \link{http://robots.mobilerobots.com/wiki/MobileSim}.
+\item Instalar \sourcecode{ARIA-2.7.6.exe}, disponible en: \\ \link{http://robots.mobilerobots.com/wiki/ARIA}.
+\item Agregar a las variables de entorno del sistema la ruta \\ \sourcecode{C:\textbackslash Program Files\textbackslash MobileRobots\textbackslash ARIA\textbackslash bin\textbackslash}.
+\item Dirigirse a la ruta \sourcecode{C:\textbackslash Program Files\textbackslash MobileRobots\textbackslash ARIA\textbackslash bin\textbackslash}, cambiar el nombre del archivo
+\sourcecode{AriaVC10.dll} a  \sourcecode{Aria.dll}.
 \item Importar proyecto en eclipse.
-\item Verificar que la variable \textbf{PATH\_LIBARIA} \\ del archivo \textbf{CONFIG.properties} 
-	  sea igual a: \\ \url{C\:\\Program Files\\MobileRobots\\ARIA\\bin\\}
+\item Verificar que la variable  \sourcecode{PATH\_LIBARIA} del archivo  \sourcecode{CONFIG.properties} 
+	  sea igual a: \\ \sourcecode{C\textbackslash:\textbackslash\textbackslash Program Files\textbackslash\textbackslash MobileRobots\textbackslash\textbackslash ARIA\textbackslash\textbackslash bin\textbackslash\textbackslash }
 \end{enumerate}
 
 \subsubsection*{\textit{Configuración del Entorno Sobre Debian/Ubuntu}}
 
 \begin{enumerate}
 \item Previamente instalar Java y Eclipse. 
-\item Descargar el archivo \textbf{MobileSim-0.7.3+gcc4.6.tgz}. Disponible en: \\ \url{http://robots.mobilerobots.com/wiki/MobileSim}.
+\item Descargar el archivo \sourcecode{MobileSim-0.7.3+gcc4.6.tgz}, disponible en: \\ \link{http://robots.mobilerobots.com/wiki/MobileSim}.
 \item Ejecutar los siguientes comandos por consola para instalar MobileSim:
-{\ttfamily \footnotesize 
+\sourcecode{ 
 \\ \$ tar xzvf MobileSim-0.7.3+gcc4.6.tgz
 \\ \# mv -f MobileSim-0.7.3 /usr/local/MobileSim
 \\ \# ln -s -f /usr/local/MobileSim/MobileSim /usr/bin/mobilesim}
-\item Descargar el archivo \textbf{ARIA-2.8.1+gcc4.6.tgz}. Disponible en: \\ \url{http://robots.mobilerobots.com/wiki/ARIA}.
+\item Descargar el archivo \sourcecode{ARIA-2.8.1+gcc4.6.tgz}, disponible en: \\ \link{http://robots.mobilerobots.com/wiki/ARIA}.
 \item Ejecutar los siguientes comandos por consola para instalar ARIA:
-{\ttfamily \footnotesize 
+\sourcecode{
 \\ \$ tar xzvf ARIA-2.8.1+gcc4.6.tgz
 \\ \# mv -f Aria-2.8.1 /usr/local/Aria
 \\ \# echo '/usr/local/Aria/lib' > /etc/ld.so.conf.d/aria.conf
 \\ \# ldconfig}
 \item Importar proyecto en eclipse.
-\item Verificar que la variable \textbf{PATH\_LIBARIA} \\ del archivo \textbf{CONFIG.properties} 
-	  sea igual a: \\ \url{/usr/local/Aria/lib/}
+\item Verificar que la variable \sourcecode{PATH\_LIBARIA} del archivo \sourcecode{CONFIG.properties} 
+	  sea igual a: \\  \sourcecode{/usr/local/Aria/lib/}
 \end{enumerate}
 
 \section*{Herramienta de Software Desarrollada}
