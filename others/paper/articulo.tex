@@ -73,9 +73,9 @@
 
 \newcommand{\quotes}[1]{``#1''}
 
-\newcommand{\sourcecode}[2][\footnotesize]{{\ttfamily #1 #2}}
+\newcommand{\sourcecode}[2][\footnotesize]{{\ttfamily#1#2}}
 
-\newcommand{\link}[1]{{\footnotesize \url{#1}}}
+\newcommand{\link}[1]{{\footnotesize\url{#1}}}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \usepackage{fancyhdr}
@@ -134,7 +134,7 @@
 %                        MAS DE DOS 
 %                APELLIDO, INICIAL NOMBRE. et al
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\fancyhead{} \fancyhead[CE]{ ARQUITECTURA HÍBRIDA DE NAVEGACIÓN PARA ROBOT PIONEER PD3X  }
+\fancyhead{} \fancyhead[CE]{{\scriptsize ARQUITECTURA HÍBRIDA DE NAVEGACIÓN PARA ROBOT PIONEER PD3X}}
 \fancyhead[CO]{ Saúl Piña, Jorge Parra 
 }
 \fancyfoot{}
@@ -153,7 +153,7 @@
 
 
 
- \textbf{Palabras clave}: Robótica, ARIA, AuRA, Arquitectura Híbrida, Pioneer P3DX}}
+ \textbf{Palabras clave}: Robótica, ARIA, AuRA, Arquitectura Híbrida, Pioneer P3DX.}}
 \end{center}
 \pagebreak
 
@@ -174,7 +174,12 @@
 
 \section*{Introducción}
 
+
+
 \section*{Pioneer P3DX}
+
+El Pionner P3DX \refpfigure{fig:pioneer} es un robot ideal para usar en el interior de las infraestructuras y cuenta con las siguientes dimensiones: 45,5 cm de largo por 38,1 cm de ancho por 23,7 cm de alto. El robot cuenta con 2 ruedas, las cuales se encuentran una a cada lado y cuenta cada una con un motor y un encoder. Además, tiene una rueda en la parte posterior que le ayuda a mantener el equilibrio.
+Igualmente, el Pionner P3DX posee sensores de ultrasonido o sonares, los cuales sirven para detectar obstáculos en el ambiente.
 
 \begin{figure}[here]
 \begin{center}
@@ -184,12 +189,63 @@
 \end{center}
 \end{figure} 
 
+\subsubsection*{Especificaciones del Pioneer P3DX}
+\\\\
+\noindent\textbf{Construcción}
+\\
+\indent\textbf{Cuerpo:} 1,6 mm de aluminio.
+\\
+\indent\textbf{Neumáticos:} de caucho relleno de goma.
+\\\\
+\noindent\textbf{Operación}
+\\
+\indent\textbf{Peso del Robot:} 9 kg.
+\\
+\indent\textbf{Carga operativa:} 17 kg.
+\\\\
+\noindent\textbf{Potencia}
+\\
+\indent\textbf{Tiempo de ejecución:} 8-10 horas con 3 baterías.
+\\
+\indent\textbf{Tiempo de carga:} 12 horas o 2,4 horas.
+\\
+\indent\textbf{Baterías:} Soporta hasta 3 a la vez.
+\\
+\indent\textbf{Tensión:} 12 V.
+\\
+\indent\textbf{Capacidad:} 7,2 Ah.
+
 \section*{Arquitectura AuRA}
 
+La arquitectura AuRA \cite{arkin1997} (Autonomous Robot Architecture) propuesta por Ronald Arkin, comprende un enfoque híbrido
+de navegación para robots móviles. Está constituida principalmente por dos capas, una deliberativa basada en la inteligencia artificial
+tradicional y otra reactiva basada en teoría de esquemas. El la \reffigure{fig:aura} se puede observar la representación del AuRA, 
+la capa deliberativa la componen el \textit{planificador de misión}, \textit{razonador espacial} y el \textit{secuenciador del plan}. En el nivel más alto se encuentra el \textit{planificador de misión}, representa la interfaz con el humano y permite establecer los objetivos, 
+las restricciones y los parámetros en los que debe operar el robot. El \textit{razonador espacial} puede ser referido como navegador, este usa la información cartográfica
+almacenada para construir la ruta deseada que el robot debe seguir para completar la misión. El \textit{secuenciador del plan}
+puede ser comparado con un piloto, convierte la ruta generada por el \textit{razonador espacial} al conjunto de comportamientos (esquemas) que debe ejecutar la capa reactiva. En la capa reactiva el \textit{control de esquema}, es el responsable de llevar a cabo y monitorear en tiempo real el conjunto de comportamientos que el secuenciador ordena ejecutar, cada comportamiento esta asociado a un esquema perceptual, en otras palabras, cada estimulo genera una respuesta. 
 
+\begin{figure}[here]
+\begin{center}
+\includegraphics[width=5cm]{aura.png} 
+\caption{Representación de Arquitectura AuRA}
+\label{fig:aura}
+\end{center}
+\end{figure} 
 
-\section*{Implementación de la Arquitectura}
+\subsubsection*{Fortalezas de la Arquitectura AuRA}
 
+Modularidad, flexibilidad, generalización e hibridación, son los características resaltantes de esta arquitectura.
+
+\textbf{Modularidad}, es altamente modular debido a su diseño en capas, lo que permite intercambiar o mejorar
+los componentes sin afectar el funcionamiento general.
+
+\textbf{Flexibilidad}, esta arquitectura permite integrar diferentes modelos de inteligencia artificial 
+para la construcción de rutas, aprendizaje y adaptación. 
+
+\textbf{Generalización}, puede ser empleado en distintos dominios como la manufactura, navegación, entre otros.
+
+\textbf{Hibridación}, fusiona los paradigmas deliberativo y reactivo, lo que le permite al robot interactuar con eventos inesperados mientras intenta satisfacer sus metas.
 
 \section*{Entorno de Desarrollo}
 
@@ -220,21 +276,22 @@ Antes de configurar el entorno de desarrollo es necesario descargar el código f
 este está disponible al público con licencia de software \textit{GPL} en la siguiente dirección:
 \\ \link{https://bitbucket.org/sauljabin/ariajava-p3dx}.
 
-\subsubsection*{\textit{Configuración del Entorno Sobre Windows}}
+\subsubsection*{Configuración del Entorno Sobre Windows}
 
 \begin{enumerate}
 \item Previamente instalar Java y Eclipse.
 \item Instalar \sourcecode{MobileSim-0.7.2-1.exe}, disponible en: \\ \link{http://robots.mobilerobots.com/wiki/MobileSim}.
 \item Instalar \sourcecode{ARIA-2.7.6.exe}, disponible en: \\ \link{http://robots.mobilerobots.com/wiki/ARIA}.
-\item Agregar a las variables de entorno del sistema la ruta \\ \sourcecode{C:\textbackslash Program Files\textbackslash MobileRobots\textbackslash ARIA\textbackslash bin\textbackslash}.
+\item Agregar a las variables de entorno del sistema la ruta: \\ \sourcecode{C:\textbackslash Program Files\textbackslash MobileRobots\textbackslash ARIA\textbackslash bin\textbackslash}.
 \item Dirigirse a la ruta \sourcecode{C:\textbackslash Program Files\textbackslash MobileRobots\textbackslash ARIA\textbackslash bin\textbackslash}, cambiar el nombre del archivo
 \sourcecode{AriaVC10.dll} a  \sourcecode{Aria.dll}.
 \item Importar proyecto en eclipse.
+\item En  \sourcecode{Java Build Path} se debe agregar el wrapper de Java que se encuentra en: \sourcecode{C:\textbackslash Program Files\textbackslash MobileRobots\textbackslash ARIA\textbackslash java\textbackslash Aria.jar}.
 \item Verificar que la variable  \sourcecode{PATH\_LIBARIA} del archivo  \sourcecode{CONFIG.properties} 
-	  sea igual a: \\ \sourcecode{C\textbackslash:\textbackslash\textbackslash Program Files\textbackslash\textbackslash MobileRobots\textbackslash\textbackslash ARIA\textbackslash\textbackslash bin\textbackslash\textbackslash }
+	  sea igual a:  \sourcecode{C\textbackslash:\textbackslash\textbackslash Program Files\textbackslash\textbackslash MobileRobots\textbackslash\textbackslash ARIA\textbackslash\textbackslash bin\textbackslash\textbackslash }.
 \end{enumerate}
 
-\subsubsection*{\textit{Configuración del Entorno Sobre Debian/Ubuntu}}
+\subsubsection*{Configuración del Entorno Sobre Debian/Ubuntu}
 
 \begin{enumerate}
 \item Previamente instalar Java y Eclipse. 
@@ -252,15 +309,22 @@ este está disponible al público con licencia de software \textit{GPL} en la si
 \\ \# echo '/usr/local/Aria/lib' > /etc/ld.so.conf.d/aria.conf
 \\ \# ldconfig}
 \item Importar proyecto en eclipse.
+\item En  \sourcecode{Java Build Path} se debe agregar el wrapper de Java que se encuentra en: \sourcecode{/usr/local/Aria/java/Aria.jar}
 \item Verificar que la variable \sourcecode{PATH\_LIBARIA} del archivo \sourcecode{CONFIG.properties} 
-	  sea igual a: \\  \sourcecode{/usr/local/Aria/lib/}
+	  sea igual a: \sourcecode{/usr/local/Aria/lib/}
 \end{enumerate}
+
+\section*{Implementación de la Arquitectura}
+
+% hablar de algoritmo de hormigas
+% hablar de voronoi
+% hablar de delauny
 
 \section*{Herramienta de Software Desarrollada}
 
-
 \section*{Experimentación}
 
+\section*{Conclusión}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                 BIBLIOGRAFIA
@@ -276,22 +340,22 @@ este está disponible al público con licencia de software \textit{GPL} en la si
 \bibitem{aria2014} 
 	MobileRobots. (2014).
 	ARIA. 	
-	Disponible en: \url{http://robots.mobilerobots.com/wiki/ARIA}.
+	Disponible en: \\\link{http://robots.mobilerobots.com/wiki/ARIA}.
 	
 \bibitem{mobilesim2014} 
 	MobileRobots. (2014).
 	MobileSim. 	
-	Disponible en: \url{http://robots.mobilerobots.com/wiki/MobileSim}.
+	Disponible en: \\\link{http://robots.mobilerobots.com/wiki/MobileSim}.
 	
 \bibitem{eclipse2014} 
 	Eclipse. (2014).
 	Eclipse IDE. 	
-	Disponible en: \url{https://www.eclipse.org/ide/}.
+	Disponible en: \\\link{https://www.eclipse.org/ide/}.
 
 \bibitem{java2014} 
 	Oracle. (2014).
 	Java. 	
-	Disponible en: \url{http://www.oracle.com/technetwork/java/index.html}.
+	Disponible en: \\\link{http://www.oracle.com/technetwork/java/index.html}.
 
 \end{thebibliography}
 \end{document}
