@@ -1,5 +1,6 @@
 2D-Map
-Cairn: RobotHome 0 0 0 "" ICON ""
+Cairn: RobotHome -5000 -5000 0 "" ICON "Home"
+Cairn: Goal 5000 5000 0 "" ICON "Goal" 
 NumLines: 4
 LineMinPos: -6000 -6000
 LineMaxPos: 6000 6000
