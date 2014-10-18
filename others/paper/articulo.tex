@@ -18,6 +18,8 @@
 \usepackage{psfrag}
 \usepackage{graphicx}
 \usepackage{url}
+\usepackage{listings}
+\usepackage{caption}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\theoremstyle{theorem}
 \newtheorem{thm}{Theorem}[section]
@@ -35,6 +37,7 @@
 \newcommand{\cuadro}{\stepcounter{table}}
 \renewcommand{\tablename}{Tabla}
 \newtheorem{pot}{Proof of Theorem} %\ref{mainthm}}
+\renewcommand{\lstlistingname}{Listado}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \def\N{\mathbb{N}}
 \def\Z{\mathbb{Z}}
@@ -151,7 +154,7 @@
 
 \vspace{-3mm} \hspace{.05in}\parbox{4.5in} {{\small %\footnotesize 
 
-
+AL FINALIZAR ESCRIBIR SECCION
 
  \textbf{Palabras clave}: Robótica, ARIA, AuRA, Arquitectura Híbrida, Pioneer P3DX.}}
 \end{center}
@@ -174,7 +177,7 @@
 
 \section*{Introducción}
 
-
+AL FINALIZAR ESCRIBIR SECCION
 
 \section*{Pioneer P3DX}
 
@@ -286,7 +289,7 @@ este está disponible al público con licencia de software \textit{GPL} en la si
 \item Dirigirse a la ruta \sourcecode{C:\textbackslash Program Files\textbackslash MobileRobots\textbackslash ARIA\textbackslash bin\textbackslash}, cambiar el nombre del archivo
 \sourcecode{AriaVC10.dll} a  \sourcecode{Aria.dll}.
 \item Importar proyecto en eclipse.
-\item En  \sourcecode{Java Build Path} se debe agregar el wrapper de Java que se encuentra en: \sourcecode{C:\textbackslash Program Files\textbackslash MobileRobots\textbackslash ARIA\textbackslash java\textbackslash Aria.jar}.
+\item Agregar al \sourcecode{Java Build Path} el wrapper Java de ARIA que se encuentra en la ruta: \sourcecode{C:\textbackslash Program Files\textbackslash MobileRobots\textbackslash ARIA\textbackslash java\textbackslash Aria.jar}.
 \item Verificar que la variable  \sourcecode{PATH\_LIBARIA} del archivo  \sourcecode{CONFIG.properties} 
 	  sea igual a:  \sourcecode{C\textbackslash:\textbackslash\textbackslash Program Files\textbackslash\textbackslash MobileRobots\textbackslash\textbackslash ARIA\textbackslash\textbackslash bin\textbackslash\textbackslash }.
 \end{enumerate}
@@ -309,22 +312,39 @@ este está disponible al público con licencia de software \textit{GPL} en la si
 \\ \# echo '/usr/local/Aria/lib' > /etc/ld.so.conf.d/aria.conf
 \\ \# ldconfig}
 \item Importar proyecto en eclipse.
-\item En  \sourcecode{Java Build Path} se debe agregar el wrapper de Java que se encuentra en: \sourcecode{/usr/local/Aria/java/Aria.jar}
+\item Agregar al \sourcecode{Java Build Path} el wrapper Java de ARIA que se encuentra en la ruta: \sourcecode{/usr/local/Aria/java/Aria.jar}
 \item Verificar que la variable \sourcecode{PATH\_LIBARIA} del archivo \sourcecode{CONFIG.properties} 
 	  sea igual a: \sourcecode{/usr/local/Aria/lib/}
 \end{enumerate}
 
 \section*{Implementación de la Arquitectura}
 
-% hablar de algoritmo de hormigas
-% hablar de voronoi
-% hablar de delauny
+\subsection*{Capa Deliberativa}
+
+\subsubsection*{\textit{Planificador de misión}}
+
+{\centering
+\lstinputlisting[
+  caption={Ejemplo de archivo mapa}
+, label=lst:archivomap
+, frame=single
+, basicstyle=\footnotesize\ttfamily]
+{../../maps/box.map}
+}
+
+\subsubsection*{\textit{Razonador Espacial}}
+
+\subsubsection*{\textit{Secuenciador del Plan}}
+
+\subsection*{Capa Reactiva}
 
 \section*{Herramienta de Software Desarrollada}
 
 \section*{Experimentación}
 
 \section*{Conclusión}
+
+AL FINALIZAR ESCRIBIR SECCION
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                 BIBLIOGRAFIA
