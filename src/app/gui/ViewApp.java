@@ -332,7 +332,7 @@ public class ViewApp extends JFrame {
 		pnlCanvas.setBorder(BorderFactory.createLineBorder(new Color(100, 100, 100)));
 		pnlCanvas.add(canvasAnimation);
 		pnlCenter.add(pnlCanvas, BorderLayout.CENTER);
-
+		
 		pnlAnimationControl = new JPanel(new MigLayout("insets 0 7 0 0"));
 		
 		btnZoomIn = new JButton(new ImageIcon(Theme.getIconPath("ZOOM_IN")));
