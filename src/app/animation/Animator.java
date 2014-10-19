@@ -69,6 +69,7 @@ public class Animator implements Runnable {
 	private int yMouseAnimated;
 	private int xMouseAnimated;
 	private boolean enableMouseListenerAnimated;
+	private InfoPanel infoPanel;
 
 	public int getStrokeSize() {
 		return strokeSize;
@@ -348,6 +349,8 @@ public class Animator implements Runnable {
 			}
 			backGraphics.drawImage(image, translateX - offsetWidth(), translateY - offsetHeight(), zoomWidth(), zoomHeight(), null);
 		}
+		if (infoPanel != null)
+			infoPanel.paint(backGraphics);
 		canvas.getGraphics().drawImage(backImage, 0, 0, null);
 	}
 
@@ -469,4 +472,13 @@ public class Animator implements Runnable {
 	public void enableMouseListenerAnimated(boolean b) {
 		enableMouseListenerAnimated = b;
 	}
+
+	public InfoPanel getInfoPanel() {
+		return infoPanel;
+	}
+
+	public void setInfoPanel(InfoPanel infoPanel) {
+		this.infoPanel = infoPanel;
+	}
+
 }
