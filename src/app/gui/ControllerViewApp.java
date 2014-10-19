@@ -46,6 +46,7 @@ import app.Log;
 import app.Theme;
 import app.Translate;
 import app.animation.Animator;
+import app.animation.RobotInfoPanel;
 import app.aria.architecture.ArArchitecture;
 import app.aria.architecture.ArUpdaterPositionAnimation;
 import app.aria.architecture.aura.ArArchitectureAuRA;
@@ -338,6 +339,8 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		anRobot = new Robot(map);
 		anRobot.updateAnimatedPosition(map.getRobotHome().getX(), map.getRobotHome().getY(), map.getRobotHome().getAngle());
 		animator.addAnimated(anRobot);
+		
+		animator.setInfoPanel(new RobotInfoPanel(robot));
 
 		robot.setAnimatedRobot(anRobot);
 
