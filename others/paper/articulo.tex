@@ -19,7 +19,9 @@
 \usepackage{graphicx}
 \usepackage{url}
 \usepackage{listings}
-\usepackage{caption}
+\usepackage[font=footnotesize,labelfont=bf]{caption}
+%\usepackage{subcaption}
+\usepackage[T1]{fontenc}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\theoremstyle{theorem}
 \newtheorem{thm}{Theorem}[section]
@@ -61,9 +63,11 @@
 \setlength{\topmargin}{-1.5cm} \setlength{\textwidth}{11.5cm}
 \setlength{\textheight}{17.5cm}
 
-
 \setcounter{page}{1}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\newcommand{\reflistings}[1]{Listado \ref{#1}}
+\newcommand{\refplistings}[1]{(\reflistings{#1})}
 
 \newcommand{\reffigure}[1]{Figura \ref{#1}}
 \newcommand{\refpfigure}[1]{(\reffigure{#1})}
@@ -154,7 +158,7 @@
 
 \vspace{-3mm} \hspace{.05in}\parbox{4.5in} {{\small %\footnotesize 
 
-AL FINALIZAR ESCRIBIR SECCION
+AL FINALIZAR
 
  \textbf{Palabras clave}: Robótica, ARIA, AuRA, Arquitectura Híbrida, Pioneer P3DX.}}
 \end{center}
@@ -177,24 +181,26 @@ AL FINALIZAR ESCRIBIR SECCION
 
 \section*{Introducción}
 
-AL FINALIZAR ESCRIBIR SECCION
+AL FINALIZAR
 
 \section*{Pioneer P3DX}
 
-El Pionner P3DX \refpfigure{fig:pioneer} es un robot ideal para usar en el interior de las infraestructuras y cuenta con las siguientes dimensiones: 45,5 cm de largo por 38,1 cm de ancho por 23,7 cm de alto. El robot cuenta con 2 ruedas, las cuales se encuentran una a cada lado y cuenta cada una con un motor y un encoder. Además, tiene una rueda en la parte posterior que le ayuda a mantener el equilibrio.
-Igualmente, el Pionner P3DX posee sensores de ultrasonido o sonares, los cuales sirven para detectar obstáculos en el ambiente.
+El Pionner P3DX \refpfigure{fig:pioneer} es un robot ligero ideal para ser usado en el interior de laboratorios o aulas de clases. El robot cuenta con una rueda y un motor ubicados a cada lado del mismo. Además, tiene una rueda en la parte posterior que le ayuda a mantener el equilibrio.
+Igualmente, el Pionner P3DX posee sensores de ultrasonido o sonares, empleados para detectar obstáculos en el ambiente.
+Es uno de los robots más popularmente usados en las áreas de la educación e investigación. Puedes ser fácilmente personalizado y mejorado, integrandolo con accesorios de diversa índole. Por otra parte, posee un conjunto completo de aplicaciones y librerías que sustentan el desarrollo de proyectos de investigación.
 
 \begin{figure}[here]
-\begin{center}
-\includegraphics[width=6cm]{pioneer.png} 
-\caption{Robot Pioneer P3DX}
-\label{fig:pioneer}
-\end{center}
+	\centering
+	\includegraphics[width=5cm]{pioneer.png} 
+	\caption{Robot Pioneer P3DX}
+	\label{fig:pioneer}
 \end{figure} 
 
 \subsubsection*{Especificaciones del Pioneer P3DX}
-\\\\
+
 \noindent\textbf{Construcción}
+\\
+\indent\textbf{Dimensiones:} 45,5 cm de largo por 38,1 cm de ancho \refpfigure{fig:pioneer-dimensiones}.
 \\
 \indent\textbf{Cuerpo:} 1,6 mm de aluminio.
 \\
@@ -218,15 +224,22 @@ Igualmente, el Pionner P3DX posee sensores de ultrasonido o sonares, los cuales 
 \\
 \indent\textbf{Capacidad:} 7,2 Ah.
 
+\begin{figure}[here]
+	\centering
+	\includegraphics[width=8cm]{pioneer-dimensiones.png} 
+	\caption{Dimensiones (milímetros) Robot Pioneer P3DX}
+	\label{fig:pioneer-dimensiones}
+\end{figure} 
+
 \section*{Arquitectura AuRA}
 
-La arquitectura AuRA \cite{arkin1997} (Autonomous Robot Architecture) propuesta por Ronald Arkin, comprende un enfoque híbrido
+La arquitectura AuRA \cite{arkin1997} (Autonomous Robot Architecture) introducida por Ronald Arkin, plantea un enfoque híbrido
 de navegación para robots móviles. Está constituida principalmente por dos capas, una deliberativa basada en la inteligencia artificial
-tradicional y otra reactiva basada en teoría de esquemas. El la \reffigure{fig:aura} se puede observar la representación del AuRA, 
+tradicional y otra reactiva basada en teoría de esquemas. En la \reffigure{fig:aura} se puede observar la representación del AuRA, 
 la capa deliberativa la componen el \textit{planificador de misión}, \textit{razonador espacial} y el \textit{secuenciador del plan}. En el nivel más alto se encuentra el \textit{planificador de misión}, representa la interfaz con el humano y permite establecer los objetivos, 
 las restricciones y los parámetros en los que debe operar el robot. El \textit{razonador espacial} puede ser referido como navegador, este usa la información cartográfica
 almacenada para construir la ruta deseada que el robot debe seguir para completar la misión. El \textit{secuenciador del plan}
-puede ser comparado con un piloto, convierte la ruta generada por el \textit{razonador espacial} al conjunto de comportamientos (esquemas) que debe ejecutar la capa reactiva. En la capa reactiva el \textit{control de esquema}, es el responsable de llevar a cabo y monitorear en tiempo real el conjunto de comportamientos que el secuenciador ordena ejecutar, cada comportamiento esta asociado a un esquema perceptual, en otras palabras, cada estimulo genera una respuesta. 
+puede ser comparado con un piloto, convierte la ruta generada por el \textit{razonador espacial} al conjunto de comportamientos (esquemas) que debe ejecutar la capa reactiva. En la capa reactiva, el \textit{control de esquema} es el responsable de llevar a cabo y monitorear en tiempo real el conjunto de comportamientos que el secuenciador ordena ejecutar, cada comportamiento esta asociado a un esquema perceptual, en otras palabras, cada estimulo genera una respuesta. 
 
 \begin{figure}[here]
 \begin{center}
@@ -268,7 +281,7 @@ ideal para realizar experimentación y pruebas de los algoritmos desarrollados a
 implementarlos en los robots reales.
  
 \textbf{Eclipse IDE} \cite{eclipse2014}, es un entorno de desarrollo integrado para múltiples lenguajes de 
-programación en los que destacan Java y C++. Provee de las herramientas necesarias para el desarrollo, depuración  
+programación en los que destacan Java y C++. Provee las herramientas necesarias para el desarrollo, depuración  
 y compilación de aplicaciones.
 
 \textbf{Java} \cite{java2014}, es un lenguaje de programación de propósito general, orientado a objetos y de alto nivel. 
@@ -285,11 +298,11 @@ este está disponible al público con licencia de software \textit{GPL} en la si
 \item Previamente instalar Java y Eclipse.
 \item Instalar \sourcecode{MobileSim-0.7.2-1.exe}, disponible en: \\ \link{http://robots.mobilerobots.com/wiki/MobileSim}.
 \item Instalar \sourcecode{ARIA-2.7.6.exe}, disponible en: \\ \link{http://robots.mobilerobots.com/wiki/ARIA}.
-\item Agregar a las variables de entorno del sistema la ruta: \\ \sourcecode{C:\textbackslash Program Files\textbackslash MobileRobots\textbackslash ARIA\textbackslash bin\textbackslash}.
+\item Agregar a la variable de entorno \sourcecode{PATH} la ruta: \\ \sourcecode{C:\textbackslash Program Files\textbackslash MobileRobots\textbackslash ARIA\textbackslash bin\textbackslash}.
 \item Dirigirse a la ruta \sourcecode{C:\textbackslash Program Files\textbackslash MobileRobots\textbackslash ARIA\textbackslash bin\textbackslash}, cambiar el nombre del archivo
 \sourcecode{AriaVC10.dll} a  \sourcecode{Aria.dll}.
-\item Importar proyecto en eclipse.
-\item Agregar al \sourcecode{Java Build Path} el wrapper Java de ARIA que se encuentra en la ruta: \sourcecode{C:\textbackslash Program Files\textbackslash MobileRobots\textbackslash ARIA\textbackslash java\textbackslash Aria.jar}.
+\item Importar proyecto a eclipse.
+\item Agregar al \sourcecode{Java Build Path} el wrapper Java de ARIA que se encuentra en la ruta: \\ \sourcecode{C:\textbackslash Program Files\textbackslash MobileRobots\textbackslash ARIA\textbackslash java\textbackslash Aria.jar}.
 \item Verificar que la variable  \sourcecode{PATH\_LIBARIA} del archivo  \sourcecode{CONFIG.properties} 
 	  sea igual a:  \sourcecode{C\textbackslash:\textbackslash\textbackslash Program Files\textbackslash\textbackslash MobileRobots\textbackslash\textbackslash ARIA\textbackslash\textbackslash bin\textbackslash\textbackslash }.
 \end{enumerate}
@@ -311,7 +324,7 @@ este está disponible al público con licencia de software \textit{GPL} en la si
 \\ \# mv -f Aria-2.8.1 /usr/local/Aria
 \\ \# echo '/usr/local/Aria/lib' > /etc/ld.so.conf.d/aria.conf
 \\ \# ldconfig}
-\item Importar proyecto en eclipse.
+\item Importar proyecto a eclipse.
 \item Agregar al \sourcecode{Java Build Path} el wrapper Java de ARIA que se encuentra en la ruta: \sourcecode{/usr/local/Aria/java/Aria.jar}
 \item Verificar que la variable \sourcecode{PATH\_LIBARIA} del archivo \sourcecode{CONFIG.properties} 
 	  sea igual a: \sourcecode{/usr/local/Aria/lib/}
@@ -323,14 +336,59 @@ este está disponible al público con licencia de software \textit{GPL} en la si
 
 \subsubsection*{\textit{Planificador de misión}}
 
-{\centering
-\lstinputlisting[
-  caption={Ejemplo de archivo mapa}
-, label=lst:archivomap
-, frame=single
-, basicstyle=\footnotesize\ttfamily]
-{../../maps/box.map}
-}
+Con el fin de planificar la misión, se desarrolló una interfaz gráfica intuitiva que permite configurar
+los parámetros generales, cargar la información cartográfica y además presentar la ruta óptima que deberá recorrer el robot. 
+Como se observa en la \reffigure{fig:planificador} se puede ingresar la posición inicial y final deseada.
+
+\begin{figure}[here]
+\begin{center}
+\includegraphics[width=8cm]{ventana-principal.png} 
+\caption{Planificador de misión}
+\label{fig:planificador}
+\end{center}
+\end{figure} 
+
+Por otra parte es posible cargar mapas a través de archivos de texto plano con extensión \textit{.map}, 
+este formato de archivo es compatible con MobileSim y puede ser generado o editado por
+Mapper3 \cite{mapper2014}.
+
+En el \reflistings{lst:map} se puede apreciar un ejemplo de como está estructurado un archivo \textit{.map},
+cabe destacar que en este formato las longitudes son medidas en milímetros.
+
+\begin{lstlisting}[caption={Ejemplo archivo mapa}, label=lst:map, frame=single, basicstyle=\footnotesize\ttfamily]
+2D-Map
+Cairn: RobotHome -5000 -5000 0 "" ICON "Home"
+Cairn: Goal 5000 5000 0 "" ICON "Goal" 
+LineMinPos: -6000 -6000
+LineMaxPos: 6000 6000
+NumLines: 4
+LINES
+-6000 6000 6000 6000
+-6000 -6000 6000 -6000
+-6000 6000 -6000 -6000
+6000 6000 6000 -6000
+\end{lstlisting}
+
+A continuación se describen las líneas que conforman el mapa:
+
+\noindent\textbf{Línea 1:} \sourcecode{2D-Map}, indica el tipo de mapa.
+\\\textbf{Línea 2:} \sourcecode{Cairn: RobotHome -5000 -5000 0 \textquotedbl\textquotedbl~ICON \textquotedbl Home\textquotedbl}, representa la posición inicial del robot.
+\\\textbf{Línea 3:} \sourcecode{Cairn: Goal 5000 5000 0 \textquotedbl\textquotedbl~ICON \textquotedbl Goal\textquotedbl}, representa la posición objetivo.
+\\\textbf{Línea 4:} \sourcecode{LineMinPos: -6000 -6000}, indica el punto de inicio del mapa.
+\\\textbf{Línea 5:} \sourcecode{LineMaxPos: 6000 6000}, indica el punto fin del mapa.
+\\\textbf{Línea 6:} \sourcecode{NumLines: 4}, indica la cantidad de líneas que contiene el mapa.
+\\\textbf{Línea 7:} \sourcecode{LINES}, indica el inicio de la sección de obstáculos.
+\\\textbf{A partir de la línea 8:} sección de obstáculos.
+
+La \reffigure{fig:map} muestra el resultado del archivo \textit{.map} descrito en el \reflistings{lst:map}.
+
+\begin{figure}[here]
+\begin{center}
+\includegraphics[width=6cm]{map.png} 
+\caption{Resultado de ejemplo archivo mapa}
+\label{fig:map}
+\end{center}
+\end{figure} 
 
 \subsubsection*{\textit{Razonador Espacial}}
 
@@ -344,7 +402,7 @@ este está disponible al público con licencia de software \textit{GPL} en la si
 
 \section*{Conclusión}
 
-AL FINALIZAR ESCRIBIR SECCION
+AL FINALIZAR
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                 BIBLIOGRAFIA
@@ -376,6 +434,11 @@ AL FINALIZAR ESCRIBIR SECCION
 	Oracle. (2014).
 	Java. 	
 	Disponible en: \\\link{http://www.oracle.com/technetwork/java/index.html}.
-
+	
+\bibitem{mapper2014} 
+	MobileRobots. (2014).
+	Mapper3. 	
+	Disponible en: \\\link{http://robots.mobilerobots.com/wiki/Mapper3}.
+	
 \end{thebibliography}
 \end{document}

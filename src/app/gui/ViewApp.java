@@ -45,6 +45,7 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.WindowConstants;
+import javax.swing.border.TitledBorder;
 
 import app.Config;
 import app.Theme;
@@ -123,6 +124,7 @@ public class ViewApp extends JFrame {
 	private JSpinner spnMaxSpeed;
 	private JLabel lblPositionUpdate;
 	private JSpinner spnPositionUpdate;
+	private JPanel pnlCanvas;
 
 	public ViewApp() {
 		menuItems = new Vector<JMenuItem>();
@@ -220,7 +222,7 @@ public class ViewApp extends JFrame {
 
 		lblStrokeSize = new JLabel(Translate.get("GUI_STROKESIZE"));
 		spnStrokeSize = new JSpinner();
-		
+
 		lblPositionUpdate = new JLabel(Translate.get("GUI_POSITIONUPDATE"));
 		spnPositionUpdate = new JSpinner();
 
@@ -255,7 +257,9 @@ public class ViewApp extends JFrame {
 
 		pnlInitPoint = new JPanel();
 		pnlInitPoint.setLayout(new MigLayout());
-		pnlInitPoint.setBorder(BorderFactory.createTitledBorder(Translate.get("GUI_STARTPOINT")));
+		TitledBorder borderStarPoint = BorderFactory.createTitledBorder(Translate.get("GUI_STARTPOINT"));
+		borderStarPoint.setTitleColor(Color.BLUE);
+		pnlInitPoint.setBorder(borderStarPoint);
 
 		pnlInitPoint.add(lblInitX, "width 100, height 20");
 		pnlInitPoint.add(spnInitX, "width 100, height 20, wrap");
@@ -275,7 +279,9 @@ public class ViewApp extends JFrame {
 
 		pnlEndPoint = new JPanel();
 		pnlEndPoint.setLayout(new MigLayout());
-		pnlEndPoint.setBorder(BorderFactory.createTitledBorder(Translate.get("GUI_ENDPOINT")));
+		TitledBorder borderEndPoint = BorderFactory.createTitledBorder(Translate.get("GUI_ENDPOINT"));
+		borderEndPoint.setTitleColor(Color.RED);
+		pnlEndPoint.setBorder(borderEndPoint);
 
 		pnlEndPoint.add(lblEndX, "width 100, height 20");
 		pnlEndPoint.add(spnEndX, "width 100, height 20, wrap");
@@ -316,17 +322,19 @@ public class ViewApp extends JFrame {
 
 		add(pnlWest, BorderLayout.WEST);
 
-		pnlCenter = new JPanel();
-		pnlCenter.setLayout(new BorderLayout());
+		pnlCenter = new JPanel(new BorderLayout());
 		pnlCenter.setBorder(BorderFactory.createEmptyBorder(8, 0, 0, 7));
 		add(pnlCenter, BorderLayout.CENTER);
 
 		canvasAnimation = new Canvas();
 		canvasAnimation.setBackground(Color.WHITE);
-		pnlCenter.add(canvasAnimation, BorderLayout.CENTER);
+		pnlCanvas = new JPanel(new BorderLayout()); 
+		pnlCanvas.setBorder(BorderFactory.createLineBorder(new Color(100, 100, 100)));
+		pnlCanvas.add(canvasAnimation);
+		pnlCenter.add(pnlCanvas, BorderLayout.CENTER);
 
 		pnlAnimationControl = new JPanel(new MigLayout("insets 0 7 0 0"));
-
+		
 		btnZoomIn = new JButton(new ImageIcon(Theme.getIconPath("ZOOM_IN")));
 		btnZoomIn.setToolTipText(Translate.get("GUI_ZOOMIN"));
 		btnZoomOut = new JButton(new ImageIcon(Theme.getIconPath("ZOOM_OUT")));
