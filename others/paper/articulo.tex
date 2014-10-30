@@ -19,9 +19,37 @@
 \usepackage{graphicx}
 \usepackage{url}
 \usepackage{listings}
+\lstset{ frame=Ltb,
+framerule=0pt,
+aboveskip=0.5cm,
+framextopmargin=3pt,
+framexbottommargin=3pt,
+framexleftmargin=0.1cm,
+%xleftmargin=0.5cm,
+framesep=0pt,
+rulesep=.4pt,
+backgroundcolor=\color{gray97},
+rulesepcolor=\color{black},
+%
+stringstyle=\ttfamily,
+showstringspaces = false,
+basicstyle=\footnotesize\ttfamily,
+commentstyle=\color{gray45},
+keywordstyle=\bfseries,
+%
+numbers=left,
+%numbersep=0.2cm,
+numberstyle=\tiny,
+numberfirstline = false,
+breaklines=true
+}
 \usepackage[font=footnotesize,labelfont=bf]{caption}
 %\usepackage{subcaption}
 \usepackage[T1]{fontenc}
+\usepackage{color}
+\definecolor{gray97}{gray}{.97}
+\definecolor{gray75}{gray}{.75}
+\definecolor{gray45}{gray}{.45}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\theoremstyle{theorem}
 \newtheorem{thm}{Theorem}[section]
@@ -192,7 +220,7 @@ Es uno de los robots más popularmente usados en las áreas de la educación e i
 \begin{figure}[here]
 	\centering
 	\includegraphics[width=5cm]{pioneer.png} 
-	\caption{Robot Pioneer P3DX}
+	\caption{Robot Pioneer P3DX.}
 	\label{fig:pioneer}
 \end{figure} 
 
@@ -227,7 +255,7 @@ Es uno de los robots más popularmente usados en las áreas de la educación e i
 \begin{figure}[here]
 	\centering
 	\includegraphics[width=8cm]{pioneer-dimensiones.png} 
-	\caption{Dimensiones (milímetros) Robot Pioneer P3DX}
+	\caption{Dimensiones (milímetros) Robot Pioneer P3DX.}
 	\label{fig:pioneer-dimensiones}
 \end{figure} 
 
@@ -244,7 +272,7 @@ puede ser comparado con un piloto, convierte la ruta generada por el \textit{raz
 \begin{figure}[here]
 \begin{center}
 \includegraphics[width=5cm]{aura.png} 
-\caption{Representación de Arquitectura AuRA}
+\caption{Representación de Arquitectura AuRA.}
 \label{fig:aura}
 \end{center}
 \end{figure} 
@@ -289,13 +317,19 @@ y compilación de aplicaciones.
 \section*{Configuración del Entorno}
 
 Antes de configurar el entorno de desarrollo es necesario descargar el código fuente del proyecto,
-este está disponible al público con licencia de software \textit{GPL} en la siguiente dirección:
+este está disponible al público con licencia de software \textbf{GPL} en la siguiente dirección:
 \\ \link{https://bitbucket.org/sauljabin/ariajava-p3dx}.
+
+\subsubsection*{Requisitos}
+\begin{enumerate}
+\item Sistema operativo de 32bits.
+\item Java 7 o mayor.
+\item Eclipse 4 o mayor.
+\end{enumerate}
 
 \subsubsection*{Configuración del Entorno Sobre Windows}
 
 \begin{enumerate}
-\item Previamente instalar Java y Eclipse.
 \item Instalar \sourcecode{MobileSim-0.7.2-1.exe}, disponible en: \\ \link{http://robots.mobilerobots.com/wiki/MobileSim}.
 \item Instalar \sourcecode{ARIA-2.7.6.exe}, disponible en: \\ \link{http://robots.mobilerobots.com/wiki/ARIA}.
 \item Agregar a la variable de entorno \sourcecode{PATH} la ruta: \\ \sourcecode{C:\textbackslash Program Files\textbackslash MobileRobots\textbackslash ARIA\textbackslash bin\textbackslash}.
@@ -310,7 +344,6 @@ este está disponible al público con licencia de software \textit{GPL} en la si
 \subsubsection*{Configuración del Entorno Sobre Debian/Ubuntu}
 
 \begin{enumerate}
-\item Previamente instalar Java y Eclipse. 
 \item Descargar el archivo \sourcecode{MobileSim-0.7.3+gcc4.6.tgz}, disponible en: \\ \link{http://robots.mobilerobots.com/wiki/MobileSim}.
 \item Ejecutar los siguientes comandos por consola para instalar MobileSim:
 \sourcecode{ 
@@ -342,8 +375,8 @@ Como se observa en la \reffigure{fig:planificador} se puede ingresar la posició
 
 \begin{figure}[here]
 \begin{center}
-\includegraphics[width=8cm]{ventana-principal.png} 
-\caption{Planificador de misión}
+\includegraphics[width=6cm]{ventana-principal.png} 
+\caption{Planificador de misión.}
 \label{fig:planificador}
 \end{center}
 \end{figure} 
@@ -355,7 +388,8 @@ Mapper3 \cite{mapper2014}.
 En el \reflistings{lst:map} se puede apreciar un ejemplo de como está estructurado un archivo \textit{.map},
 cabe destacar que en este formato las longitudes son medidas en milímetros.
 
-\begin{lstlisting}[caption={Ejemplo archivo mapa}, label=lst:map, frame=single, basicstyle=\footnotesize\ttfamily]
+\begin{minipage}{\linewidth}
+\begin{lstlisting}[caption={Ejemplo archivo mapa.}, label=lst:map]
 2D-Map
 Cairn: RobotHome -5000 -5000 0 "" ICON "Home"
 Cairn: Goal 5000 5000 0 "" ICON "Goal" 
@@ -368,6 +402,7 @@ LINES
 -6000 6000 -6000 -6000
 6000 6000 6000 -6000
 \end{lstlisting}
+\end{minipage}
 
 A continuación se describen las líneas que conforman el mapa:
 
@@ -376,7 +411,7 @@ A continuación se describen las líneas que conforman el mapa:
 \\\textbf{Línea 3:} \sourcecode{Cairn: Goal 5000 5000 0 \textquotedbl\textquotedbl~ICON \textquotedbl Goal\textquotedbl}, representa la posición objetivo.
 \\\textbf{Línea 4:} \sourcecode{LineMinPos: -6000 -6000}, indica el punto de inicio del mapa.
 \\\textbf{Línea 5:} \sourcecode{LineMaxPos: 6000 6000}, indica el punto fin del mapa.
-\\\textbf{Línea 6:} \sourcecode{NumLines: 4}, indica la cantidad de líneas que contiene el mapa.
+\\\textbf{Línea 6:} \sourcecode{NumLines: 4}, indica la cantidad de líneas (obstáculos) que contiene el mapa.
 \\\textbf{Línea 7:} \sourcecode{LINES}, indica el inicio de la sección de obstáculos.
 \\\textbf{A partir de la línea 8:} sección de obstáculos.
 
@@ -385,7 +420,7 @@ La \reffigure{fig:map} muestra el resultado del archivo \textit{.map} descrito e
 \begin{figure}[here]
 \begin{center}
 \includegraphics[width=6cm]{map.png} 
-\caption{Resultado de ejemplo archivo mapa}
+\caption{Resultado de ejemplo archivo mapa \reflistings{lst:map}.}
 \label{fig:map}
 \end{center}
 \end{figure} 
