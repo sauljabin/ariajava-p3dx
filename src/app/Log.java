@@ -27,6 +27,8 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import javax.swing.JTextArea;
 
@@ -36,6 +38,7 @@ public class Log {
 
 	private static LogLevel level = LogLevel.DEVEL;
 	private static JTextArea textArea;
+	private static Charset charset = StandardCharsets.UTF_8;
 
 	public static LogLevel getLevel() {
 		return level;
@@ -104,7 +107,7 @@ public class Log {
 		BufferedWriter bw;
 		try {
 			fs = new FileOutputStream(folder.getPath() + "/" + UtilDate.nowFormat("yyyy-MM-dd") + ".log", true);
-			os = new OutputStreamWriter(fs, "UTF-8");
+			os = new OutputStreamWriter(fs, charset);
 			bw = new BufferedWriter(os);
 			bw.write(string);
 			bw.flush();
