@@ -36,7 +36,7 @@ import java.util.Vector;
 public class Config {
 
 	private static Properties properties = new Properties();
-	public static String configPath = "CONFIG.properties";
+	public static String configPath = "CONFIG.props";
 	private static Charset charset = StandardCharsets.UTF_8;
 
 	public static void load() throws FileNotFoundException, IOException {
