@@ -34,7 +34,7 @@ import java.util.Vector;
 public class Theme {
 
 	private static Properties iconsNames = new Properties();
-	public static String iconsNamesPath = "ICONS.properties";
+	public static String iconsNamesPath = "ICONS.props";
 	private static Charset charset = StandardCharsets.UTF_8;
 
 	public static void load() throws FileNotFoundException, IOException {
