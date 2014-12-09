@@ -25,9 +25,9 @@ public class RobotInfoPanel extends InfoPanel {
 	public void printInfo() {
 		if (robot == null)
 			return;
-		printLine(String.format("%s: %.0f",Translate.get("GUI_X"), robot.getRelativeX()));
-		printLine(String.format("%s: %.0f",Translate.get("GUI_Y"), robot.getRelativeY()));
-		printLine(String.format("%s: %.0f",Translate.get("GUI_ANGLE"), robot.getRelativeAngle()));
+		printLine(String.format("%s: %.2f",Translate.get("GUI_X"), robot.getRelativeX()));
+		printLine(String.format("%s: %.2f",Translate.get("GUI_Y"), robot.getRelativeY()));
+		printLine(String.format("%s: %.2f",Translate.get("GUI_ANGLE"), robot.getRelativeAngle()));
 	}
 
 }

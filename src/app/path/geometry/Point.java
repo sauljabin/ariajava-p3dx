@@ -27,20 +27,6 @@ public class Point {
 	private double y;
 	private String name;
 
-	public Point(int x, int y, String name) {
-		super();
-		this.x = (x * 1.0);
-		this.y = (y * 1.0);
-		this.name = name;
-	}
-	
-	public Point(long x, long y, String name) {
-		super();
-		this.x = (x * 1.0);
-		this.y = (y * 1.0);
-		this.name = name;
-	}
-
 	public Point(double x, double y, String name) {
 		super();
 		this.x = x;

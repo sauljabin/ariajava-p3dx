@@ -142,10 +142,7 @@ public class Triangulation {
 						triangles.add(new Triangle(p1, p2, p3, map));
 				}
 			}
-			for (Triangle t : triangles)
-				System.out.println(t.toString());
 		} catch (Exception e) {
-			System.out.println("CATCH");
 			e.printStackTrace();
 		}
 	}

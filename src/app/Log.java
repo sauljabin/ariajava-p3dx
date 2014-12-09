@@ -50,7 +50,8 @@ public class Log {
 		Log.textArea.setEditable(false);
 	}
 
-	private static void print(LogLevel printLevel, Class<?> clazz, String msg, Exception e) {
+	private static void print(LogLevel printLevel, Class<?> clazz, String msg,
+			Exception e) {
 		if (level == LogLevel.NONE)
 			return;
 
@@ -76,7 +77,9 @@ public class Log {
 			break;
 		}
 
-		String string = String.format("TYPE: %s\nNAME: %s\nTIME: %s\n----> %s\n", type, clazz.getName(), UtilDate.nowFormat("yyyy-MM-dd HH:mm"), msg);
+		String string = String.format(
+				"TYPE: %s\nNAME: %s\nTIME: %s\n----> %s\n", type,
+				clazz.getName(), UtilDate.nowFormat("yyyy-MM-dd HH:mm"), msg);
 
 		printToConsole(string, e);
 
@@ -103,7 +106,8 @@ public class Log {
 		OutputStreamWriter os;
 		BufferedWriter bw;
 		try {
-			fs = new FileOutputStream(folder.getPath() + "/" + UtilDate.nowFormat("yyyy-MM-dd") + ".log", true);
+			fs = new FileOutputStream(folder.getPath() + "/"
+					+ UtilDate.nowFormat("yyyy-MM-dd") + ".log", true);
 			os = new OutputStreamWriter(fs, "UTF-8");
 			bw = new BufferedWriter(os);
 			bw.write(string);
@@ -123,6 +127,13 @@ public class Log {
 			textArea.setCaretPosition(textArea.getDocument().getLength());
 		}
 	}
+	
+	private static void printText(String string) {
+		if (textArea != null) {
+			textArea.append(string);
+			textArea.setCaretPosition(textArea.getDocument().getLength());
+		}
+	}
 
 	public static synchronized void info(Class<?> clazz, String msg) {
 		info(clazz, msg, null);
@@ -136,7 +147,8 @@ public class Log {
 		error(clazz, msg, null);
 	}
 
-	public static synchronized void error(Class<?> clazz, String msg, Exception e) {
+	public static synchronized void error(Class<?> clazz, String msg,
+			Exception e) {
 		print(LogLevel.ERROR, clazz, msg, e);
 	}
 
@@ -144,7 +156,8 @@ public class Log {
 		warning(clazz, msg, null);
 	}
 
-	public static synchronized void warning(Class<?> clazz, String msg, Exception e) {
+	public static synchronized void warning(Class<?> clazz, String msg,
+			Exception e) {
 		print(LogLevel.WARN, clazz, msg, e);
 	}
 
@@ -152,8 +165,17 @@ public class Log {
 		devel(clazz, msg, null);
 	}
 
-	public static synchronized void devel(Class<?> clazz, String msg, Exception e) {
+	public static synchronized void devel(Class<?> clazz, String msg,
+			Exception e) {
 		print(LogLevel.DEVEL, clazz, msg, e);
+	}
+
+	public static synchronized void print(String msg) {
+		printText(msg);
+	}
+
+	public static synchronized void println(String msg) {
+		print(msg + "\n");
 	}
 
 }
