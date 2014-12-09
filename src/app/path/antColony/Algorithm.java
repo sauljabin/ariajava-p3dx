@@ -30,11 +30,13 @@ public class Algorithm {
 
 	private Graph graph;
 	private ArrayList<Ant> ants;
+	private boolean found;
 
 	public Algorithm(Graph graph, int antAmount) {
 		super();
 		this.graph = graph;
 		ants = new ArrayList<Ant>();
+		found = false;
 		for (int i = 0; i < antAmount; i++)
 			ants.add(new Ant(i + 1));
 	}
@@ -48,7 +50,8 @@ public class Algorithm {
 			for (Ant ant : ants)
 				ant.step(graph);
 			isDefinedPath = checkRoutes();
-			graph.updatePheromone();
+			if (found)
+				graph.updatePheromone();
 		}
 		return ants.get(0).getLastRoutes().get(0);
 	}
@@ -57,6 +60,8 @@ public class Algorithm {
 		for (Ant ant : ants)
 			if (!ant.validRoutes())
 				return false;
+		found = true;
+		System.out.println("ENCONTRADA");
 		ArrayList<Point> route = ants.get(0).getLastRoutes().get(0);
 		for (int i = 1; i < ants.size(); i++)
 			if (route.size() != ants.get(i).getLastRoutes().get(0).size())

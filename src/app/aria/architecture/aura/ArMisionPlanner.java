@@ -21,25 +21,27 @@
 
 package app.aria.architecture.aura;
 
-import java.util.ArrayList;
-
+import app.Log;
+import app.aria.robot.ArRobotMobile;
 import app.map.Map;
-import app.path.PathPlanner;
 import app.path.geometry.Point;
 
 public class ArMisionPlanner {
 
+	public final static int AMP_INIT = 0;
+	public final static int AMP_SEARCH_IN_PROGRESS = 1;
+	public final static int AMP_TARGET_ACHIEVED = 2;
+	public final static int AMP_UNATTAINABLE_GOAL = 3;
+	public final static int FIN = 4;
+
 	private Point start;
 	private Point target;
-	private ArPlanSequencer arPlanSequencer;
-	private PathPlanner pathPlanner;
-	private boolean recalculate;
-	private ArrayList<Point> path;
+	private int state;
+	private ArSpatialReasoner arSpatialReasoner;
 
-	public ArMisionPlanner(Map map) {
-		this.arPlanSequencer = new ArPlanSequencer(map);
-		this.pathPlanner = new PathPlanner(map);
-		this.recalculate = false;
+	public ArMisionPlanner(Map map, ArRobotMobile robot) {
+		this.state = ArMisionPlanner.AMP_INIT;
+		this.arSpatialReasoner = new ArSpatialReasoner(map, robot);
 	}
 
 	public void setStart(Point start) {
@@ -51,26 +53,24 @@ public class ArMisionPlanner {
 	}
 
 	public void execute() {
-		if (path == null || recalculate) {
-			path = calculePath();
-			if (recalculate) {
-				recalculate = false;
-				arPlanSequencer.newPath(path);
-			}
-		} else{
-			continuePath();
+		switch (state) {
+		case ArMisionPlanner.AMP_INIT:
+			Log.println("MISION_PLANNER: Inicializando");
+			state = arSpatialReasoner.calculatePath(start, target);
+			break;
+		case ArMisionPlanner.AMP_SEARCH_IN_PROGRESS:
+			state = arSpatialReasoner.continuePath();
+			break;
+		case ArMisionPlanner.AMP_TARGET_ACHIEVED:
+			Log.println("MISION_PLANNER: Objetivo Alcanzado");
+			state = ArMisionPlanner.FIN;
+			break;
+		case ArMisionPlanner.AMP_UNATTAINABLE_GOAL:
+			Log.println("MISION_PLANNER: Imposible llegar al destino");
+			break;
+		case ArMisionPlanner.FIN:
+			break;
 		}
-	}
-
-	private ArrayList<Point> calculePath() {
-		if (start != null && target != null)
-			return pathPlanner.searchOptimalRoute(start, target);
-		return null;
-	}
-
-	private void continuePath() {
-		recalculate = arPlanSequencer.continuePath();
-		//if(arPlanSequencer.)
 	}
 
 }

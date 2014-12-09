@@ -64,7 +64,7 @@ public class Ant {
 	}
 
 	public void stepForward(Graph graph) {
-		path--;
+		path -= 25;
 		if (path <= 0) {
 			Point previousPoint = null;
 			if (!initiating)

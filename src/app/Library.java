@@ -42,7 +42,6 @@ public class Library {
 		Collections.addAll(pathsList, paths);
 		pathsList.add(file.getAbsolutePath());
 		field.set(null, pathsList.toArray(new String[pathsList.size()]));
-
 		System.setProperty("java.library.path", System.getProperty("java.library.path") + File.pathSeparator + file.getAbsolutePath());
 		System.loadLibrary("AriaJava");
 	}

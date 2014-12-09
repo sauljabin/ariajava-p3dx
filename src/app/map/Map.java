@@ -47,6 +47,7 @@ public class Map implements Animated {
 
 	private String path;
 	private List<Line> lines;
+	private List<Point> pathPoints;
 	private RobotHome robotHome;
 	private int minX;
 	private int maxX;
@@ -160,7 +161,8 @@ public class Map implements Animated {
 		robotHome.setMap(this);
 	}
 
-	public Map(RobotHome robotHome, Goal goal, int minX, int maxX, int minY, int maxY) {
+	public Map(RobotHome robotHome, Goal goal, int minX, int maxX, int minY,
+			int maxY) {
 		this.robotHome = robotHome;
 		this.minX = minX;
 		this.maxX = maxX;
@@ -213,26 +215,38 @@ public class Map implements Animated {
 
 		while ((stringRead = br.readLine()) != null) {
 			if (stringRead.startsWith(numberLinesLabel)) {
-				totalLines = Integer.parseInt(stringRead.substring(numberLinesLabel.length()));
+				totalLines = Integer.parseInt(stringRead
+						.substring(numberLinesLabel.length()));
 			} else if (stringRead.startsWith(lineMinPosLabel)) {
-				String[] tokens = stringRead.substring(lineMinPosLabel.length()).split(" ");
+				String[] tokens = stringRead
+						.substring(lineMinPosLabel.length()).split(" ");
 				minX = Integer.parseInt(tokens[0]);
 				minY = Integer.parseInt(tokens[1]);
 			} else if (stringRead.startsWith(lineMaxPosLabel)) {
-				String[] tokens = stringRead.substring(lineMaxPosLabel.length()).split(" ");
+				String[] tokens = stringRead
+						.substring(lineMaxPosLabel.length()).split(" ");
 				maxX = Integer.parseInt(tokens[0]);
 				maxY = Integer.parseInt(tokens[1]);
 			} else if (stringRead.startsWith(robotLabel)) {
-				String[] tokens = stringRead.substring(robotLabel.length()).split(" ");
-				setRobotHome(new RobotHome(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[1]), Double.parseDouble(tokens[2])));
+				String[] tokens = stringRead.substring(robotLabel.length())
+						.split(" ");
+				setRobotHome(new RobotHome(Integer.parseInt(tokens[0]),
+						Integer.parseInt(tokens[1]),
+						Double.parseDouble(tokens[2])));
 			} else if (stringRead.startsWith(goalLabel)) {
-				String[] tokens = stringRead.substring(goalLabel.length()).split(" ");
-				setGoal(new Goal(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[1]), Double.parseDouble(tokens[2])));
+				String[] tokens = stringRead.substring(goalLabel.length())
+						.split(" ");
+				setGoal(new Goal(Integer.parseInt(tokens[0]),
+						Integer.parseInt(tokens[1]),
+						Double.parseDouble(tokens[2])));
 			} else if (stringRead.startsWith(linesLabel)) {
 				linesSector = true;
 			} else if (linesSector) {
 				String[] tokens = stringRead.split(" ");
-				addLine(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2]), Integer.parseInt(tokens[3]));
+				addLine(Integer.parseInt(tokens[0]),
+						Integer.parseInt(tokens[1]),
+						Integer.parseInt(tokens[2]),
+						Integer.parseInt(tokens[3]));
 				if (++countLine == totalLines) {
 					linesSector = false;
 				}
@@ -240,7 +254,8 @@ public class Map implements Animated {
 		}
 		br.close();
 		if (getGoal() == null && getRobotHome() != null)
-			setGoal(new Goal(robotHome.getX() + ArRobotMobile.LONG * 2, robotHome.getY(), robotHome.getAngle()));
+			setGoal(new Goal(robotHome.getX() + ArRobotMobile.LONG * 2,
+					robotHome.getY(), robotHome.getAngle()));
 	}
 
 	private void addLine(int x1, int y1, int x2, int y2) {
@@ -305,12 +320,32 @@ public class Map implements Animated {
 	public void paint(Graphics2D g) {
 		g.setColor(Color.BLACK);
 		for (int i = 0; i < lines.size(); i++) {
-			g.drawLine(canvasX(lines.get(i).getX1()), canvasY(lines.get(i).getY1()), canvasX(lines.get(i).getX2()), canvasY(lines.get(i).getY2()));
+			g.drawLine(canvasX(lines.get(i).getX1()), canvasY(lines.get(i)
+					.getY1()), canvasX(lines.get(i).getX2()), canvasY(lines
+					.get(i).getY2()));
 		}
 		if (graph != null) {
 			g.setColor(new Color(255, 0, 0, 100));
 			for (int i = 0; i < graph.getLinks().size(); i++) {
-				g.drawLine(canvasX(graph.getLinks().get(i).getPointA().getX()), canvasY(graph.getLinks().get(i).getPointA().getY()), canvasX(graph.getLinks().get(i).getPointB().getX()), canvasY(graph.getLinks().get(i).getPointB().getY()));
+				g.drawLine(canvasX(graph.getLinks().get(i).getPointA().getX()),
+						canvasY(graph.getLinks().get(i).getPointA().getY()),
+						canvasX(graph.getLinks().get(i).getPointB().getX()),
+						canvasY(graph.getLinks().get(i).getPointB().getY()));
+			}
+		}
+		if (pathPoints != null) {
+			boolean paso = true;
+			g.setColor(new Color(0, 255, 0, 100));
+			for (int i = 0; i < pathPoints.size() - 1; i++) {
+				paso = !paso;
+				if (paso)
+					g.setColor(new Color(255, 255, 0, 100));
+				else
+					g.setColor(new Color(0, 255, 0, 100));
+				g.drawLine(canvasX(pathPoints.get(i).getX()),
+						canvasY(pathPoints.get(i).getY()), canvasX(pathPoints
+								.get(i + 1).getX()),
+						canvasY(pathPoints.get(i + 1).getY()));
 			}
 		}
 	}
@@ -367,6 +402,14 @@ public class Map implements Animated {
 
 	public void setGraph(Graph graph) {
 		this.graph = graph;
+	}
+
+	public List<Point> getPathPoints() {
+		return pathPoints;
+	}
+
+	public void setPathPoints(List<Point> pathPoints) {
+		this.pathPoints = pathPoints;
 	}
 
 }

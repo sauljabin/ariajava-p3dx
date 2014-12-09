@@ -51,19 +51,44 @@ public class PathPlanner {
 		graph = diagram.getGraph();
 		addHomeAndTarget(home, target, graph);
 		map.setGraph(graph);
-		antAlgorithm = new Algorithm(graph, 20);
-		return antAlgorithm.searchOptimalRoute(home, target);
+		// antAlgorithm = new Algorithm(graph, 1000);
+		// return antAlgorithm.searchOptimalRoute(home, target);
+		// Dijkstra algorithm = new Dijkstra(graph);
+		ArrayList<Point> lista = new ArrayList<Point>();
+		lista.add(home);
+		ArrayList<Link> linkes = new ArrayList<Link>();
+		Point punto = home;
+		for (int i = 0; i < 25; i++) {
+			Link link = graph.linkWith(punto).get(0);
+			for (int j = 0; j < graph.linkWith(punto).size(); j++) {
+				if (linkes.contains(link))
+					link = graph.linkWith(punto).get(j);
+			}
+			linkes.add(link);
+			if (link.getPointA().distance(punto) < 0.1) {
+				lista.add(link.getPointB());
+				punto = link.getPointB();
+			} else {
+				lista.add(link.getPointA());
+				punto = link.getPointA();
+			}
+		}
+		map.setPathPoints(new ArrayList<Point>());
+		map.getPathPoints().addAll(lista);
+		return lista;
 	}
 
 	public void addHomeAndTarget(Point home, Point target, Graph graph) {
+		System.out.println(home);
+		System.out.println(target);
 		TreeSet<Link> orderedLinksHome = new TreeSet<Link>(
 				new Comparator<Link>() {
 					@Override
 					public int compare(Link o1, Link o2) {
 						if (o1.getWeight() > o2.getWeight())
-							return -1;
-						if (o2.getWeight() > o1.getWeight())
 							return 1;
+						if (o2.getWeight() > o1.getWeight())
+							return -1;
 						return 0;
 					}
 				});
@@ -72,9 +97,9 @@ public class PathPlanner {
 					@Override
 					public int compare(Link o1, Link o2) {
 						if (o1.getWeight() > o2.getWeight())
-							return -1;
-						if (o2.getWeight() > o1.getWeight())
 							return 1;
+						if (o2.getWeight() > o1.getWeight())
+							return -1;
 						return 0;
 					}
 				});
@@ -84,9 +109,9 @@ public class PathPlanner {
 		}
 		for (int i = 0; i < 5; i++) {
 			Link homeLink = orderedLinksHome.pollFirst();
-			System.out.println(homeLink);
 			Link targetLink = orderedLinksTarget.pollFirst();
-			System.out.println(targetLink);
+			graph.getLinks().add(homeLink);
+			graph.getLinks().add(targetLink);
 		}
 	}
 }
