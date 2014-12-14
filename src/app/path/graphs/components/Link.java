@@ -1,22 +1,14 @@
 /**
  * 
- * Copyright (c) 2014 Saul Piña <sauljp07@gmail.com>, Jorge Parra <thejorgemylio@gmail.com>
+ * Link.java
+ * 
+ * Copyright (c) 2014, Saul Piña <sauljp07@gmail.com>, Jorge Parra <thejorgemylio@gmail.com>.
  * 
  * This file is part of AriaJavaP3DX.
- *
- * AriaJavaP3DX is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * AriaJavaP3DX is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with AriaJavaP3DX.  If not, see <http://www.gnu.org/licenses/>.
  * 
+ * AriaJavaP3DX is licensed under The MIT License.
+ * For full copyright and license information please see the LICENSE.txt file.
+ *
  */
 
 package app.path.graphs.components;
@@ -65,9 +57,7 @@ public class Link {
 	@Override
 	public boolean equals(Object obj) {
 		Link link = (Link) obj;
-		return ((getPointA().equals(link.pointA) && (getPointB()
-				.equals(link.pointB))) || (getPointA().equals(link.pointB) && (getPointB()
-				.equals(link.pointA))));
+		return ((getPointA().equals(link.pointA) && (getPointB().equals(link.pointB))) || (getPointA().equals(link.pointB) && (getPointB().equals(link.pointA))));
 	}
 
 	public void updatePheromone(Double value) {
@@ -76,7 +66,7 @@ public class Link {
 
 	@Override
 	public String toString() {
-		return "[ " + pointA.getName() + " / " + pointB.getName() + " ]";
+		return String.format("Link [pointA=%s, pointB=%s, name=%s]", pointA, pointB, name);
 	}
 
 }
