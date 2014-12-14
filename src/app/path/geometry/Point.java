@@ -1,22 +1,14 @@
 /**
  * 
- * Copyright (c) 2014 Saul Piña <sauljp07@gmail.com>, Jorge Parra <thejorgemylio@gmail.com>
+ * Point.java
+ * 
+ * Copyright (c) 2014, Saul Piña <sauljp07@gmail.com>, Jorge Parra <thejorgemylio@gmail.com>.
  * 
  * This file is part of AriaJavaP3DX.
- *
- * AriaJavaP3DX is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * AriaJavaP3DX is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with AriaJavaP3DX.  If not, see <http://www.gnu.org/licenses/>.
  * 
+ * AriaJavaP3DX is licensed under The MIT License.
+ * For full copyright and license information please see the LICENSE.txt file.
+ *
  */
 
 package app.path.geometry;
@@ -26,6 +18,33 @@ public class Point {
 	private double x;
 	private double y;
 	private String name;
+	private Point ancestor;
+	private boolean marked;
+	private double cumulativeWeight;
+
+	public Point getAncestor() {
+		return ancestor;
+	}
+
+	public void setAncestor(Point ancestor) {
+		this.ancestor = ancestor;
+	}
+
+	public boolean isMarked() {
+		return marked;
+	}
+
+	public void setMarked(boolean marked) {
+		this.marked = marked;
+	}
+
+	public double getCumulativeWeight() {
+		return cumulativeWeight;
+	}
+
+	public void setCumulativeWeight(double cumulativeWeight) {
+		this.cumulativeWeight = cumulativeWeight;
+	}
 
 	public Point(double x, double y, String name) {
 		super();
@@ -35,8 +54,7 @@ public class Point {
 	}
 
 	public Point midpoint(Point otro) {
-		return new Point((otro.getX() + getX()) / 2.0,
-				(otro.getY() + getY()) / 2.0, "");
+		return new Point((otro.getX() + getX()) / 2.0, (otro.getY() + getY()) / 2.0, "");
 	}
 
 	public double distance(Point otro) {
@@ -74,7 +92,7 @@ public class Point {
 
 	@Override
 	public String toString() {
-		return "( " + x + " , " + y + " )";
+		return String.format("Point [x=%s, y=%s, name=%s, ancestor=(%s), cumulativeWeight=%s]", x, y, name, ancestor, cumulativeWeight);
 	}
 
 }

@@ -1,22 +1,14 @@
 /**
  * 
- * Copyright (c) 2014 Saul Piña <sauljp07@gmail.com>, Jorge Parra <thejorgemylio@gmail.com>
+ * Map.java
+ * 
+ * Copyright (c) 2014, Saul Piña <sauljp07@gmail.com>, Jorge Parra <thejorgemylio@gmail.com>.
  * 
  * This file is part of AriaJavaP3DX.
- *
- * AriaJavaP3DX is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * AriaJavaP3DX is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with AriaJavaP3DX.  If not, see <http://www.gnu.org/licenses/>.
  * 
+ * AriaJavaP3DX is licensed under The MIT License.
+ * For full copyright and license information please see the LICENSE.txt file.
+ *
  */
 
 package app.map;
@@ -58,6 +50,8 @@ public class Map implements Animated {
 	private int offsetPosition;
 	private boolean visible;
 	private Graph graph;
+	private Color pathColor1;
+	private Color pathColor2;
 
 	public int getOffsetPosition() {
 		return offsetPosition;
@@ -161,8 +155,7 @@ public class Map implements Animated {
 		robotHome.setMap(this);
 	}
 
-	public Map(RobotHome robotHome, Goal goal, int minX, int maxX, int minY,
-			int maxY) {
+	public Map(RobotHome robotHome, Goal goal, int minX, int maxX, int minY, int maxY) {
 		this.robotHome = robotHome;
 		this.minX = minX;
 		this.maxX = maxX;
@@ -177,6 +170,8 @@ public class Map implements Animated {
 		if (goal != null)
 			goal.setMap(this);
 		visible = true;
+		pathColor1 = new Color(194, 11, 210);
+		pathColor2 = new Color(218, 70, 231);
 	}
 
 	public Map(RobotHome robotHome, int minX, int maxX, int minY, int maxY) {
@@ -215,38 +210,26 @@ public class Map implements Animated {
 
 		while ((stringRead = br.readLine()) != null) {
 			if (stringRead.startsWith(numberLinesLabel)) {
-				totalLines = Integer.parseInt(stringRead
-						.substring(numberLinesLabel.length()));
+				totalLines = Integer.parseInt(stringRead.substring(numberLinesLabel.length()));
 			} else if (stringRead.startsWith(lineMinPosLabel)) {
-				String[] tokens = stringRead
-						.substring(lineMinPosLabel.length()).split(" ");
+				String[] tokens = stringRead.substring(lineMinPosLabel.length()).split(" ");
 				minX = Integer.parseInt(tokens[0]);
 				minY = Integer.parseInt(tokens[1]);
 			} else if (stringRead.startsWith(lineMaxPosLabel)) {
-				String[] tokens = stringRead
-						.substring(lineMaxPosLabel.length()).split(" ");
+				String[] tokens = stringRead.substring(lineMaxPosLabel.length()).split(" ");
 				maxX = Integer.parseInt(tokens[0]);
 				maxY = Integer.parseInt(tokens[1]);
 			} else if (stringRead.startsWith(robotLabel)) {
-				String[] tokens = stringRead.substring(robotLabel.length())
-						.split(" ");
-				setRobotHome(new RobotHome(Integer.parseInt(tokens[0]),
-						Integer.parseInt(tokens[1]),
-						Double.parseDouble(tokens[2])));
+				String[] tokens = stringRead.substring(robotLabel.length()).split(" ");
+				setRobotHome(new RobotHome(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[1]), Double.parseDouble(tokens[2])));
 			} else if (stringRead.startsWith(goalLabel)) {
-				String[] tokens = stringRead.substring(goalLabel.length())
-						.split(" ");
-				setGoal(new Goal(Integer.parseInt(tokens[0]),
-						Integer.parseInt(tokens[1]),
-						Double.parseDouble(tokens[2])));
+				String[] tokens = stringRead.substring(goalLabel.length()).split(" ");
+				setGoal(new Goal(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[1]), Double.parseDouble(tokens[2])));
 			} else if (stringRead.startsWith(linesLabel)) {
 				linesSector = true;
 			} else if (linesSector) {
 				String[] tokens = stringRead.split(" ");
-				addLine(Integer.parseInt(tokens[0]),
-						Integer.parseInt(tokens[1]),
-						Integer.parseInt(tokens[2]),
-						Integer.parseInt(tokens[3]));
+				addLine(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2]), Integer.parseInt(tokens[3]));
 				if (++countLine == totalLines) {
 					linesSector = false;
 				}
@@ -254,8 +237,7 @@ public class Map implements Animated {
 		}
 		br.close();
 		if (getGoal() == null && getRobotHome() != null)
-			setGoal(new Goal(robotHome.getX() + ArRobotMobile.LONG * 2,
-					robotHome.getY(), robotHome.getAngle()));
+			setGoal(new Goal(robotHome.getX() + ArRobotMobile.LONG * 2, robotHome.getY(), robotHome.getAngle()));
 	}
 
 	private void addLine(int x1, int y1, int x2, int y2) {
@@ -320,32 +302,23 @@ public class Map implements Animated {
 	public void paint(Graphics2D g) {
 		g.setColor(Color.BLACK);
 		for (int i = 0; i < lines.size(); i++) {
-			g.drawLine(canvasX(lines.get(i).getX1()), canvasY(lines.get(i)
-					.getY1()), canvasX(lines.get(i).getX2()), canvasY(lines
-					.get(i).getY2()));
+			g.drawLine(canvasX(lines.get(i).getX1()), canvasY(lines.get(i).getY1()), canvasX(lines.get(i).getX2()), canvasY(lines.get(i).getY2()));
 		}
 		if (graph != null) {
 			g.setColor(new Color(255, 0, 0, 100));
 			for (int i = 0; i < graph.getLinks().size(); i++) {
-				g.drawLine(canvasX(graph.getLinks().get(i).getPointA().getX()),
-						canvasY(graph.getLinks().get(i).getPointA().getY()),
-						canvasX(graph.getLinks().get(i).getPointB().getX()),
-						canvasY(graph.getLinks().get(i).getPointB().getY()));
+				g.drawLine(canvasX(graph.getLinks().get(i).getPointA().getX()), canvasY(graph.getLinks().get(i).getPointA().getY()), canvasX(graph.getLinks().get(i).getPointB().getX()), canvasY(graph.getLinks().get(i).getPointB().getY()));
 			}
 		}
 		if (pathPoints != null) {
-			boolean paso = true;
-			g.setColor(new Color(0, 255, 0, 100));
+			boolean changeColor = true;
+			g.setColor(pathColor1);
 			for (int i = 0; i < pathPoints.size() - 1; i++) {
-				paso = !paso;
-				if (paso)
-					g.setColor(new Color(255, 255, 0, 100));
+				if (changeColor = !changeColor)
+					g.setColor(pathColor2);
 				else
-					g.setColor(new Color(0, 255, 0, 100));
-				g.drawLine(canvasX(pathPoints.get(i).getX()),
-						canvasY(pathPoints.get(i).getY()), canvasX(pathPoints
-								.get(i + 1).getX()),
-						canvasY(pathPoints.get(i + 1).getY()));
+					g.setColor(pathColor1);
+				g.drawLine(canvasX(pathPoints.get(i).getX()), canvasY(pathPoints.get(i).getY()), canvasX(pathPoints.get(i + 1).getX()), canvasY(pathPoints.get(i + 1).getY()));
 			}
 		}
 	}

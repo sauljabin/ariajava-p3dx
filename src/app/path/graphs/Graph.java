@@ -1,22 +1,14 @@
 /**
  * 
- * Copyright (c) 2014 Saul Piña <sauljp07@gmail.com>, Jorge Parra <thejorgemylio@gmail.com>
+ * Graph.java
+ * 
+ * Copyright (c) 2014, Saul Piña <sauljp07@gmail.com>, Jorge Parra <thejorgemylio@gmail.com>.
  * 
  * This file is part of AriaJavaP3DX.
- *
- * AriaJavaP3DX is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * AriaJavaP3DX is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with AriaJavaP3DX.  If not, see <http://www.gnu.org/licenses/>.
  * 
+ * AriaJavaP3DX is licensed under The MIT License.
+ * For full copyright and license information please see the LICENSE.txt file.
+ *
  */
 
 package app.path.graphs;
@@ -76,9 +68,15 @@ public class Graph {
 
 	public ArrayList<Point> linkedWith(Point point) {
 		ArrayList<Point> points = new ArrayList<Point>();
-		for (Link link : links)
-			if (link.getPointA().equals(point))
-				points.add(link.getPointB());
+		for (Link link : links){
+			if (link.getPointA().equals(point)) {
+				if (!points.contains(link.getPointB()))
+					points.add(link.getPointB());
+			} else if (link.getPointB().equals(point)) {
+				if (!points.contains(link.getPointA()))
+					points.add(link.getPointA());
+			}
+		}
 		return points;
 	}
 

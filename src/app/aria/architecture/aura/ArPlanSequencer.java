@@ -1,22 +1,14 @@
 /**
  * 
- * Copyright (c) 2014 Saul Piña <sauljp07@gmail.com>, Jorge Parra <thejorgemylio@gmail.com>
+ * ArPlanSequencer.java
+ * 
+ * Copyright (c) 2014, Saul Piña <sauljp07@gmail.com>, Jorge Parra <thejorgemylio@gmail.com>.
  * 
  * This file is part of AriaJavaP3DX.
- *
- * AriaJavaP3DX is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
- * (at your option) any later version.
- *
- * AriaJavaP3DX is distributed in the hope that it will be useful,
- * but WITHOUT ANY WARRANTY; without even the implied warranty of
- * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
- *
- * You should have received a copy of the GNU General Public License
- * along with AriaJavaP3DX.  If not, see <http://www.gnu.org/licenses/>.
  * 
+ * AriaJavaP3DX is licensed under The MIT License.
+ * For full copyright and license information please see the LICENSE.txt file.
+ *
  */
 
 package app.aria.architecture.aura;
@@ -35,7 +27,7 @@ public class ArPlanSequencer {
 	public final static int APS_STOP = 5;
 	public final static int APS_STOPING = 6;
 
-	private final static double ERROR_DISTANCE_TARGET = 300.0;
+	private final static double ERROR_DISTANCE_TARGET = 30.0;
 	private final static double ERROR_DISTANCE_DEVIATED = 1000.0;
 	private final static double ERROR_ANGLE = 1.0;
 	private final static double SPEED_MIN = 50.0;
@@ -85,16 +77,16 @@ public class ArPlanSequencer {
 				state = ArPlanSequencer.APS_MOVE;
 				Log.print("\nMove");
 			} else {
-//				positionAngleB = positionAngleA;
-//				positionAngleA = arReactive.getAngle();
-//				if (Math.abs(positionAngleA - positionAngleB) < 0.01) {
-//					if (waiting < 20)
-//						waiting++;
-//					else {
-//						waiting = 0;
-//						state = ArPlanSequencer.APS_MOVE;
-//					}
-//				}
+				// positionAngleB = positionAngleA;
+				// positionAngleA = arReactive.getAngle();
+				// if (Math.abs(positionAngleA - positionAngleB) < 0.01) {
+				// if (waiting < 20)
+				// waiting++;
+				// else {
+				// waiting = 0;
+				// state = ArPlanSequencer.APS_MOVE;
+				// }
+				// }
 			}
 			break;
 		case ArPlanSequencer.APS_MOVE:
@@ -124,6 +116,8 @@ public class ArPlanSequencer {
 			case ArPlanSequencer.APS_STOP:
 				if (targetAchieved()) {
 					return ArSpatialReasoner.ASR_END_SECTION;
+				}else{
+					state=ArPlanSequencer.APS_MOVE;
 				}
 				break;
 			case ArPlanSequencer.APS_LOOK:
@@ -151,15 +145,13 @@ public class ArPlanSequencer {
 			return ArPlanSequencer.SPEED_MAX;
 		if (dFinish < ArPlanSequencer.DISTANCE_MIN)
 			return ArPlanSequencer.SPEED_MIN;
-		return (dFinish * (ArPlanSequencer.SPEED_MAX - SPEED_MIN))
-				/ (ArPlanSequencer.DISTANCE_MAX - DISTANCE_MIN);
+		return (dFinish * (ArPlanSequencer.SPEED_MAX - SPEED_MIN)) / (ArPlanSequencer.DISTANCE_MAX - DISTANCE_MIN);
 	}
 
 	private boolean diminutionSpeed() {
 		Point robotPosition = arReactive.getPosition();
 		double dFinish = robotPosition.distance(finish);
-		if (dFinish > ArPlanSequencer.DISTANCE_MIN
-				&& dFinish < ArPlanSequencer.DISTANCE_MAX)
+		if (dFinish > ArPlanSequencer.DISTANCE_MIN && dFinish < ArPlanSequencer.DISTANCE_MAX)
 			return true;
 		return false;
 	}
@@ -200,18 +192,15 @@ public class ArPlanSequencer {
 		double dStart = robotPosition.distance(start);
 		double dFinish = robotPosition.distance(finish);
 		double dPath = start.distance(finish);
-		if (dStart > dPath
-				|| dFinish > dPath + ArPlanSequencer.ERROR_DISTANCE_DEVIATED)
+		if (dStart > dPath || dFinish > dPath + ArPlanSequencer.ERROR_DISTANCE_DEVIATED)
 			return true;
-		double dLine = calculateDistancePointToLine(start, finish,
-				robotPosition);
+		double dLine = calculateDistancePointToLine(start, finish, robotPosition);
 		if (dLine > ArPlanSequencer.ERROR_DISTANCE_DEVIATED)
 			return true;
 		return false;
 	}
 
-	private double calculateDistancePointToLine(Point start, Point finish,
-			Point robotPosition) {
+	private double calculateDistancePointToLine(Point start, Point finish, Point robotPosition) {
 		double dy = finish.getY() - start.getY();
 		double dx = finish.getX() - start.getX();
 		double vA;
@@ -234,13 +223,11 @@ public class ArPlanSequencer {
 			vB = -1.0;
 			vC = (robotPosition.getY() + (m * robotPosition.getX()));
 		}
-		double d = Math.abs((vA * robotPosition.getX())
-				+ (vB * robotPosition.getY()) + vC)
-				/ Math.sqrt(Math.pow(vA, 2.0) + Math.pow(vB, 2.0));
+		double d = Math.abs((vA * robotPosition.getX()) + (vB * robotPosition.getY()) + vC) / Math.sqrt(Math.pow(vA, 2.0) + Math.pow(vB, 2.0));
 		return d;
 	}
 
-	private boolean isDesiredAngleAchieved() {
+	private boolean isDesiredAngleAchieved() {		
 		double angle = arReactive.getAngle();
 		double value = Math.abs(angle - desiredAngle - currentAngle);
 		while (value > 180 || value < -180)
