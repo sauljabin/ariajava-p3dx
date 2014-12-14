@@ -52,6 +52,15 @@ public class Map implements Animated {
 	private Graph graph;
 	private Color pathColor1;
 	private Color pathColor2;
+	private boolean showPath;
+
+	public boolean isShowPath() {
+		return showPath;
+	}
+
+	public void setShowPath(boolean showPath) {
+		this.showPath = showPath;
+	}
 
 	public int getOffsetPosition() {
 		return offsetPosition;
@@ -304,6 +313,8 @@ public class Map implements Animated {
 		for (int i = 0; i < lines.size(); i++) {
 			g.drawLine(canvasX(lines.get(i).getX1()), canvasY(lines.get(i).getY1()), canvasX(lines.get(i).getX2()), canvasY(lines.get(i).getY2()));
 		}
+		if (!showPath)
+			return;
 		if (graph != null) {
 			g.setColor(new Color(255, 0, 0, 100));
 			for (int i = 0; i < graph.getLinks().size(); i++) {

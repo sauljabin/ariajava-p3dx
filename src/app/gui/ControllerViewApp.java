@@ -67,6 +67,7 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 	public static final int TRANSLATE = 20;
 	public static final int ZOOM = 1;
 	public ArUpdaterPositionAnimation updaterPosition;
+	private boolean showPath;
 
 	public ControllerViewApp() {
 		init();
@@ -101,7 +102,7 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		setAntialiasing(Boolean.parseBoolean(Config.get("ANIMATION_ANTIALIASING")));
 		animator.setStrokeSize(Integer.parseInt(Config.get("ANIMATION_STROKESIZE")));
 		animator.setFPS(Integer.parseInt(Config.get("ANIMATION_FPS")));
-		animator.start();		
+		animator.start();
 
 		viewApp.getSpnFPS().setModel(new SpinnerNumberModel(Integer.parseInt(Config.get("ANIMATION_FPS")), 1, 100, 1));
 		int proportion = Integer.parseInt(Config.get("ANIMATION_PROPORTION"));
@@ -114,6 +115,7 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		int initMapSize = 6000;
 
 		map = new Map(new RobotHome(0, 0, 0), new Goal(ArRobotMobile.LONG * 2, 0, 0), -initMapSize, initMapSize, -initMapSize, initMapSize);
+		setShowPath(Boolean.parseBoolean(Config.get("ANIMATION_SHOWPATH")));
 		animator.showMap(map);
 		updateStartEndPoint();
 		viewApp.getSpnMaxSpeed().setModel(new SpinnerNumberModel(Integer.parseInt(Config.get("ROBOT_MAXSPEED")), 1, 500, 1));
@@ -123,10 +125,10 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 			public void mouseDragged(MouseEvent arg0) {
 				updateStartEndPoint();
 			}
-		});		
-		
+		});
+
 		viewApp.getSpnPositionUpdate().setModel(new SpinnerNumberModel(Integer.parseInt(Config.get("ANIMATION_POSITIONUPDATERATE")), 1, 100, 1));
-		
+
 	}
 
 	public void updateStartEndPoint() {
@@ -155,6 +157,8 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 			loadMap();
 		else if (e.getSource().equals(viewApp.getBtnAntialiasingOnOff()))
 			setAntialiasing(!animator.isAntialiasing());
+		else if (e.getSource().equals(viewApp.getBtnShowHidePath()))
+			setShowPath(!map.isShowPath());
 		else if (source.equals(viewApp.getBtnSaveImage()))
 			saveImage();
 		else if (source.equals(viewApp.getBtnCenterMap()))
@@ -241,6 +245,25 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		}
 	}
 
+	public void setShowPath(boolean showPath) {
+		map.setShowPath(showPath);
+		this.showPath = showPath;
+		if (showPath) {
+			viewApp.getBtnShowHidePath().setIcon(new ImageIcon(Theme.getIconPath("HIDE_PATH")));
+			viewApp.getBtnShowHidePath().setToolTipText(Translate.get("HIDE_PATH"));
+		} else {
+			viewApp.getBtnShowHidePath().setIcon(new ImageIcon(Theme.getIconPath("SHOW_PATH")));
+			viewApp.getBtnShowHidePath().setToolTipText(Translate.get("SHOW_PATH"));
+		}
+
+		Config.set("ANIMATION_SHOWPATH", String.valueOf(showPath));
+		try {
+			Config.save();
+		} catch (Exception e) {
+			Log.warning(ControllerViewApp.class, Translate.get("ERROR_NOSAVECONFIG"), e);
+		}
+	}
+
 	public void loadMap() {
 
 		JFileChooser file = new JFileChooser();
@@ -258,6 +281,7 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		String fileName = path.getAbsolutePath();
 
 		map = new Map();
+		map.setShowPath(showPath);
 		try {
 			map.load(path.getAbsolutePath());
 			map.setProportion((int) viewApp.getSpnProportion().getValue());
@@ -324,14 +348,14 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		robot = new ArRobotMobile(map.getRobotHome().getX(), map.getRobotHome().getY(), map.getRobotHome().getAngle());
 
 		updaterPosition = new ArUpdaterPositionAnimation(robot, Integer.parseInt(Config.get("ANIMATION_POSITIONUPDATERATE")));
-		
+
 		if (anRobot != null) {
 			animator.removeAnimated(anRobot);
 		}
 		anRobot = new Robot(map);
 		anRobot.updateAnimatedPosition(map.getRobotHome().getX(), map.getRobotHome().getY(), map.getRobotHome().getAngle());
 		animator.addAnimated(anRobot);
-		
+
 		animator.setInfoPanel(new RobotInfoPanel(robot));
 
 		robot.setAnimatedRobot(anRobot);
@@ -421,22 +445,21 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		else if (e.getSource().equals(viewApp.getSpnPositionUpdate()))
 			setPositionUpdateRate();
 	}
-	
+
 	public void setPositionUpdateRate() {
-		
+
 		Config.set("ANIMATION_POSITIONUPDATERATE", viewApp.getSpnPositionUpdate().getValue().toString());
 		try {
 			Config.save();
 		} catch (Exception e) {
 			Log.warning(ControllerViewApp.class, Translate.get("ERROR_NOSAVECONFIG"), e);
 		}
-		
+
 		if (updaterPosition == null)
 			return;
 		updaterPosition.setUpdateAnimatedPositionRate(((int) viewApp.getSpnPositionUpdate().getValue()));
-		
-	}
 
+	}
 
 	public void setEndY() {
 		map.getGoal().setY((int) viewApp.getSpnEndY().getValue());
