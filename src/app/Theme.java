@@ -17,6 +17,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Vector;
@@ -24,10 +26,11 @@ import java.util.Vector;
 public class Theme {
 
 	private static Properties iconsNames = new Properties();
-	public static String iconsNamesPath = "ICONS.properties";
+	public static String iconsNamesPath = "ICONS.props";
+	private static Charset charset = StandardCharsets.UTF_8;
 
 	public static void load() throws FileNotFoundException, IOException {
-		iconsNames.load(new InputStreamReader(new FileInputStream(iconsNamesPath), "UTF8"));
+		iconsNames.load(new InputStreamReader(new FileInputStream(iconsNamesPath), charset));
 	}
 
 	public static String getIconPath(String key) {
