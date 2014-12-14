@@ -19,6 +19,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 import java.util.Enumeration;
 import java.util.Properties;
 import java.util.Vector;
@@ -26,13 +28,14 @@ import java.util.Vector;
 public class Config {
 
 	private static Properties properties = new Properties();
-	public static String configPath = "CONFIG.properties";
+	public static String configPath = "CONFIG.props";
+	private static Charset charset = StandardCharsets.UTF_8;
 
 	public static void load() throws FileNotFoundException, IOException {
-		properties.load(new InputStreamReader(new FileInputStream(configPath), "UTF8"));
+		properties.load(new InputStreamReader(new FileInputStream(configPath), charset));
 		properties.put("OS", System.getProperty("os.name"));
 		properties.put("OS_ARCH", System.getProperty("os.arch"));
-		properties.put("JAVA_VERSION",System.getProperty("java.version"));
+		properties.put("JAVA_VERSION", System.getProperty("java.version"));
 	}
 
 	public static String get(String key) {
@@ -53,7 +56,7 @@ public class Config {
 	}
 
 	public static void save() throws FileNotFoundException, IOException {
-		properties.store(new OutputStreamWriter(new FileOutputStream(configPath), "UTF8"), "CONFIGURATION");
+		properties.store(new OutputStreamWriter(new FileOutputStream(configPath), charset), "CONFIGURATION");
 	}
 
 }

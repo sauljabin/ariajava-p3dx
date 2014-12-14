@@ -19,6 +19,8 @@ import java.io.FileOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintStream;
 import java.io.PrintWriter;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
 
 import javax.swing.JTextArea;
 
@@ -28,6 +30,7 @@ public class Log {
 
 	private static LogLevel level = LogLevel.DEVEL;
 	private static JTextArea textArea;
+	private static Charset charset = StandardCharsets.UTF_8;
 
 	public static LogLevel getLevel() {
 		return level;
@@ -42,8 +45,7 @@ public class Log {
 		Log.textArea.setEditable(false);
 	}
 
-	private static void print(LogLevel printLevel, Class<?> clazz, String msg,
-			Exception e) {
+	private static void print(LogLevel printLevel, Class<?> clazz, String msg, Exception e) {
 		if (level == LogLevel.NONE)
 			return;
 
@@ -69,9 +71,7 @@ public class Log {
 			break;
 		}
 
-		String string = String.format(
-				"TYPE: %s\nNAME: %s\nTIME: %s\n----> %s\n", type,
-				clazz.getName(), UtilDate.nowFormat("yyyy-MM-dd HH:mm"), msg);
+		String string = String.format("TYPE: %s\nNAME: %s\nTIME: %s\n----> %s\n", type, clazz.getName(), UtilDate.nowFormat("yyyy-MM-dd HH:mm"), msg);
 
 		printToConsole(string, e);
 
@@ -98,9 +98,8 @@ public class Log {
 		OutputStreamWriter os;
 		BufferedWriter bw;
 		try {
-			fs = new FileOutputStream(folder.getPath() + "/"
-					+ UtilDate.nowFormat("yyyy-MM-dd") + ".log", true);
-			os = new OutputStreamWriter(fs, "UTF-8");
+			fs = new FileOutputStream(folder.getPath() + "/" + UtilDate.nowFormat("yyyy-MM-dd") + ".log", true);
+			os = new OutputStreamWriter(fs, charset);
 			bw = new BufferedWriter(os);
 			bw.write(string);
 			bw.flush();
@@ -119,13 +118,6 @@ public class Log {
 			textArea.setCaretPosition(textArea.getDocument().getLength());
 		}
 	}
-	
-	private static void printText(String string) {
-		if (textArea != null) {
-			textArea.append(string);
-			textArea.setCaretPosition(textArea.getDocument().getLength());
-		}
-	}
 
 	public static synchronized void info(Class<?> clazz, String msg) {
 		info(clazz, msg, null);
@@ -139,8 +131,7 @@ public class Log {
 		error(clazz, msg, null);
 	}
 
-	public static synchronized void error(Class<?> clazz, String msg,
-			Exception e) {
+	public static synchronized void error(Class<?> clazz, String msg, Exception e) {
 		print(LogLevel.ERROR, clazz, msg, e);
 	}
 
@@ -148,8 +139,7 @@ public class Log {
 		warning(clazz, msg, null);
 	}
 
-	public static synchronized void warning(Class<?> clazz, String msg,
-			Exception e) {
+	public static synchronized void warning(Class<?> clazz, String msg, Exception e) {
 		print(LogLevel.WARN, clazz, msg, e);
 	}
 
@@ -157,8 +147,7 @@ public class Log {
 		devel(clazz, msg, null);
 	}
 
-	public static synchronized void devel(Class<?> clazz, String msg,
-			Exception e) {
+	public static synchronized void devel(Class<?> clazz, String msg, Exception e) {
 		print(LogLevel.DEVEL, clazz, msg, e);
 	}
 
@@ -168,6 +157,13 @@ public class Log {
 
 	public static synchronized void println(String msg) {
 		print(msg + "\n");
+	}
+	
+	private static void printText(String string) {
+		if (textArea != null) {
+			textArea.append(string);
+			textArea.setCaretPosition(textArea.getDocument().getLength());
+		}
 	}
 
 }
