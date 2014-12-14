@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.TreeSet;
 
-import app.Log;
 import app.map.Map;
 import app.path.delaunay.Triangulation;
 import app.path.geometry.Point;
@@ -41,14 +40,14 @@ public class PathPlanner {
 		graph = diagram.getGraph();
 		addHomeAndTarget(home, target, graph);
 		map.setGraph(graph);
-		
+
 		Dijkstra algorithm = new Dijkstra(graph);
 		ArrayList<Point> path = algorithm.searchOptimalRoute(home, target);
 
-		map.setPathPoints(new ArrayList<Point>());
-		map.getPathPoints().addAll(path);
-
-		Log.info(getClass(), String.format("Inicio: %s, Fin: %s", home, target));
+		if (path != null) {
+			map.setPathPoints(new ArrayList<Point>());
+			map.getPathPoints().addAll(path);
+		}
 
 		return path;
 	}
@@ -73,7 +72,6 @@ public class PathPlanner {
 				punto = link.getPointA();
 			}
 		}
-
 		return lista;
 	}
 

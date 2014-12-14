@@ -47,18 +47,18 @@ public class ArMisionPlanner {
 	public void execute() {
 		switch (state) {
 		case ArMisionPlanner.AMP_INIT:
-			Log.println("MISION_PLANNER: Inicializando");
+			Log.info(getClass(), "MISION_PLANNER: Inicializando");
 			state = arSpatialReasoner.calculatePath(start, target);
 			break;
 		case ArMisionPlanner.AMP_SEARCH_IN_PROGRESS:
 			state = arSpatialReasoner.continuePath();
 			break;
 		case ArMisionPlanner.AMP_TARGET_ACHIEVED:
-			Log.println("MISION_PLANNER: Objetivo Alcanzado");
+			Log.info(getClass(), "MISION_PLANNER: Objetivo Alcanzado");
 			state = ArMisionPlanner.FIN;
 			break;
 		case ArMisionPlanner.AMP_UNATTAINABLE_GOAL:
-			Log.println("MISION_PLANNER: Imposible llegar al destino");
+			Log.info(getClass(), "MISION_PLANNER: Imposible llegar al destino");
 			break;
 		case ArMisionPlanner.FIN:
 			break;

@@ -34,10 +34,7 @@ public class Triangle implements Animated {
 		vertexes.add(pointA);
 		vertexes.add(pointB);
 		vertexes.add(pointC);
-		this.map = map;
-		System.out.println(pointA.toString());
-		System.out.println(pointB.toString());
-		System.out.println(pointC.toString());
+		this.map = map;		
 	}
 
 	public ArrayList<Point> getVertexes() {
