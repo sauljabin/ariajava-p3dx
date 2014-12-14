@@ -19,7 +19,6 @@ public class Link {
 
 	private Point pointA;
 	private Point pointB;
-	private Double pheromone;
 	private String name;
 
 	public Link(Point pointA, Point pointB) {
@@ -30,7 +29,6 @@ public class Link {
 		super();
 		this.pointA = pointA;
 		this.pointB = pointB;
-		this.pheromone = 100.0;
 		this.name = name;
 	}
 
@@ -40,10 +38,6 @@ public class Link {
 
 	public Point getPointB() {
 		return pointB;
-	}
-
-	public Double getPheromone() {
-		return pheromone;
 	}
 
 	public String getName() {
@@ -58,10 +52,6 @@ public class Link {
 	public boolean equals(Object obj) {
 		Link link = (Link) obj;
 		return ((getPointA().equals(link.pointA) && (getPointB().equals(link.pointB))) || (getPointA().equals(link.pointB) && (getPointB().equals(link.pointA))));
-	}
-
-	public void updatePheromone(Double value) {
-		pheromone *= value;
 	}
 
 	@Override

@@ -29,9 +29,7 @@ public class Diagram {
 
 	public Diagram(ArrayList<Triangle> triangleList, Map map) {
 		triangles = triangleList;
-		graph = new Graph();
-		// for (Triangle t : triangles)
-		// graph.addPoint(t.getCircle().getCenter());
+		graph = new Graph();		
 		for (int i = 0; i < triangles.size(); i++) {
 			for (int j = i + 1; j < triangles.size(); j++) {
 				Triangle tA = triangles.get(i);

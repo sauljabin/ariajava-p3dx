@@ -99,8 +99,7 @@ public class Triangle implements Animated {
 
 	@Override
 	public void initAnimated() {
-		// TODO Auto-generated method stub
-
+		
 	}
 
 	@Override
@@ -122,31 +121,26 @@ public class Triangle implements Animated {
 
 	@Override
 	public void animate() {
-		// TODO Auto-generated method stub
 
 	}
 
 	@Override
 	public boolean isVisible() {
-		// TODO Auto-generated method stub
 		return true;
 	}
 
 	@Override
 	public Shape getShape() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
 	public int getZ() {
-		// TODO Auto-generated method stub
 		return 0;
 	}
 
 	@Override
 	public AnimatedMouseListener getAnimatedMouseListener() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

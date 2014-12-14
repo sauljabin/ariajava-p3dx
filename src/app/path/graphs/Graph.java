@@ -117,16 +117,7 @@ public class Graph {
 					lowerWeight = link.getWeight();
 		}
 		return lowerWeight;
-	}
-
-	public void updatePheromone() {
-		int i = 0;
-		for (Link link : links) {
-			link.updatePheromone(0.99 + decrease(link.getWeight()));
-			System.out.printf("%d %s F: %.2f\n", i + 1, link.toString(),
-					link.getPheromone());
-		}
-	}
+	}	
 
 	public double decrease(double weight) {
 		double value = (1.0 / weight) - (1.0 / calculateGreaterWeight());

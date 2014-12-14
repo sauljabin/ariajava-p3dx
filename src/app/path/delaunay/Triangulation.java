@@ -31,8 +31,6 @@ public class Triangulation {
 	private ArrayList<Triangle> triangles;
 
 	public Triangulation(Map map) {
-		super();
-		// bruteForceAlgorithm(inicialPoints, map);
 		convexHullAlgorithm(map);
 	}
 

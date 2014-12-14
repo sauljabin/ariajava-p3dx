@@ -19,7 +19,6 @@ import java.util.TreeSet;
 
 import app.Log;
 import app.map.Map;
-//import app.path.antColony.AntColony;
 import app.path.delaunay.Triangulation;
 import app.path.geometry.Point;
 import app.path.graphs.Graph;
@@ -42,11 +41,7 @@ public class PathPlanner {
 		graph = diagram.getGraph();
 		addHomeAndTarget(home, target, graph);
 		map.setGraph(graph);
-
-		// AntColony antAlgorithm = new AntColony(graph, 1000);
-		// ArrayList<Point> path = antAlgorithm.searchOptimalRoute(home, target);
-		// ArrayList<Point> path = testPath(home);
-
+		
 		Dijkstra algorithm = new Dijkstra(graph);
 		ArrayList<Point> path = algorithm.searchOptimalRoute(home, target);
 
@@ -56,7 +51,6 @@ public class PathPlanner {
 		Log.info(getClass(), String.format("Inicio: %s, Fin: %s", home, target));
 
 		return path;
-
 	}
 
 	public ArrayList<Point> testPath(Point home) {
