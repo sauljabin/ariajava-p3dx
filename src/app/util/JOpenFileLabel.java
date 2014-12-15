@@ -26,75 +26,75 @@ import java.awt.Cursor;
 import java.awt.Desktop;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.File;
 import java.io.Serializable;
-import java.net.URI;
 
 import javax.swing.JLabel;
 
 /**
- * Url link
+ * 
  * 
  * @author Saul Piña <sauljp07@gmail.com>
  * @version 1.0
  */
-public class JUrlLinkLabel extends JLabel implements Serializable {
+public class JOpenFileLabel extends JLabel implements Serializable {
 
 	public static final String VERSION = "1.0";
-	private static final long serialVersionUID = 7594812715384885615L;
-	private static final Color colorEntered = new Color(60, 100, 255);
-	private static final Color color = new Color(60, 80, 255);
+	private static final long serialVersionUID = 6806479127091499505L;
+	private static final Color color = Color.BLACK;
+	private static final Color colorEntered = Color.DARK_GRAY;
 
-	private String url;
+	private File file;
 
 	/**
-	 * Get url
+	 * Get file
 	 * 
-	 * @return String url
+	 * @return file
 	 */
-	public String getUrl() {
-		return url;
+	public File getFile() {
+		return file;
 	}
 
 	/**
-	 * Set the url link
+	 * Set File
 	 * 
-	 * @param url
-	 *            Url
+	 * @param file
+	 *            File
 	 */
-	public void setUrl(String url) {
-		this.url = url;
+	public void setFile(File file) {
+		this.file = file;
 	}
 
 	/**
-	 * Set text and url
+	 * Set text and file
 	 * 
 	 * @param text
-	 *            Text to show
-	 * @param url
-	 *            Url link
+	 *            Text label
+	 * @param file
+	 *            File
 	 */
-	public void setText(String text, String url) {
-		setUrl(url);
+	public void setText(String text, File file) {
+		setFile(file);
 		setText(text);
 	}
 
 	/**
-	 * Set text and url
+	 * Set text and file
 	 * 
 	 * @param text
-	 *            Text to show
-	 * @param url
-	 *            Url link
+	 *            Text label
+	 * @param file
+	 *            File
 	 */
-	public JUrlLinkLabel(String text, String url) {
+	public JOpenFileLabel(String text, File file) {
 		setText(text);
-		setUrl(url);
+		setFile(file);
 		setForeground(color);
 		setCursor(new Cursor(Cursor.HAND_CURSOR));
 		addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent arg0) {
-				goUrl();
+				openFile();
 			}
 
 			@Override
@@ -107,31 +107,32 @@ public class JUrlLinkLabel extends JLabel implements Serializable {
 				setForeground(color);
 			}
 		});
+
 	}
 
 	/**
-	 * Set the url link
+	 * Set the file
 	 * 
-	 * @param url
-	 *            Url
+	 * @param file
+	 *            File
 	 */
-	public JUrlLinkLabel(String url) {
-		this(url, url);
+	public JOpenFileLabel(File file) {
+		this(file.getName(), file);
 	}
 
-	public JUrlLinkLabel() {
-		this("", "");
+	public JOpenFileLabel() {
+		this("", null);
 	}
 
 	/**
-	 * Opens the url in the browser
+	 * Open file
 	 */
-	public void goUrl() {
+	public void openFile() {
 		try {
-			Desktop.getDesktop().browse(new URI(url));
+			if (file != null)
+				Desktop.getDesktop().open(file);
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-
 }
