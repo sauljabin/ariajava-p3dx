@@ -14,6 +14,7 @@
 package app.gui;
 
 import java.awt.Color;
+import java.awt.Desktop;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -147,6 +148,8 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 			close();
 		else if (source.equals(viewApp.getMenuItemAbout()))
 			about();
+		else if (source.equals(viewApp.getMenuItemDoc()))
+			documentation();
 		else if (source.equals(viewApp.getMenuItemShowConfig()))
 			showConfig();
 		else if (source.equals(viewApp.getBtnConnect()))
@@ -175,6 +178,15 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 			zoomMap(ZOOM);
 		else if (source.equals(viewApp.getBtnZoomOut()))
 			zoomMap(-ZOOM);
+	}
+
+	public void documentation() {
+		try {
+			Desktop.getDesktop().open(new File(Config.get("APP_DOCUMENTACION")));
+		} catch (Exception e) {
+			JOptionPane.showMessageDialog(null, Translate.get("ERROR_OPENDOCUMENTATION") + "\n" + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+			e.printStackTrace();
+		}
 	}
 
 	public void zoomMap(int zoom) {
