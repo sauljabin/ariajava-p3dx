@@ -117,6 +117,7 @@ public class ViewApp extends JFrame {
 	private JLabel lblPositionUpdate;
 	private JSpinner spnPositionUpdate;
 	private JPanel pnlCanvas;
+	private JMenuItem menuItemDoc;
 
 	public ViewApp() {
 		menuItems = new Vector<JMenuItem>();
@@ -180,8 +181,11 @@ public class ViewApp extends JFrame {
 		menuHelp = new JMenu(Translate.get("GUI_HELP"));
 		menuBar.add(menuHelp);
 
-		menuItemAbout = new JMenuItem(Translate.get("GUI_ABOUT"));
+		menuItemAbout = new JMenuItem(Translate.get("GUI_ABOUT") + " " + Config.get("APP_NAME"));
 		menuHelp.add(menuItemAbout);
+
+		menuItemDoc = new JMenuItem(Translate.get("GUI_DOCUMENTATION"));
+		menuHelp.add(menuItemDoc);
 
 		pnlConnection = new JPanel();
 		pnlConnection.setLayout(new MigLayout());
@@ -320,13 +324,13 @@ public class ViewApp extends JFrame {
 
 		canvasAnimation = new Canvas();
 		canvasAnimation.setBackground(Color.WHITE);
-		pnlCanvas = new JPanel(new BorderLayout()); 
+		pnlCanvas = new JPanel(new BorderLayout());
 		pnlCanvas.setBorder(BorderFactory.createLineBorder(new Color(100, 100, 100)));
 		pnlCanvas.add(canvasAnimation);
 		pnlCenter.add(pnlCanvas, BorderLayout.CENTER);
-		
+
 		pnlAnimationControl = new JPanel(new MigLayout("insets 0 7 0 0"));
-		
+
 		btnZoomIn = new JButton(new ImageIcon(Theme.getIconPath("ZOOM_IN")));
 		btnZoomIn.setToolTipText(Translate.get("GUI_ZOOMIN"));
 		btnZoomOut = new JButton(new ImageIcon(Theme.getIconPath("ZOOM_OUT")));
@@ -379,6 +383,7 @@ public class ViewApp extends JFrame {
 		menuItems.add(menuItemClose);
 		menuItems.add(menuItemAbout);
 		menuItems.add(menuItemLoadMap);
+		menuItems.add(menuItemDoc);
 
 		spinners.add(spnStrokeSize);
 		spinners.add(spnProportion);
@@ -532,6 +537,10 @@ public class ViewApp extends JFrame {
 
 	public JSpinner getSpnPositionUpdate() {
 		return spnPositionUpdate;
+	}
+
+	public JMenuItem getMenuItemDoc() {
+		return menuItemDoc;
 	}
 
 }

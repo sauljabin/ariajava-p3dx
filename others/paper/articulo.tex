@@ -188,11 +188,10 @@ breaklines=true
 
 En el presente informe se da a conocer de manera detallada el diseño, desarrollo e implementación de 
 una arquitectura de navegación híbrida basada en la arquitectura AuRA para el robot Pionner P3DX, 
-con el objetivo de planificar rutas entre dos puntos cualesquiera 
-en un ambiente conocido.
-Para ello se usó el Algoritmo de Dijkstra como método para la determinación del camino más corto de un punto a otro.
-Por otra parte, se segmentó el mapa con la Triangulación de Delaunay, para poder usar el diagrama de Voronoi asociado.
-Además, se explica el funcionamiento e instalación de la aplicación de software 
+con el objetivo de planificar rutas entre dos puntos cualesquiera en un ambiente conocido.
+La arquitectura construye el camino más corto aplicando el Algoritmo de Dijkstra sobre el diagrama de Voronoi asociado
+al entorno. Se segmentó el mapa con la Triangulación de Delaunay para generar dicho diagrama.
+Por otra parte, se explica el funcionamiento e instalación de la aplicación de software 
 desarrollada. Se exponen los resultados y conclusiones del conjunto de pruebas 
 realizadas para validar la arquitectura.
 
@@ -333,7 +332,7 @@ y compilación de aplicaciones.
 \section*{Configuración del Entorno}
 
 Antes de configurar el entorno de desarrollo es necesario descargar el código fuente del proyecto,
-este está disponible al público con licencia de software \textbf{GPL} en la siguiente dirección:
+este está disponible al público con licencia de software \textbf{MIT} en la siguiente dirección:
 \\ \link{https://bitbucket.org/sauljabin/ariajava-p3dx}.
 
 \subsubsection*{Requisitos}
@@ -353,7 +352,7 @@ este está disponible al público con licencia de software \textbf{GPL} en la si
 \sourcecode{AriaVC10.dll} a  \sourcecode{Aria.dll}.
 \item Importar proyecto a eclipse.
 \item Agregar al \sourcecode{Java Build Path} el wrapper Java de ARIA que se encuentra en la ruta: \\ \sourcecode{C:\textbackslash Program Files\textbackslash MobileRobots\textbackslash ARIA\textbackslash java\textbackslash Aria.jar}.
-\item Verificar que la variable  \sourcecode{PATH\_LIBARIA} del archivo  \sourcecode{CONFIG.properties} 
+\item Verificar que la variable  \sourcecode{PATH\_LIBARIA} del archivo  \sourcecode{CONFIG.props} 
 	  sea igual a:  \sourcecode{C\textbackslash:\textbackslash\textbackslash Program Files\textbackslash\textbackslash MobileRobots\textbackslash\textbackslash ARIA\textbackslash\textbackslash bin\textbackslash\textbackslash }.
 \end{enumerate}
 
@@ -375,7 +374,7 @@ este está disponible al público con licencia de software \textbf{GPL} en la si
 \\ \# ldconfig}
 \item Importar proyecto a eclipse.
 \item Agregar al \sourcecode{Java Build Path} el wrapper Java de ARIA que se encuentra en la ruta: \sourcecode{/usr/local/Aria/java/Aria.jar}
-\item Verificar que la variable \sourcecode{PATH\_LIBARIA} del archivo \sourcecode{CONFIG.properties} 
+\item Verificar que la variable \sourcecode{PATH\_LIBARIA} del archivo \sourcecode{CONFIG.props} 
 	  sea igual a: \sourcecode{/usr/local/Aria/lib/}
 \end{enumerate}
 
@@ -443,11 +442,46 @@ La \reffigure{fig:map} muestra el resultado del archivo \textit{.map} descrito e
 
 \subsubsection*{\textit{Razonador Espacial}}
 
+
 \subsubsection*{\textit{Secuenciador del Plan}}
 
 \subsection*{Capa Reactiva}
 
 \section*{Herramienta de Software Desarrollada}
+
+%\begin{figure}[here]
+%\begin{center}
+%\includegraphics[width=6cm]{ventana-principal.png} 
+%\caption{Ventana principal.}
+%\label{fig:ventana-principal}
+%\end{center}
+%\end{figure} 
+
+\subsubsection*{\textit{Menu Opciones}}
+
+\begin{figure}[here]
+\begin{center}
+\includegraphics[width=3cm]{menu-opciones2.png} 
+\caption{Menu opciones.}
+\label{fig:menu-opciones}
+\end{center}
+\end{figure} 
+
+\begin{figure}[here]
+\begin{center}
+\includegraphics[width=6cm]{cargar-mapa.png} 
+\caption{Ventana para seleccionar mapa.}
+\label{fig:cargar-mapa}
+\end{center}
+\end{figure} 
+
+\begin{figure}[here]
+\begin{center}
+\includegraphics[width=6cm]{ver-configuracion.png} 
+\caption{Ventana para ver los atributos de configuración.}
+\label{fig:ver-configuracion}
+\end{center}
+\end{figure} 
 
 \section*{Experimentación}
 
