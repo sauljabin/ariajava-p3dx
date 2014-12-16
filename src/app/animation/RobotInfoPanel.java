@@ -19,9 +19,13 @@ import app.aria.robot.ArRobotMobile;
 public class RobotInfoPanel extends InfoPanel {
 
 	private ArRobotMobile robot;
+	private long initTime;
+	private long currentTime;
+	private boolean stop;
 
 	public RobotInfoPanel(ArRobotMobile robot) {
 		this.robot = robot;
+		initTime = System.currentTimeMillis();
 	}
 
 	@Override
@@ -38,9 +42,18 @@ public class RobotInfoPanel extends InfoPanel {
 	public void printInfo() {
 		if (robot == null)
 			return;
-		printLine(String.format("%s: %.2f",Translate.get("GUI_X"), robot.getRelativeX()));
-		printLine(String.format("%s: %.2f",Translate.get("GUI_Y"), robot.getRelativeY()));
-		printLine(String.format("%s: %.2f",Translate.get("GUI_ANGLE"), robot.getRelativeAngle()));
+		printLine(String.format("%s: %.2f", Translate.get("GUI_X"), robot.getRelativeX()));
+		printLine(String.format("%s: %.2f", Translate.get("GUI_Y"), robot.getRelativeY()));
+		printLine(String.format("%s: %.2f", Translate.get("GUI_ANGLE"), robot.getRelativeAngle()));
+		if (!stop)
+			currentTime = System.currentTimeMillis();
+		printLine(String.format("%s: %.2f seg", Translate.get("GUI_TIME"), (currentTime - initTime) / 1000.));
+	}
+
+	@Override
+	public void stopInfoPanel() {
+		stop = true;
+		currentTime = System.currentTimeMillis();
 	}
 
 }

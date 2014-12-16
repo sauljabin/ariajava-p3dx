@@ -69,6 +69,7 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 	public static final int ZOOM = 1;
 	public ArUpdaterPositionAnimation updaterPosition;
 	private boolean showPath;
+	private RobotInfoPanel robotInfoPanel;
 
 	public ControllerViewApp() {
 		init();
@@ -319,6 +320,7 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 	public void disconnect() {
 		if (arch != null) {
 			updaterPosition.stop();
+			robotInfoPanel.stopInfoPanel();
 			arch.stop();
 			connector.close();
 			animator.enableMouseListenerAnimated(true);
@@ -367,8 +369,10 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		anRobot = new Robot(map);
 		anRobot.updateAnimatedPosition(map.getRobotHome().getX(), map.getRobotHome().getY(), map.getRobotHome().getAngle());
 		animator.addAnimated(anRobot);
+		
+		robotInfoPanel=new RobotInfoPanel(robot);
 
-		animator.setInfoPanel(new RobotInfoPanel(robot));
+		animator.setInfoPanel(robotInfoPanel);
 
 		robot.setAnimatedRobot(anRobot);
 
@@ -394,6 +398,7 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 			arch.start();
 			updaterPosition.start();
 			animator.enableMouseListenerAnimated(false);
+			robotInfoPanel.initInfoPanel();
 		} catch (ArException e) {
 			Log.error(getClass(), Translate.get("INFO_UNSUCCESSFULARCHSTART"), e);
 			return;
