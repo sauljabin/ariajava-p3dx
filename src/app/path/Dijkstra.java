@@ -59,7 +59,7 @@ public class Dijkstra {
 			findPath(point.getAncestor());
 	}
 
-	public ArrayList<Point> searchOptimalRoute(Point home, Point target) {
+	public ArrayList<Point> searchOptimalPath(Point home, Point target) {
 		Log.info(getClass(), "Iniciando busqueda de camino optimo (Algoritmo Dijkstra)");
 		this.path = new ArrayList<Point>();
 		this.visitedNode = new LinkedList<Point>();

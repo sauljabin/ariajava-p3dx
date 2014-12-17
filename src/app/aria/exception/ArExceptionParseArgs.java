@@ -11,7 +11,6 @@
  *
  */
 
- 
 package app.aria.exception;
 
 public class ArExceptionParseArgs extends ArException {
