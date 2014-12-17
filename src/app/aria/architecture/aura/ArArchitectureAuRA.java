@@ -24,19 +24,19 @@ import app.path.geometry.Point;
 public class ArArchitectureAuRA extends ArArchitecture {
 
 	private ArMisionPlanner arMisionPlanner;
-	private boolean listo;
+	private boolean ready;
 
 	private final static long SLEEP = 100;
 
 	public ArArchitectureAuRA(ArRobotMobile robot, Map map) {
 		super("AuRA", robot, map);
 		arMisionPlanner = new ArMisionPlanner(map, robot);
-		listo = false;
+		ready = false;
 	}
 
 	@Override
 	public void behavior() {
-		if (!listo) {
+		if (!ready) {
 
 			Point start = new Point(getMap().getRobotHome().getX(), getMap().getRobotHome().getY(), "INICIO");
 			Point finish = new Point(getMap().getGoal().getX(), getMap().getGoal().getY(), "FIN");
@@ -44,7 +44,7 @@ public class ArArchitectureAuRA extends ArArchitecture {
 			Log.info(getClass(), String.format("Inicio: %s, Fin: %s", start, finish));
 			arMisionPlanner.setStart(start);
 			arMisionPlanner.setTarget(finish);
-			listo = true;
+			ready = true;
 		}
 		arMisionPlanner.execute();
 		ArUtil.sleep(ArArchitectureAuRA.SLEEP);

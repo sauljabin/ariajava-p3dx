@@ -42,7 +42,7 @@ public class PathPlanner {
 		map.setGraph(graph);
 
 		Dijkstra algorithm = new Dijkstra(graph);
-		ArrayList<Point> path = algorithm.searchOptimalRoute(home, target);
+		ArrayList<Point> path = algorithm.searchOptimalPath(home, target);
 
 		if (path != null) {
 			map.setPathPoints(new ArrayList<Point>());

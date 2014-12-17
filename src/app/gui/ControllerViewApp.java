@@ -369,8 +369,8 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		anRobot = new Robot(map);
 		anRobot.updateAnimatedPosition(map.getRobotHome().getX(), map.getRobotHome().getY(), map.getRobotHome().getAngle());
 		animator.addAnimated(anRobot);
-		
-		robotInfoPanel=new RobotInfoPanel(robot);
+
+		robotInfoPanel = new RobotInfoPanel(robot);
 
 		animator.setInfoPanel(robotInfoPanel);
 

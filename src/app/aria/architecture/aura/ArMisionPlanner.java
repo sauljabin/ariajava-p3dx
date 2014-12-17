@@ -24,7 +24,7 @@ public class ArMisionPlanner {
 	public final static int AMP_SEARCH_IN_PROGRESS = 1;
 	public final static int AMP_TARGET_ACHIEVED = 2;
 	public final static int AMP_UNATTAINABLE_GOAL = 3;
-	public final static int FIN = 4;
+	public final static int AMP_END_MISION = 4;
 
 	private Point start;
 	private Point target;
@@ -55,12 +55,12 @@ public class ArMisionPlanner {
 			break;
 		case ArMisionPlanner.AMP_TARGET_ACHIEVED:
 			Log.info(getClass(), "MISION_PLANNER: Objetivo Alcanzado");
-			state = ArMisionPlanner.FIN;
+			state = ArMisionPlanner.AMP_END_MISION;
 			break;
 		case ArMisionPlanner.AMP_UNATTAINABLE_GOAL:
 			Log.info(getClass(), "MISION_PLANNER: Imposible llegar al destino");
 			break;
-		case ArMisionPlanner.FIN:
+		case ArMisionPlanner.AMP_END_MISION:
 			break;
 		}
 	}

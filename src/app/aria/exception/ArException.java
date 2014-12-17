@@ -11,7 +11,6 @@
  *
  */
 
- 
 package app.aria.exception;
 
 public class ArException extends Exception {
