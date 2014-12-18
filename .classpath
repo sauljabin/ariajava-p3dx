@@ -4,6 +4,5 @@
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
 	<classpathentry kind="lib" path="lib/miglayout-4.0-swing.jar"/>
 	<classpathentry kind="lib" path="C:/Program Files/MobileRobots/ARIA/java/Aria.jar"/>
-	<classpathentry kind="lib" path="lib/openjfx-78-backport-1.8.0-ea-b96.1.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
