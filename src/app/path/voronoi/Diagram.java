@@ -13,14 +13,13 @@
 
 package app.path.voronoi;
 
+import java.awt.geom.Line2D;
 import java.util.ArrayList;
 
 import app.map.Line;
 import app.map.Map;
 import app.path.geometry.Triangle;
 import app.path.graphs.Graph;
-
-import com.sun.javafx.geom.Line2D;
 
 public class Diagram {
 
@@ -29,28 +28,21 @@ public class Diagram {
 
 	public Diagram(ArrayList<Triangle> triangleList, Map map) {
 		triangles = triangleList;
-		graph = new Graph();		
+		graph = new Graph();
 		for (int i = 0; i < triangles.size(); i++) {
 			for (int j = i + 1; j < triangles.size(); j++) {
 				Triangle tA = triangles.get(i);
 				Triangle tB = triangles.get(j);
-				Line2D line1 = new Line2D(new Double(tA.getCircle().getCenter()
-						.getX()).floatValue(), new Double(tA.getCircle()
-						.getCenter().getY()).floatValue(), new Double(tB
-						.getCircle().getCenter().getX()).floatValue(),
-						new Double(tB.getCircle().getCenter().getY())
-								.floatValue());
+				Line2D line1 = new Line2D.Double(tA.getCircle().getCenter().getX(), tA.getCircle().getCenter().getY(), tB.getCircle().getCenter().getX(), tB.getCircle().getCenter().getY());
 				boolean intersect = false;
 				for (Line line : map.getLines()) {
-					Line2D line2 = new Line2D(line.getX1(), line.getY1(),
-							line.getX2(), line.getY2());
+					Line2D line2 = new Line2D.Double(line.getX1(), line.getY1(), line.getX2(), line.getY2());
 					intersect = line1.intersectsLine(line2);
 					if (intersect)
 						break;
 				}
 				if (tA.isAdjacent(tB) && !intersect) {
-					graph.addLink(tA.getCircle().getCenter(), tB.getCircle()
-							.getCenter());
+					graph.addLink(tA.getCircle().getCenter(), tB.getCircle().getCenter());
 				}
 			}
 		}

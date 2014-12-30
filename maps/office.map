@@ -3,6 +3,7 @@ LineMinPos: 0 0
 LineMaxPos: 18760 14000
 NumLines: 101
 Cairn: RobotHome 1000 1498 0 "" ICON "Home"
+Cairn: Goal 17500 9000 0 "" ICON "Goal" 
 LINES
 16400 10000 18000 10000
 14200 2000 14200 0

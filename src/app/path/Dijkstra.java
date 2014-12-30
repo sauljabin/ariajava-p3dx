@@ -41,9 +41,10 @@ public class Dijkstra {
 				if (point.getAncestor() == null) {
 					point.setCumulativeWeight(Double.POSITIVE_INFINITY);
 				}
-				if (current.distance(point) < point.getCumulativeWeight()) {
+				double weight = current.getCumulativeWeight() + current.distance(point);
+				if (weight < point.getCumulativeWeight()) {
 					point.setAncestor(current);
-					point.setCumulativeWeight(current.distance(point));
+					point.setCumulativeWeight(weight);
 				}
 				if (!visitedNode.contains(point))
 					visitedNode.add(point);
@@ -58,13 +59,16 @@ public class Dijkstra {
 			findPath(point.getAncestor());
 	}
 
-	public ArrayList<Point> searchOptimalRoute(Point home, Point target) {
-		Log.println("");
-		Log.println("INIT DIJKSTRA");
+	public ArrayList<Point> searchOptimalPath(Point home, Point target) {
+		Log.info(getClass(), "Iniciando busqueda de camino optimo (Algoritmo Dijkstra)");
 		this.path = new ArrayList<Point>();
 		this.visitedNode = new LinkedList<Point>();
-		nextNode(home, target);
-		findPath(target);
+		try {
+			nextNode(home, target);
+			findPath(target);
+		} catch (Exception e) {
+			return null;
+		}
 		return path;
 	}
 }

@@ -92,7 +92,7 @@ public class Point {
 
 	@Override
 	public String toString() {
-		return String.format("Point [x=%s, y=%s, name=%s, ancestor=(%s), cumulativeWeight=%s]", x, y, name, ancestor, cumulativeWeight);
+		return String.format("Point [x=%s, y=%s, name=%s, cumulativeWeight=%s, ancestor=(%s)]", x, y, name, cumulativeWeight, ancestor);
 	}
 
 }
