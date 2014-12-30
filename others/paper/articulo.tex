@@ -19,6 +19,7 @@
 \usepackage{graphicx}
 \usepackage{url}
 \usepackage{listings}
+\usepackage{float}
 \lstset{ frame=Ltb,
 framerule=0pt,
 aboveskip=0.5cm,
@@ -44,7 +45,7 @@ numberfirstline = false,
 breaklines=true
 }
 \usepackage[font=footnotesize,labelfont=bf]{caption}
-%\usepackage{subcaption}
+\usepackage{subcaption}
 \usepackage[T1]{fontenc}
 \usepackage{color}
 \definecolor{gray97}{gray}{.97}
@@ -447,19 +448,86 @@ La \reffigure{fig:map} muestra el resultado del archivo \textit{.map} descrito e
 
 \subsection*{Capa Reactiva}
 
+\pagebreak
 \section*{Herramienta de Software Desarrollada}
 
-%\begin{figure}[here]
-%\begin{center}
-%\includegraphics[width=6cm]{ventana-principal.png} 
-%\caption{Ventana principal.}
-%\label{fig:ventana-principal}
-%\end{center}
-%\end{figure} 
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=6cm]{ventana-principal.png} 
+\caption{Ventana principal.}
+\label{fig:ventana-principal}
+\end{center}
+\end{figure} 
 
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=6cm]{ventana-principal-partes.png} 
+\caption{Partes de la ventana principal.}
+\label{fig:ventana-principal-partes}
+\end{center}
+\end{figure}
+
+\begin{figure}
+        \centering
+        \begin{subfigure}[b]{0.2\linewidth}
+        		\centering
+                \includegraphics[width=1cm]{botones-zoom.png}
+                \caption{Zoom}
+                \label{subfig:botones-zoom}
+        \end{subfigure}
+        ~ 
+        \begin{subfigure}[b]{0.2\linewidth}
+        		\centering
+                \includegraphics[width=1cm]{botones-mover-mapa.png}
+                \caption{Mover}
+                \label{subfig:botones-mover-mapa}
+        \end{subfigure}
+        ~ 
+        \begin{subfigure}[b]{0.2\linewidth}
+        		\centering
+                \includegraphics[width=1cm]{botones-centrar-capturar.png}
+                \caption{Capturar}
+                \label{subfig:botones-centrar-capturar}
+        \end{subfigure}
+        ~ 
+        \begin{subfigure}[b]{0.2\linewidth}
+        		\centering
+                \includegraphics[width=1cm]{botones-ocultar-mapa.png}
+                \caption{Ocultar}
+                \label{subfig:botones-ocultar-mapa}
+        \end{subfigure}
+        \caption{Acciones para manipulación del mapa}
+        \label{fig:botones-mapa}
+\end{figure}
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=6cm]{guardar-imagen.png} 
+\caption{Ventana para guardar captura del mapa.}
+\label{fig:guardar-imagen}
+\end{center}
+\end{figure} 
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=6cm]{ventana-principal-conexion.png} 
+\caption{Ventana principal conexión.}
+\label{fig:ventana-principal-conexion}
+\end{center}
+\end{figure} 
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=6cm]{mapa-cargado.png} 
+\caption{Mapa cargado.}
+\label{fig:mapa-cargado}
+\end{center}
+\end{figure} 
+
+\pagebreak
 \subsubsection*{\textit{Menu Opciones}}
 
-\begin{figure}[here]
+\begin{figure}[H]
 \begin{center}
 \includegraphics[width=3cm]{menu-opciones2.png} 
 \caption{Menu opciones.}
@@ -467,7 +535,7 @@ La \reffigure{fig:map} muestra el resultado del archivo \textit{.map} descrito e
 \end{center}
 \end{figure} 
 
-\begin{figure}[here]
+\begin{figure}[H]
 \begin{center}
 \includegraphics[width=6cm]{cargar-mapa.png} 
 \caption{Ventana para seleccionar mapa.}
@@ -475,11 +543,30 @@ La \reffigure{fig:map} muestra el resultado del archivo \textit{.map} descrito e
 \end{center}
 \end{figure} 
 
-\begin{figure}[here]
+\begin{figure}[H]
 \begin{center}
 \includegraphics[width=6cm]{ver-configuracion.png} 
 \caption{Ventana para ver los atributos de configuración.}
 \label{fig:ver-configuracion}
+\end{center}
+\end{figure} 
+
+\pagebreak
+\subsubsection*{\textit{Menu Ayuda}}
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=3cm]{menu-ayuda2.png} 
+\caption{Menu Ayuda.}
+\label{fig:menu-ayuda}
+\end{center}
+\end{figure} 
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=6cm]{ventana-about.png} 
+\caption{Ventana para ver la información de la aplicación.}
+\label{fig:ventana-about}
 \end{center}
 \end{figure} 
 
