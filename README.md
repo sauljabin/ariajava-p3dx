@@ -7,4 +7,4 @@
 ### Descripción:
 * Algoritmos de navegación para robot Pioneer P3DX usando la Librería ARIA http://robots.mobilerobots.com/wiki/ARIA y el API Java.
 * Año 2014.
-* Licencia GPL.
+* Licencia MIT.

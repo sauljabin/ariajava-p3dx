@@ -24,7 +24,7 @@ public class ArMisionPlanner {
 	public final static int AMP_SEARCH_IN_PROGRESS = 1;
 	public final static int AMP_TARGET_ACHIEVED = 2;
 	public final static int AMP_UNATTAINABLE_GOAL = 3;
-	public final static int FIN = 4;
+	public final static int AMP_END_MISION = 4;
 
 	private Point start;
 	private Point target;
@@ -47,20 +47,20 @@ public class ArMisionPlanner {
 	public void execute() {
 		switch (state) {
 		case ArMisionPlanner.AMP_INIT:
-			Log.println("MISION_PLANNER: Inicializando");
+			Log.info(getClass(), "MISION_PLANNER: Inicializando");
 			state = arSpatialReasoner.calculatePath(start, target);
 			break;
 		case ArMisionPlanner.AMP_SEARCH_IN_PROGRESS:
 			state = arSpatialReasoner.continuePath();
 			break;
 		case ArMisionPlanner.AMP_TARGET_ACHIEVED:
-			Log.println("MISION_PLANNER: Objetivo Alcanzado");
-			state = ArMisionPlanner.FIN;
+			Log.info(getClass(), "MISION_PLANNER: Objetivo Alcanzado");
+			state = ArMisionPlanner.AMP_END_MISION;
 			break;
 		case ArMisionPlanner.AMP_UNATTAINABLE_GOAL:
-			Log.println("MISION_PLANNER: Imposible llegar al destino");
+			Log.info(getClass(), "MISION_PLANNER: Imposible llegar al destino");
 			break;
-		case ArMisionPlanner.FIN:
+		case ArMisionPlanner.AMP_END_MISION:
 			break;
 		}
 	}

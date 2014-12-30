@@ -25,6 +25,8 @@ public abstract class InfoPanel {
 	private Color color = Color.BLACK;
 
 	public abstract void initInfoPanel();
+	
+	public abstract void stopInfoPanel();
 
 	public abstract void printInfo();
 
