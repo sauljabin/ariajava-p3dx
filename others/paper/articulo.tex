@@ -187,14 +187,16 @@ breaklines=true
 
 \vspace{-3mm} \hspace{.05in}\parbox{4.5in} {{\small %\footnotesize 
 
-En el presente informe se da a conocer de manera detallada el diseño, desarrollo e implementación de 
-una arquitectura de navegación híbrida basada en la arquitectura AuRA para el robot Pionner P3DX, 
+En el presente informe se da a conocer de manera detallada el diseño, desarrollo e implementación 
+de la arquitectura de navegación híbrida AuRA para el robot Pionner P3DX, 
 con el objetivo de planificar rutas entre dos puntos cualesquiera en un ambiente conocido.
 La arquitectura construye el camino más corto aplicando el Algoritmo de Dijkstra sobre el diagrama de Voronoi asociado
-al entorno. Se segmentó el mapa con la Triangulación de Delaunay para generar dicho diagrama.
-Por otra parte, se explica el funcionamiento e instalación de la aplicación de software 
+al entorno. Se segmentó el espacio a través de la Triangulación de Delaunay.
+Por otra parte, se explica el funcionamiento e instalación sobre sistemas operativos Windows o Linux de la aplicación de software 
 desarrollada. Se exponen los resultados y conclusiones del conjunto de pruebas 
-realizadas para validar la arquitectura.
+realizadas para validar la arquitectura. En los resultados alcanzados se encontró 
+que el robot tiene la capacidad de dirigirse por el espacio efectivamente más no completamente eficiente. 
+%También se pudo observar que el robot responde satisfactoriamente a obstaculos inesperados. 
 
  \textbf{Palabras clave}: Robótica, ARIA, AuRA, Arquitectura Híbrida, Pioneer P3DX.}}
 \end{center}
@@ -218,14 +220,24 @@ realizadas para validar la arquitectura.
 \section*{Introducción}
 
 La robótica móvil es un campo de investigación que supone la integración de numerosas disciplinas
-entre las que se encuentran la electrónica, ingeniería mecánica,
+entre las que resaltan la electrónica, ingeniería mecánica,
 inteligencia artificial, estadística, entre otros. Tiene como objetivo 
-construir una ruta de navegación sobre un entorno conocido o desconocido,
+guiar el curso de un robot movil sobre un entorno con obstculos conocido o desconocido,
 a través de un sistema que integra la percepción del entorno mediante
 sensores, toma de decisiones y acciones.
 
-La arquitectura AuRA propone un enfoque donde se fusiona los paradigmas deliberativo y reactivo,
-lo que le permite al robot responder a eventos inesperados y a la vez cumplir con los objetivos de la misión.
+Las tareas involucradas en la navegación de un robot móvil son: la percepción del
+entorno, la planificación de una trayectoria libre de obstáculos, y la conducción del vehiculo a través de la referencia establecida.
+Es necesario que se incluya la capacidad de reaccionar ante situaciones inesperadas.
+
+La arquitectura AuRA propone un enfoque de control donde se fusiona los paradigmas deliberativo y reactivo,
+integra todas las tareas expuestas anteriormente, por ende, le permitirá al robot movil responder a eventos inesperados, desenvolverse en 
+entornos no estructurados y a la vez cumplir con los objetivos de la misión. La implementancion de esta arqitectura supone un conocimiento previo
+del entorno, el cual servira como insumo para la planificación global de la misión.
+
+En el presente trabajo se expone todo el proceso de implementación de la arquitectura híbrida AuRA sobre el robot movil P3DX,
+con un razonador espacial principalmente basada en el diagrama de Voronoi y en el algoritmo voraz Dijkstra para el calculo de 
+la ruta óptima.
 
 \section*{Pioneer P3DX}
 
@@ -235,9 +247,16 @@ Es uno de los robots más popularmente usados en las áreas de la educación e i
 
 \begin{figure}[here]
 	\centering
-	\includegraphics[width=5cm]{pioneer.png} 
+	\includegraphics[width=6cm]{pioneer.png} 
 	\caption{Robot Pioneer P3DX.}
 	\label{fig:pioneer}
+\end{figure} 
+
+\begin{figure}[here]
+	\centering
+	\includegraphics[width=8cm]{pioneer-dimensiones.png} 
+	\caption{Dimensiones en milímetros del robot Pioneer P3DX.}
+	\label{fig:pioneer-dimensiones}
 \end{figure} 
 
 \subsubsection*{Especificaciones del Pioneer P3DX}
@@ -268,12 +287,7 @@ Es uno de los robots más popularmente usados en las áreas de la educación e i
 \\
 \indent\textbf{Capacidad:} 7,2 Ah.
 
-\begin{figure}[here]
-	\centering
-	\includegraphics[width=8cm]{pioneer-dimensiones.png} 
-	\caption{Dimensiones (milímetros) Robot Pioneer P3DX.}
-	\label{fig:pioneer-dimensiones}
-\end{figure} 
+
 
 \section*{Arquitectura AuRA}
 
@@ -288,7 +302,7 @@ puede ser comparado con un piloto, convierte la ruta generada por el \textit{raz
 \begin{figure}[here]
 \begin{center}
 \includegraphics[width=5cm]{aura.png} 
-\caption{Representación de Arquitectura AuRA.}
+\caption{Representación de arquitectura AuRA.}
 \label{fig:aura}
 \end{center}
 \end{figure} 
@@ -387,7 +401,8 @@ este está disponible al público con licencia de software \textbf{MIT} en la si
 
 Con el fin de planificar la misión, se desarrolló una interfaz gráfica intuitiva que permite configurar
 los parámetros generales, cargar la información cartográfica y además presentar la ruta óptima que deberá recorrer el robot. 
-Como se observa en la \reffigure{fig:planificador} se puede ingresar la posición inicial y final deseada.
+Como se observa en la \reffigure{fig:planificador} se puede ingresar la posición inicial y final deseada, además de la velocidad máxima del robot, 
+y posee un conjunto de herramientas para la manipulación del mapa.
 
 \begin{figure}[here]
 \begin{center}
@@ -431,11 +446,12 @@ A continuación se describen las líneas que conforman el mapa:
 \\\textbf{Línea 7:} \sourcecode{LINES}, indica el inicio de la sección de obstáculos.
 \\\textbf{A partir de la línea 8:} sección de obstáculos.
 
-La \reffigure{fig:map} muestra el resultado del archivo \textit{.map} descrito en el \reflistings{lst:map}.
+La \reffigure{fig:map} muestra el resultado del archivo \textit{.map} descrito en el \reflistings{lst:map}, se puede observar el recuadro
+externo especificado desde la línea 7, el punto de inicio es representado por el rectángulo azul y el objetivo por el rectángulo rojo.
 
-\begin{figure}[here]
+\begin{figure}[H]
 \begin{center}
-\includegraphics[width=6cm]{map.png} 
+\includegraphics[width=4cm]{map.png} 
 \caption{Resultado de ejemplo archivo mapa \reflistings{lst:map}.}
 \label{fig:map}
 \end{center}
@@ -443,6 +459,29 @@ La \reffigure{fig:map} muestra el resultado del archivo \textit{.map} descrito e
 
 \subsubsection*{\textit{Razonador Espacial}}
 
+El razonador espacial es el encargado de construir la ruta que deberá recorrer el robot para llegar al objetivo.
+En esta implementación se diseñó un razonador espacial que calcula la ruta óptima mediante 3 etapas \refpfigure{fig:razonador-espacial}.
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=4cm]{razonador-espacial.png} 
+\caption{Etapas del razonador espacial.}
+\label{fig:razonador-espacial}
+\end{center}
+\end{figure}
+
+Como se muestra en la \reffigure{fig:razonador-espacial}, en la primera etapa se realiza una segmentación del mapa
+a través de la \textbf{Triangulación de Delaunay}, esto divide el espacio en secciones pequeñas y conectadas. En segundo lugar
+se genera un \textbf{Diagrama de Voronoi} a partir de la triangulación, este diagrama transformara el mapa
+en un grafo conectado. Por último, se aplica el \textbf{Algoritmo de Dijkstra} sobre el Diagrama de Voronoi con el fin
+de calcular la ruta óptima desde un punto de inicio hasta un punto objetivo dentro del grafo.
+
+
+\begin{enumerate}
+\item \textbf{Triangulación de Delaunay:}
+\item \textbf{Diagrama de Voronoi:}
+\item \textbf{Algoritmo de Dijkstra:}
+\end{enumerate}
 
 \subsubsection*{\textit{Secuenciador del Plan}}
 
