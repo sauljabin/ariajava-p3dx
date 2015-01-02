@@ -19,6 +19,7 @@
 \usepackage{graphicx}
 \usepackage{url}
 \usepackage{listings}
+\usepackage[ruled,vlined,spanish,onelanguage]{algorithm2e}
 \usepackage{float}
 \lstset{ frame=Ltb,
 framerule=0pt,
@@ -472,7 +473,7 @@ En esta implementación se diseñó un razonador espacial que calcula la ruta ó
 
 Como se muestra en la \reffigure{fig:razonador-espacial}, en la primera etapa se realiza una segmentación del mapa
 a través de la \textbf{Triangulación de Delaunay}, esto divide el espacio en secciones pequeñas y conectadas. En segundo lugar
-se genera un \textbf{Diagrama de Voronoi} a partir de la triangulación, este diagrama transformara el mapa
+se genera un \textbf{Diagrama de Voronoi} a partir de la triangulación, este diagrama representará el mapa
 en un grafo conectado. Por último, se aplica el \textbf{Algoritmo de Dijkstra} sobre el Diagrama de Voronoi con el fin
 de calcular la ruta óptima desde un punto de inicio hasta un punto objetivo dentro del grafo.
 
@@ -480,7 +481,56 @@ de calcular la ruta óptima desde un punto de inicio hasta un punto objetivo den
 \begin{enumerate}
 \item \textbf{Triangulación de Delaunay:}
 \item \textbf{Diagrama de Voronoi:}
-\item \textbf{Algoritmo de Dijkstra:}
+\item \textbf{Algoritmo de Dijkstra:} Este algoritmo fue diseñado por Edsger Dijkstra en 1959, se puede categorizar en la familia de algoritmos voraces
+y posee una complejidad de $O(n^{2})$. Tiene como objetivo hayar el camino con costo mínimo entre dos vertices de un grafo ponderado.
+
+Este algoritmo se basa en el principio de optimalidad: si el camino más corto entre los vértices $u$ y $v$ pasa
+por el vértice $w$, entonces la parte del camino que va de $w$ a $v$ debe ser el camino más corto entre todos los caminos que van de $w$ a $v$ \cite{torrubia2012}.
+
+Se explicara el algoritmo a través de su pseudocódigo \cite{wiki2014} (Algoritmo 1).
+Se tienen los siguietes elementos:
+
+\begin{itemize}
+\item $G$: el grafo
+\item $V$: veértice del grafo
+\item $Q$: cola de prioridad
+\item $s$: nodo inicial
+\item $distancia$: arreglo de estimaciones de las distancias
+\item $padre$: arreglo de predecesores de cada vertice
+\end{itemize}
+
+Se inicializan todos las distancias en infinito y todos las padres en nulo. Luego se 
+agrega el nodo inicial a la cola de prioridad. Mientras la cola sea distinto de 
+vacio se toma el primer elemento. Posteriormente se seleccionan los
+nodos adyacentes al primer nodo en la cola, si la distancia entre 
+el primer nodo en la cola y un nodo adyacente es menor que la distancia 
+almacenada del nodo adyacente se actualiza la distancia entre ambos y además se adiciona el nodo 
+adyacente a la cola de prioridad.
+
+\begin{algorithm}
+\DontPrintSemicolon
+
+\For{$u~\epsilon~V[G]$}{
+ distancia[u] = INFINITO\;
+ padre[u] = NULL\;
+}
+distancia[s] = 0\;
+adicionar(Q,(s, distancia[s]))\;
+
+\While{$Q\neq\emptyset$}{
+	u = primero(Q)\;
+	\For{$v~\epsilon~adyacencia[u]$}{ 
+		\If{distancia[v] > distancia[u] + peso(u, v)}{
+			distancia[v] = distancia[u] + peso(u, v)\;
+			padre[v] = u\;
+			adicionar(Q,(v, distancia[v]))\;
+		}
+	}
+}
+\caption{Algoritmo de Dijkstra \label{alg:dijkstra}}
+\end{algorithm}
+
+
 \end{enumerate}
 
 \subsubsection*{\textit{Secuenciador del Plan}}
@@ -639,8 +689,6 @@ la aplicación, además se puede ingresar a la ventana de creditos en la opción
 
 \section*{Conclusión}
 
-AL FINALIZAR
-
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                 BIBLIOGRAFIA
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -676,6 +724,17 @@ AL FINALIZAR
 	MobileRobots. (2014).
 	Mapper3. 	
 	Disponible en: \\\link{http://robots.mobilerobots.com/wiki/Mapper3}.
+	
+\bibitem{torrubia2012} 
+	Torrubia, G. Y Terrazas, V. (2012). 
+	Algoritmo de Dijkstra. Un tutorial interactivo. 
+	VII Jornadas de Enseñanza Universitaria de la Informática.
+	
+\bibitem{wiki2014}
+	Algoritmo de Dijkstra
+	Wikipedia.
+	Disponible en: \\\link{http://es.wikipedia.org/wiki/Algoritmo_de_Dijkstra}.\\
+	Consultado en Diciembre del 2014.
 	
 \end{thebibliography}
 \end{document}
