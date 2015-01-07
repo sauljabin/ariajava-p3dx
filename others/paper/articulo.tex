@@ -138,13 +138,13 @@ breaklines=true
 \author{ 
 \footnote{  {\it\scriptsize  Decanato de Ciencias y Tecnolog\'ia,} 
 {\it\scriptsize Universidad Centroccidental Lisandro Alvarado,}
-{\it\scriptsize Barquisimeto, Venezuela, sauljabin@gmail.com}
-}\hspace{1mm}{Saúl Piña}
+{\it\scriptsize Barquisimeto, Venezuela, thejorgemylio@gmail.com}
+}\hspace{1mm}{Jorge Parra}
  \hspace{3mm} 
 \footnote{  {\it\scriptsize  Decanato de Ciencias y Tecnolog\'ia,} 
 {\it\scriptsize Universidad Centroccidental Lisandro Alvarado,}
-{\it\scriptsize Barquisimeto, Venezuela, thejorgemylio@gmail.com}
-}\hspace{1mm}{ Jorge Parra} \\
+{\it\scriptsize Barquisimeto, Venezuela, sauljabin@gmail.com}
+}\hspace{1mm}{ Saúl Piña} \\
  %\hspace{3mm} 
 %\footnote{  {\it\scriptsize Departamento-Instituto-Facultad}, 
 %{\it\scriptsize Universidad-Instituci\'on (filiaci\'on)},
@@ -172,7 +172,7 @@ breaklines=true
 %                APELLIDO, INICIAL NOMBRE. et al
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \fancyhead{} \fancyhead[CE]{{\scriptsize ARQUITECTURA HÍBRIDA DE NAVEGACIÓN PARA ROBOT PIONEER PD3X}}
-\fancyhead[CO]{ Saúl Piña, Jorge Parra 
+\fancyhead[CO]{ Jorge Parra, Saúl Piña
 }
 \fancyfoot{}
 %\fancyfoot[CO,CE]{\scriptsize{{Publicaciones en Ciencias y Tecnolog\'ia.} Vol 7,N$^{0}$2, Jul--Dic 2013, pp.07--15.}}
@@ -481,52 +481,51 @@ de calcular la ruta óptima desde un punto de inicio hasta un punto objetivo den
 \begin{enumerate}
 \item \textbf{Triangulación de Delaunay:}
 \item \textbf{Diagrama de Voronoi:}
-\item \textbf{Algoritmo de Dijkstra:} Este algoritmo fue diseñado por Edsger Dijkstra en 1959, se puede categorizar en la familia de algoritmos voraces
-y posee una complejidad de $O(n^{2})$. Tiene como objetivo hayar el camino con costo mínimo entre dos vertices de un grafo ponderado.
+\item \textbf{Algoritmo de Dijkstra:} Este algoritmo fue diseñado por Edsger Dijkstra en 1959 \cite{sniedovich2006,lavalle2006,cormen2001}, se puede categorizar en la familia de algoritmos voraces y posee una complejidad de $O(n^{2})$. Tiene como objetivo hayar todos los caminos con costo mínimo desde un nodo inicial a todos los demas nodos dentro de un grafo ponderado. Basicamente lo que hace este algoritmo es recorrer los nodos adyacentes a un nodo especifico, si encuentra un nodo con un alguna alternativa más óptima
+actualiza su peso y le indica cual es su nuevo nodo ancestro .
 
-Este algoritmo se basa en el principio de optimalidad: si el camino más corto entre los vértices $u$ y $v$ pasa
-por el vértice $w$, entonces la parte del camino que va de $w$ a $v$ debe ser el camino más corto entre todos los caminos que van de $w$ a $v$ \cite{torrubia2012}.
-
-Se explicara el algoritmo a través de su pseudocódigo \cite{wiki2014} (Algoritmo 1).
+Se explicara el algoritmo a través de su pseudocódigo (Algoritmo \ref{alg:dijkstra}).
 Se tienen los siguietes elementos:
 
 \begin{itemize}
 \item $G$: el grafo
-\item $V$: veértice del grafo
 \item $Q$: cola de prioridad
 \item $s$: nodo inicial
-\item $distancia$: arreglo de estimaciones de las distancias
-\item $padre$: arreglo de predecesores de cada vertice
 \end{itemize}
 
-Se inicializan todos las distancias en infinito y todos las padres en nulo. Luego se 
-agrega el nodo inicial a la cola de prioridad. Mientras la cola sea distinto de 
-vacio se toma el primer elemento. Posteriormente se seleccionan los
-nodos adyacentes al primer nodo en la cola, si la distancia entre 
-el primer nodo en la cola y un nodo adyacente es menor que la distancia 
-almacenada del nodo adyacente se actualiza la distancia entre ambos y además se adiciona el nodo 
-adyacente a la cola de prioridad.
+Se inicializan todos los pesos acumulados de los nodos en infinito y todos los nodos ancestros en nulo. 
+Luego se agrega el nodo inicial a la cola de prioridad. 
+Se procede a recorrer la cola de prioridad, mientras esta sea distinta de vacio se toma el primer elemento. 
+Posteriormente se verifica el peso acumulado de cada nodo adyacente al primer elemento en la cola, si el peso acumulado del nodo actual del ciclo es mayor
+al peso del primer elemento ($u$) más el peso entre ambos nodos, se actualiza el peso acumulado y el nodo ancestro del nodo actual.
+Por último se agrega a la cola de prioridad el nodo adyacente. 
 
 \begin{algorithm}
 \DontPrintSemicolon
+\KwData{Nodo inicial $s$}
+\KwResult{Ruta óptima}
 
-\For{$u~\epsilon~V[G]$}{
- distancia[u] = INFINITO\;
- padre[u] = NULL\;
+Inicializar $Q$ y $G$\;
+
+\For{$u~\epsilon~G.getNodos()$}{
+ u.setPesoAcumulado(INFINITO)\;
+ u.setNodoAncestro(NULL)\;
 }
-distancia[s] = 0\;
-adicionar(Q,(s, distancia[s]))\;
+
+s.setPesoAcumulado(0)\;
+Q.adicionar(s)\;
 
 \While{$Q\neq\emptyset$}{
-	u = primero(Q)\;
-	\For{$v~\epsilon~adyacencia[u]$}{ 
-		\If{distancia[v] > distancia[u] + peso(u, v)}{
-			distancia[v] = distancia[u] + peso(u, v)\;
-			padre[v] = u\;
-			adicionar(Q,(v, distancia[v]))\;
+	u = Q.getPrimero()\;
+	\For{$v~\epsilon~u.getNodosAdyacentes()$}{ 
+		\If{v.getPesoAcumulado() > u.getPesoAcumulado() + G.getPesoEntreNodos(u,v)}{
+			v.setPesoAcumulado(u.getPesoAcumulado() + G.getPesoEntreNodos(u,v))\;
+			v.setNodoAncestro(u)\;
+			Q.adicionar(v)\;
 		}
 	}
 }
+
 \caption{Algoritmo de Dijkstra \label{alg:dijkstra}}
 \end{algorithm}
 
@@ -725,16 +724,17 @@ la aplicación, además se puede ingresar a la ventana de creditos en la opción
 	Mapper3. 	
 	Disponible en: \\\link{http://robots.mobilerobots.com/wiki/Mapper3}.
 	
-\bibitem{torrubia2012} 
-	Torrubia, G. Y Terrazas, V. (2012). 
-	Algoritmo de Dijkstra. Un tutorial interactivo. 
-	VII Jornadas de Enseñanza Universitaria de la Informática.
+\bibitem{sniedovich2006} 
+	Sniedovich, M. (2006). 
+	Dijkstra's algorithm revisited: the dynamic programming connexion. 
+	Control and cybernetics.
+	Vol. 35. No. 3. Pp. 599-620.
+
+\bibitem{lavalle2006} 
+	Lavalle, S. (2006). Planning algorithms. Cambridge university press.
 	
-\bibitem{wiki2014}
-	Algoritmo de Dijkstra
-	Wikipedia.
-	Disponible en: \\\link{http://es.wikipedia.org/wiki/Algoritmo_de_Dijkstra}.\\
-	Consultado en Diciembre del 2014.
+\bibitem{cormen2001} 
+	Cormen, T., Leiserson, C., Rivest, R., y Stein, C. (2001). Introduction to algorithms. Cambridge: MIT press.
 	
 \end{thebibliography}
 \end{document}
