@@ -26,11 +26,12 @@ public class RobotInfoPanel extends InfoPanel {
 	public RobotInfoPanel(ArRobotMobile robot) {
 		this.robot = robot;
 		initTime = System.currentTimeMillis();
+		stopInfoPanel();
 	}
 
 	@Override
 	public void initInfoPanel() {
-
+		stop = false;
 	}
 
 	@Override
