@@ -30,7 +30,7 @@ import java.util.Vector;
 
 import javax.swing.SwingUtilities;
 
-import app.map.Map;
+import app.aria.architecture.aura.ArMisionPlanner;
 
 public class Animator implements Runnable {
 
@@ -56,7 +56,7 @@ public class Animator implements Runnable {
 	private int mouseY;
 	private BufferedImage backImage;
 	private Graphics2D backGraphics;
-	private Map map;
+	private ArMisionPlanner arMisionPlanner;
 	private int strokeSize;
 	private int yMouseAnimated;
 	private int xMouseAnimated;
@@ -379,25 +379,25 @@ public class Animator implements Runnable {
 		translateY = canvas.getHeight() / 2;
 	}
 
-	public void showMap(Map map) {
-		this.map = map;
+	public void showMap(ArMisionPlanner arMisionPlanner) {
+		this.arMisionPlanner = arMisionPlanner;
 		removeAnimateds();
-		addAnimated(map);
-		if (map.getRobotHome() != null)
-			addAnimated(map.getRobotHome());
-		if (map.getGoal() != null)
-			addAnimated(map.getGoal());
-		setSize(map.getCanvasWidth(), map.getCanvasHeight());
+		addAnimated(arMisionPlanner.getMap());
+		if (arMisionPlanner.getStart() != null)
+			addAnimated(arMisionPlanner.getStart());
+		if (arMisionPlanner.getGoal() != null)
+			addAnimated(arMisionPlanner.getGoal());
+		setSize(arMisionPlanner.getMap().getCanvasWidth(), arMisionPlanner.getMap().getCanvasHeight());
 		centerMap();
 		refresh();
 
 	}
 
 	public void updateMapProportion(int proportion) {
-		if (map == null)
+		if (arMisionPlanner == null)
 			return;
-		map.setProportion(proportion);
-		setSizeAndRefresh(map.getCanvasWidth(), map.getCanvasHeight());
+		arMisionPlanner.getMap().setProportion(proportion);
+		setSizeAndRefresh(arMisionPlanner.getMap().getCanvasWidth(), arMisionPlanner.getMap().getCanvasHeight());
 		centerMap();
 	}
 
@@ -407,10 +407,6 @@ public class Animator implements Runnable {
 		BufferedImage bi = new BufferedImage(width, height, 1);
 		bi.getGraphics().drawImage(image, 0, 0, null);
 		return bi;
-	}
-
-	public Map getMap() {
-		return map;
 	}
 
 	public synchronized void animatorMouseListener(MouseEvent e) {

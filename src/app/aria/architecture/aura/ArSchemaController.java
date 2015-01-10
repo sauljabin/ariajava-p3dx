@@ -1,6 +1,6 @@
 /**
  * 
- * ArReactive.java
+ * ArSchemaController.java
  * 
  * Copyright (c) 2014, Saul Piña <sauljp07@gmail.com>, Jorge Parra <thejorgemylio@gmail.com>.
  * 
@@ -16,11 +16,11 @@ package app.aria.architecture.aura;
 import app.aria.robot.ArRobotMobile;
 import app.path.geometry.Point;
 
-public class ArReactive {
+public class ArSchemaController {
 
 	private ArRobotMobile robot;
 
-	public ArReactive(ArRobotMobile robot) {
+	public ArSchemaController(ArRobotMobile robot) {
 		this.robot = robot;
 	}
 

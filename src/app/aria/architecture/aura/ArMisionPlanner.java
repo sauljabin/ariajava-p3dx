@@ -13,56 +13,104 @@
 
 package app.aria.architecture.aura;
 
-import app.Log;
+import java.io.BufferedReader;
+import java.io.FileReader;
+
 import app.aria.robot.ArRobotMobile;
+import app.map.Goal;
 import app.map.Map;
-import app.path.geometry.Point;
+import app.map.Start;
 
 public class ArMisionPlanner {
 
-	public final static int AMP_INIT = 0;
-	public final static int AMP_SEARCH_IN_PROGRESS = 1;
-	public final static int AMP_TARGET_ACHIEVED = 2;
-	public final static int AMP_UNATTAINABLE_GOAL = 3;
-	public final static int AMP_END_MISION = 4;
+	public static final String numberLinesLabel = "NumLines: ";
+	public static final String robotLabel = "Cairn: RobotHome ";
+	public static final String linesLabel = "LINES";
+	public static final String lineMinPosLabel = "LineMinPos: ";
+	public static final String lineMaxPosLabel = "LineMaxPos: ";
+	public static final String goalLabel = "Cairn: Goal ";
+	private String path;
+	private Goal goal;
+	private Start start;
+	private Map map;
 
-	private Point start;
-	private Point target;
-	private int state;
-	private ArSpatialReasoner arSpatialReasoner;
-
-	public ArMisionPlanner(Map map, ArRobotMobile robot) {
-		this.state = ArMisionPlanner.AMP_INIT;
-		this.arSpatialReasoner = new ArSpatialReasoner(map, robot);
+	public String getPath() {
+		return path;
 	}
 
-	public void setStart(Point start) {
+	public void setPath(String path) {
+		this.path = path;
+	}
+
+	public Goal getGoal() {
+		return goal;
+	}
+
+	public void setGoal(Goal goal) {
+		this.goal = goal;
+	}
+
+	public Start getStart() {
+		return start;
+	}
+
+	public void setStart(Start start) {
 		this.start = start;
 	}
 
-	public void setTarget(Point target) {
-		this.target = target;
+	public void load(String path) throws Exception {
+		this.path = path;
+		map = new Map();
+
+		boolean linesSector = false;
+		int countLine = 0;
+		int totalLines = 0;
+
+		String stringRead;
+		BufferedReader br = new BufferedReader(new FileReader(path));
+
+		while ((stringRead = br.readLine()) != null) {
+			if (stringRead.startsWith(numberLinesLabel)) {
+				totalLines = Integer.parseInt(stringRead.substring(numberLinesLabel.length()));
+			} else if (stringRead.startsWith(lineMinPosLabel)) {
+				String[] tokens = stringRead.substring(lineMinPosLabel.length()).split(" ");
+				map.setMinX(Integer.parseInt(tokens[0]));
+				map.setMinY(Integer.parseInt(tokens[1]));
+			} else if (stringRead.startsWith(lineMaxPosLabel)) {
+				String[] tokens = stringRead.substring(lineMaxPosLabel.length()).split(" ");
+				map.setMaxX(Integer.parseInt(tokens[0]));
+				map.setMaxY(Integer.parseInt(tokens[1]));
+			} else if (stringRead.startsWith(robotLabel)) {
+				String[] tokens = stringRead.substring(robotLabel.length()).split(" ");
+				start = new Start(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[1]), Double.parseDouble(tokens[2]));
+				start.setMap(map);
+			} else if (stringRead.startsWith(goalLabel)) {
+				String[] tokens = stringRead.substring(goalLabel.length()).split(" ");
+				goal = new Goal(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[1]), Double.parseDouble(tokens[2]));
+				goal.setMap(map);
+			} else if (stringRead.startsWith(linesLabel)) {
+				linesSector = true;
+			} else if (linesSector) {
+				String[] tokens = stringRead.split(" ");
+				map.addLine(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2]), Integer.parseInt(tokens[3]));
+				if (++countLine == totalLines) {
+					linesSector = false;
+				}
+			}
+		}
+		br.close();
+		if (goal == null && start != null) {
+			goal = new Goal(start.getX() + ArRobotMobile.LONG * 2, start.getY(), start.getAngle());
+			goal.setMap(map);
+		}
 	}
 
-	public void execute() {
-		switch (state) {
-		case ArMisionPlanner.AMP_INIT:
-			Log.info(getClass(), "MISION_PLANNER: Inicializando");
-			state = arSpatialReasoner.calculatePath(start, target);
-			break;
-		case ArMisionPlanner.AMP_SEARCH_IN_PROGRESS:
-			state = arSpatialReasoner.continuePath();
-			break;
-		case ArMisionPlanner.AMP_TARGET_ACHIEVED:
-			Log.info(getClass(), "MISION_PLANNER: Objetivo Alcanzado");
-			state = ArMisionPlanner.AMP_END_MISION;
-			break;
-		case ArMisionPlanner.AMP_UNATTAINABLE_GOAL:
-			Log.info(getClass(), "MISION_PLANNER: Imposible llegar al destino");
-			break;
-		case ArMisionPlanner.AMP_END_MISION:
-			break;
-		}
+	public Map getMap() {
+		return map;
+	}
+
+	public void setMap(Map map) {
+		this.map = map;
 	}
 
 }

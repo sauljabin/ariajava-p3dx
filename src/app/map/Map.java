@@ -16,36 +16,23 @@ package app.map;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.Shape;
-import java.io.BufferedReader;
-import java.io.FileReader;
 import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import app.animation.Animated;
 import app.animation.AnimatedMouseListener;
-import app.aria.robot.ArRobotMobile;
 import app.path.geometry.Point;
 import app.path.graphs.Graph;
 
 public class Map implements Animated {
 
-	public static final String numberLinesLabel = "NumLines: ";
-	public static final String robotLabel = "Cairn: RobotHome ";
-	public static final String linesLabel = "LINES";
-	public static final String lineMinPosLabel = "LineMinPos: ";
-	public static final String lineMaxPosLabel = "LineMaxPos: ";
-	public static final String goalLabel = "Cairn: Goal ";
-
-	private String path;
 	private List<Line> lines;
 	private List<Point> pathPoints;
-	private RobotHome robotHome;
 	private int minX;
 	private int maxX;
 	private int minY;
 	private int maxY;
-	private Goal goal;
 	private int proportion;
 	private int offsetPosition;
 	private boolean visible;
@@ -76,19 +63,6 @@ public class Map implements Animated {
 
 	public void setProportion(int proportion) {
 		this.proportion = proportion;
-	}
-
-	public Goal getGoal() {
-		return goal;
-	}
-
-	public void setGoal(Goal goal) {
-		this.goal = goal;
-		goal.setMap(this);
-	}
-
-	public void setPath(String path) {
-		this.path = path;
 	}
 
 	public void setLines(List<Line> lines) {
@@ -155,101 +129,24 @@ public class Map implements Animated {
 		return lines;
 	}
 
-	public RobotHome getRobotHome() {
-		return robotHome;
-	}
-
-	public void setRobotHome(RobotHome robotHome) {
-		this.robotHome = robotHome;
-		robotHome.setMap(this);
-	}
-
-	public Map(RobotHome robotHome, Goal goal, int minX, int maxX, int minY, int maxY) {
-		this.robotHome = robotHome;
+	public Map(int minX, int maxX, int minY, int maxY) {
 		this.minX = minX;
 		this.maxX = maxX;
 		this.minY = minY;
 		this.maxY = maxY;
-		this.goal = goal;
 		lines = new LinkedList<>();
 		proportion = 10;
 		offsetPosition = 1500;
-		if (robotHome != null)
-			robotHome.setMap(this);
-		if (goal != null)
-			goal.setMap(this);
 		visible = true;
 		pathColor1 = new Color(194, 11, 210);
 		pathColor2 = new Color(218, 70, 231);
 	}
 
-	public Map(RobotHome robotHome, int minX, int maxX, int minY, int maxY) {
-		this(robotHome, null, minX, maxX, minY, maxY);
-		this.minX = minX;
-		this.maxX = maxX;
-		this.minY = minY;
-		this.maxY = maxY;
-	}
-
-	public Map(int minX, int maxX, int minY, int maxY) {
-		this(new RobotHome(), null, minX, maxX, minY, maxY);
-		this.minX = minX;
-		this.maxX = maxX;
-		this.minY = minY;
-		this.maxY = maxY;
-	}
-
 	public Map() {
-		this(new RobotHome(), null, 0, 0, 0, 0);
+		this(0, 0, 0, 0);
 	}
 
-	public String getPath() {
-		return path;
-	}
-
-	public void load(String path) throws Exception {
-		this.path = path;
-
-		boolean linesSector = false;
-		int countLine = 0;
-		int totalLines = 0;
-
-		String stringRead;
-		BufferedReader br = new BufferedReader(new FileReader(path));
-
-		while ((stringRead = br.readLine()) != null) {
-			if (stringRead.startsWith(numberLinesLabel)) {
-				totalLines = Integer.parseInt(stringRead.substring(numberLinesLabel.length()));
-			} else if (stringRead.startsWith(lineMinPosLabel)) {
-				String[] tokens = stringRead.substring(lineMinPosLabel.length()).split(" ");
-				minX = Integer.parseInt(tokens[0]);
-				minY = Integer.parseInt(tokens[1]);
-			} else if (stringRead.startsWith(lineMaxPosLabel)) {
-				String[] tokens = stringRead.substring(lineMaxPosLabel.length()).split(" ");
-				maxX = Integer.parseInt(tokens[0]);
-				maxY = Integer.parseInt(tokens[1]);
-			} else if (stringRead.startsWith(robotLabel)) {
-				String[] tokens = stringRead.substring(robotLabel.length()).split(" ");
-				setRobotHome(new RobotHome(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[1]), Double.parseDouble(tokens[2])));
-			} else if (stringRead.startsWith(goalLabel)) {
-				String[] tokens = stringRead.substring(goalLabel.length()).split(" ");
-				setGoal(new Goal(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[1]), Double.parseDouble(tokens[2])));
-			} else if (stringRead.startsWith(linesLabel)) {
-				linesSector = true;
-			} else if (linesSector) {
-				String[] tokens = stringRead.split(" ");
-				addLine(Integer.parseInt(tokens[0]), Integer.parseInt(tokens[1]), Integer.parseInt(tokens[2]), Integer.parseInt(tokens[3]));
-				if (++countLine == totalLines) {
-					linesSector = false;
-				}
-			}
-		}
-		br.close();
-		if (getGoal() == null && getRobotHome() != null)
-			setGoal(new Goal(robotHome.getX() + ArRobotMobile.LONG * 2, robotHome.getY(), robotHome.getAngle()));
-	}
-
-	private void addLine(int x1, int y1, int x2, int y2) {
+	public void addLine(int x1, int y1, int x2, int y2) {
 		Line line = new Line(x1, y1, x2, y2);
 		lines.add(line);
 	}

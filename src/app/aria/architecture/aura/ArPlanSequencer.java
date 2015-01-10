@@ -37,7 +37,7 @@ public class ArPlanSequencer {
 
 	private double speed;
 
-	private ArReactive arReactive;
+	private ArSchemaController arReactive;
 
 	private double desiredAngle;
 	private Point start;
@@ -54,7 +54,7 @@ public class ArPlanSequencer {
 	private int waiting;
 
 	public ArPlanSequencer(Map map, ArRobotMobile robot) {
-		arReactive = new ArReactive(robot);
+		arReactive = new ArSchemaController(robot);
 		currentAngle = 0;
 		state = ArPlanSequencer.APS_STOP;
 		nextState = ArPlanSequencer.APS_STOP;
@@ -115,7 +115,7 @@ public class ArPlanSequencer {
 			switch (nextState) {
 			case ArPlanSequencer.APS_STOP:
 				if (targetAchieved()) {
-					return ArSpatialReasoner.ASR_END_SECTION;
+					return 0;
 				}else{
 					state=ArPlanSequencer.APS_MOVE;
 				}
@@ -135,7 +135,7 @@ public class ArPlanSequencer {
 			}
 			break;
 		}
-		return ArSpatialReasoner.ASR_IN_PROGRESS;
+		return 0;
 	}
 
 	private double calculateSpeed() {
@@ -160,9 +160,9 @@ public class ArPlanSequencer {
 		start = finish;
 		finish = nextTarget;
 		if (start == null)
-			return ArSpatialReasoner.ASR_END_SECTION;
+			return 0;
 		state = ArPlanSequencer.APS_LOOK;
-		return ArSpatialReasoner.ASR_IN_PROGRESS;
+		return 0;
 	}
 
 	private double calculateDesiredAngle() {

@@ -14,74 +14,85 @@
 package app.aria.architecture.aura;
 
 import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.TreeSet;
 
-import app.Log;
-import app.aria.robot.ArRobotMobile;
 import app.map.Map;
-import app.path.PathPlanner;
+import app.path.Dijkstra;
+import app.path.delaunay.Triangulation;
 import app.path.geometry.Point;
+import app.path.graphs.Graph;
+import app.path.graphs.components.Link;
+import app.path.voronoi.Diagram;
 
 public class ArSpatialReasoner {
-
-	public final static int ASR_NEW_SECTION = 0;
-	public final static int ASR_IN_PROGRESS = 1;
-	public final static int ASR_END_SECTION = 2;
-	public final static int ASR_RECALCULATE = 3;
-
-	private Point target;
-	private int state;
-
-	private Point lastTarget;
-	private Point nextTarget;
-
+	private Triangulation triangulation;
+	private Diagram diagram;
+	private Dijkstra dijkstra;
+	private Map map;
+	private Graph graph;
 	private ArrayList<Point> path;
-	private ArrayList<Point> pathTraveled;
 
-	private PathPlanner pathPlanner;
-	private ArPlanSequencer arPlanSequencer;
-
-	public ArSpatialReasoner(Map map, ArRobotMobile robot) {
-		this.pathPlanner = new PathPlanner(map);
-		this.arPlanSequencer = new ArPlanSequencer(map, robot);
-		this.state = ArSpatialReasoner.ASR_NEW_SECTION;
-		this.pathTraveled = new ArrayList<Point>();
+	public ArrayList<Point> getPath() {
+		return path;
 	}
 
-	public int calculatePath(Point start, Point target) {
-		if (start != null && target != null) {
-			this.target = target;
-			path = pathPlanner.searchOptimalRoute(start, target);
-			if (path == null)
-				return ArMisionPlanner.AMP_UNATTAINABLE_GOAL;
-			return ArMisionPlanner.AMP_SEARCH_IN_PROGRESS;
+	public ArSpatialReasoner(Map map) {
+		this.map = map;
+	}
+
+	public boolean calculatePath(Point start, Point target) {
+		if (start == null || target == null)
+			return false;
+
+		triangulation = new Triangulation(map);
+		diagram = new Diagram(triangulation.getTriangles(), map);
+		graph = diagram.getGraph();
+		addStartGoal(start, target, graph);
+
+		dijkstra = new Dijkstra(graph);
+		path = dijkstra.searchOptimalPath(start, target);
+		return path != null;
+	}
+
+	public void addPathToMap() {
+		map.setGraph(graph);
+		if (path != null) {
+			map.setPathPoints(new ArrayList<Point>(path));
 		}
-		return ArMisionPlanner.AMP_INIT;
 	}
 
-	public int continuePath() {
-		switch (state) {
-		case ArSpatialReasoner.ASR_NEW_SECTION:
-			Log.println("SPATIAL_REASONER: Definiendo nueva seccion");
-			nextTarget = path.remove(0);
-			state = arPlanSequencer.newSection(nextTarget);
-			break;
-		case ArSpatialReasoner.ASR_IN_PROGRESS:
-			state = arPlanSequencer.continuePath();
-			break;
-		case ArSpatialReasoner.ASR_END_SECTION:
-			Log.println("SPATIAL_REASONER: Finalizando seccion");
-			lastTarget = nextTarget;
-			if(lastTarget !=null)
-				pathTraveled.add(lastTarget);
-			if (path.isEmpty())
-				return ArMisionPlanner.AMP_TARGET_ACHIEVED;
-			state = ArSpatialReasoner.ASR_NEW_SECTION;
-			break;
-		case ArSpatialReasoner.ASR_RECALCULATE:
-			Log.println("SPATIAL_REASONER: Recalculando ruta");
-			state = ArSpatialReasoner.ASR_NEW_SECTION;
-			return calculatePath(lastTarget, target);
+	public void addStartGoal(Point start, Point goal, Graph graph) {
+		TreeSet<Link> orderedLinksHome = new TreeSet<Link>(new Comparator<Link>() {
+			@Override
+			public int compare(Link o1, Link o2) {
+				if (o1.getWeight() > o2.getWeight())
+					return 1;
+				if (o2.getWeight() > o1.getWeight())
+					return -1;
+				return 0;
+			}
+		});
+		TreeSet<Link> orderedLinksTarget = new TreeSet<Link>(new Comparator<Link>() {
+			@Override
+			public int compare(Link o1, Link o2) {
+				if (o1.getWeight() > o2.getWeight())
+					return 1;
+				if (o2.getWeight() > o1.getWeight())
+					return -1;
+				return 0;
+			}
+		});
+		for (Point point : graph.getPoints()) {
+			orderedLinksHome.add(new Link(point, start, "Start"));
+			orderedLinksTarget.add(new Link(point, goal, "Goal"));
 		}
-		return ArMisionPlanner.AMP_SEARCH_IN_PROGRESS;
+		for (int i = 0; i < 5; i++) {
+			Link homeLink = orderedLinksHome.pollFirst();
+			Link targetLink = orderedLinksTarget.pollFirst();
+			graph.getLinks().add(homeLink);
+			graph.getLinks().add(targetLink);
+		}
 	}
+
 }
