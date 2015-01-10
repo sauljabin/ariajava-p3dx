@@ -22,8 +22,6 @@ public class ArSchemaController {
 
 	private ArRobotMobile robot;
 
-	private final static long SLEEP_TIME = 200;
-
 	public ArSchemaController(ArRobotMobile robot) {
 		this.robot = robot;
 	}
@@ -68,11 +66,7 @@ public class ArSchemaController {
 		return angle;
 	}
 
-	public double getRobotMaxSpeed() {
-		return robot.getMaxSpeed();
-	}
-
-	public void sleep() {
-		ArUtil.sleep(SLEEP_TIME);
+	public void sleep(int sleepTime) {
+		ArUtil.sleep(sleepTime);
 	}
 }
