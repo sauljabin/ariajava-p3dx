@@ -29,6 +29,10 @@ public class ArArchitectureAuRA extends ArArchitecture {
 	private boolean pathExist;
 	private boolean avoid;
 	private double angleForAvoid;
+	private double scannerRangeStart;
+	private int scannerAngleStart;
+	private double scannerRangeEnd;
+	private int scannerAngleEnd;
 
 	public ArArchitectureAuRA(ArMisionPlanner arMisionPlanner, ArRobotMobile robot) {
 		super("AuRA", robot);
@@ -47,15 +51,17 @@ public class ArArchitectureAuRA extends ArArchitecture {
 		Point position = arSchemaController.getPosition();
 		double angle = arSchemaController.getAngle();
 
-		if (arSchemaController.detectObstacle(arMisionPlanner.getRobotStopDistance()) && !avoid) {
+		if (arSchemaController.detectObstacle(arMisionPlanner.getRobotStopDistance(), arMisionPlanner.getRobotSonarAngle()) && !avoid) {
 			arSchemaController.stop();
 			arSchemaController.sleep(400);
 
-			double point1X = position.getX() + arMisionPlanner.getRobotStopDistance() * Math.cos(Math.toRadians(angle + arSchemaController.getSonarRadius()));
-			double point1Y = position.getY() + arMisionPlanner.getRobotStopDistance() * Math.sin(Math.toRadians(angle + arSchemaController.getSonarRadius()));
+			obstacleScanner();
 
-			double point2X = position.getX() + arMisionPlanner.getRobotStopDistance() * Math.cos(Math.toRadians(angle - arSchemaController.getSonarRadius()));
-			double point2Y = position.getY() + arMisionPlanner.getRobotStopDistance() * Math.sin(Math.toRadians(angle - arSchemaController.getSonarRadius()));
+			double point1X = position.getX() + scannerRangeStart * Math.cos(Math.toRadians(angle + scannerAngleStart));
+			double point1Y = position.getY() + scannerRangeStart * Math.sin(Math.toRadians(angle + scannerAngleStart));
+
+			double point2X = position.getX() + scannerRangeEnd * Math.cos(Math.toRadians(angle + scannerAngleEnd));
+			double point2Y = position.getY() + scannerRangeEnd * Math.sin(Math.toRadians(angle + scannerAngleEnd));
 
 			arMisionPlanner.addLine((int) point1X, (int) point1Y, (int) point2X, (int) point2Y);
 			avoid = true;
@@ -81,6 +87,36 @@ public class ArArchitectureAuRA extends ArArchitecture {
 		} else {
 			arPlanSequencer.executePlan(arSchemaController);
 		}
+	}
+
+	private void obstacleScanner() {
+		int startAngle = (int) -arMisionPlanner.getRobotSonarAngle();
+		int endAngle = (int) arMisionPlanner.getRobotSonarAngle();
+
+		boolean startReady = false;
+
+		scannerRangeStart = 0.;
+		scannerAngleStart = startAngle;
+		scannerRangeEnd = 0.;
+		scannerAngleEnd = endAngle;
+
+		double maxDistance = arMisionPlanner.getRobotStopDistance() + arMisionPlanner.getRobotStopDistance() / 2;
+
+		for (int i = startAngle; i < endAngle; i += 2) {
+			double range = arSchemaController.rangeObstacle(i - 1, i + 1);
+			if (range < maxDistance && !startReady) {
+				startReady = true;
+				scannerRangeStart = range;
+				scannerAngleStart = i;
+			}
+			if (startReady) {
+				if (range < maxDistance) {
+					scannerRangeEnd = range;
+					scannerAngleEnd = i;
+				}
+			}
+		}
+
 	}
 
 	private void calculatePath() {
