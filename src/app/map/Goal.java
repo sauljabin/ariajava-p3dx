@@ -21,6 +21,7 @@ import java.awt.geom.Rectangle2D;
 import app.animation.Animated;
 import app.animation.AnimatedMouseListener;
 import app.aria.robot.ArRobotMobile;
+import app.path.geometry.Point;
 
 public class Goal implements Animated, AnimatedMouseListener {
 
@@ -72,10 +73,15 @@ public class Goal implements Animated, AnimatedMouseListener {
 	}
 
 	public Goal(int x, int y, double angle) {
+		this(null, x, y, angle);
+	}
+
+	public Goal(Map map, int x, int y, double angle) {
 		this.x = x;
 		this.y = y;
 		this.angle = angle;
 		visible = true;
+		this.map = map;
 	}
 
 	@Override
@@ -91,7 +97,7 @@ public class Goal implements Animated, AnimatedMouseListener {
 
 	@Override
 	public void paint(Graphics2D g) {
-		g.setColor(Color.RED);		
+		g.setColor(Color.RED);
 		goalX = map.canvasX(getX() - longRobot / 2);
 		goalY = map.canvasY(getY() + widthRobot / 2);
 		g.rotate(-Math.toRadians(getAngle()), map.canvasX(getX()), map.canvasY(getY()));
@@ -153,6 +159,10 @@ public class Goal implements Animated, AnimatedMouseListener {
 	public void setTranslate(double x, double y) {
 		this.x += x * map.getProportion();
 		this.y -= y * map.getProportion();
+	}
+
+	public Point toPoint() {
+		return new Point(x, y, "Goal");
 	}
 
 }

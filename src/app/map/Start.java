@@ -1,6 +1,6 @@
 /**
  * 
- * RobotHome.java
+ * Start.java
  * 
  * Copyright (c) 2014, Saul Piña <sauljp07@gmail.com>, Jorge Parra <thejorgemylio@gmail.com>.
  * 
@@ -21,8 +21,9 @@ import java.awt.geom.Rectangle2D;
 import app.animation.Animated;
 import app.animation.AnimatedMouseListener;
 import app.aria.robot.ArRobotMobile;
+import app.path.geometry.Point;
 
-public class RobotHome implements Animated, AnimatedMouseListener {
+public class Start implements Animated, AnimatedMouseListener {
 
 	private int x;
 	private int y;
@@ -31,8 +32,8 @@ public class RobotHome implements Animated, AnimatedMouseListener {
 	private Map map;
 	private int widthRobot;
 	private int longRobot;
-	private int robotHomeX;
-	private int robotHomeY;
+	private int startX;
+	private int startY;
 	private Color color;
 	private boolean mouseOver;
 
@@ -68,20 +69,25 @@ public class RobotHome implements Animated, AnimatedMouseListener {
 		this.angle = angle;
 	}
 
-	public RobotHome() {
+	public Start() {
 		this(0, 0, 0);
 	}
 
-	public RobotHome(int x, int y, double angle) {
+	public Start(int x, int y, double angle) {
+		this(null, x, y, angle);
+	}
+
+	public Start(Map map, int x, int y, double angle) {
 		this.x = x;
 		this.y = y;
 		this.angle = angle;
 		visible = true;
+		this.map = map;
 	}
 
 	@Override
 	public String toString() {
-		return String.format("RobotHome [x=%s, y=%s, angle=%s]", x, y, angle);
+		return String.format("Start [x=%s, y=%s, angle=%s]", x, y, angle);
 	}
 
 	@Override
@@ -93,13 +99,13 @@ public class RobotHome implements Animated, AnimatedMouseListener {
 
 	@Override
 	public void paint(Graphics2D g) {
-		robotHomeX = map.canvasX(getX() - longRobot / 2);
-		robotHomeY = map.canvasY(getY() + widthRobot / 2);
+		startX = map.canvasX(getX() - longRobot / 2);
+		startY = map.canvasY(getY() + widthRobot / 2);
 		g.setColor(color);
 		g.rotate(-Math.toRadians(getAngle()), map.canvasX(getX()), map.canvasY(getY()));
 		if (mouseOver)
-			g.fillRect(robotHomeX, robotHomeY, map.proportionalValue(longRobot), map.proportionalValue(widthRobot));
-		g.drawRect(robotHomeX, robotHomeY, map.proportionalValue(longRobot), map.proportionalValue(widthRobot));
+			g.fillRect(startX, startY, map.proportionalValue(longRobot), map.proportionalValue(widthRobot));
+		g.drawRect(startX, startY, map.proportionalValue(longRobot), map.proportionalValue(widthRobot));
 		g.rotate(Math.toRadians(getAngle()), map.canvasX(getX()), map.canvasY(getY()));
 	}
 
@@ -119,7 +125,7 @@ public class RobotHome implements Animated, AnimatedMouseListener {
 
 	@Override
 	public Shape getShape() {
-		return new Rectangle2D.Double(robotHomeX, robotHomeY, map.proportionalValue(longRobot), map.proportionalValue(widthRobot));
+		return new Rectangle2D.Double(startX, startY, map.proportionalValue(longRobot), map.proportionalValue(widthRobot));
 	}
 
 	@Override
@@ -157,4 +163,7 @@ public class RobotHome implements Animated, AnimatedMouseListener {
 		this.y -= y * map.getProportion();
 	}
 
+	public Point toPoint() {
+		return new Point(x, y, "Start");
+	}
 }

@@ -16,36 +16,21 @@ package app.aria.architecture;
 import app.aria.exception.ArException;
 import app.aria.exception.ArExceptionParseArgs;
 import app.aria.robot.ArRobotMobile;
-import app.map.Map;
 
 public abstract class ArArchitecture implements Runnable, Comparable<ArArchitecture> {
 
 	private String name;
 	private Thread thread;
 	private boolean run;
-	private Map map;
 	private ArRobotMobile robot;
 
 	public ArRobotMobile getRobot() {
 		return robot;
 	}
 
-	public void setRobot(ArRobotMobile robot) {
-		this.robot = robot;
-	}
-
-	public ArArchitecture(String name, ArRobotMobile robot, Map map) {
+	public ArArchitecture(String name, ArRobotMobile robot) {
 		this.name = name;
-		this.map = map;
 		this.robot = robot;
-	}
-
-	public Map getMap() {
-		return map;
-	}
-
-	public void setMap(Map map) {
-		this.map = map;
 	}
 
 	public String getName() {
@@ -54,7 +39,7 @@ public abstract class ArArchitecture implements Runnable, Comparable<ArArchitect
 
 	@Override
 	public String toString() {
-		return name;
+		return String.format("ArArchitecture [name=%s]", name);
 	}
 
 	@Override
@@ -90,11 +75,14 @@ public abstract class ArArchitecture implements Runnable, Comparable<ArArchitect
 
 	@Override
 	public void run() {
+		init();
 		while (run) {
 			behavior();
 		}
 	}
 
 	public abstract void behavior();
+
+	public abstract void init();
 
 }

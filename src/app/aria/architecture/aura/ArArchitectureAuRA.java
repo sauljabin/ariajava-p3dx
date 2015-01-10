@@ -16,37 +16,40 @@ package app.aria.architecture.aura;
 import com.mobilerobots.Aria.ArUtil;
 
 import app.Log;
+import app.Translate;
 import app.aria.architecture.ArArchitecture;
 import app.aria.robot.ArRobotMobile;
-import app.map.Map;
-import app.path.geometry.Point;
 
 public class ArArchitectureAuRA extends ArArchitecture {
 
 	private ArMisionPlanner arMisionPlanner;
-	private boolean ready;
+	//private ArPlanSequencer arPlanSequencer;
+	private ArSpatialReasoner arSpatialReasoner;
+	//private ArSchemaController arSchemaController;
 
 	private final static long SLEEP = 100;
 
-	public ArArchitectureAuRA(ArRobotMobile robot, Map map) {
-		super("AuRA", robot, map);
-		arMisionPlanner = new ArMisionPlanner(map, robot);
-		ready = false;
+	public ArArchitectureAuRA(ArMisionPlanner arMisionPlanner, ArRobotMobile robot) {
+		super("AuRA", robot);
+		this.arMisionPlanner = arMisionPlanner;
 	}
 
 	@Override
 	public void behavior() {
-		if (!ready) {
 
-			Point start = new Point(getMap().getRobotHome().getX(), getMap().getRobotHome().getY(), "INICIO");
-			Point finish = new Point(getMap().getGoal().getX(), getMap().getGoal().getY(), "FIN");
-
-			Log.info(getClass(), String.format("Inicio: %s, Fin: %s", start, finish));
-			arMisionPlanner.setStart(start);
-			arMisionPlanner.setTarget(finish);
-			ready = true;
-		}
-		arMisionPlanner.execute();
 		ArUtil.sleep(ArArchitectureAuRA.SLEEP);
+	}
+
+	@Override
+	public void init() {
+		Log.info(getClass(), String.format("%s, %s", arMisionPlanner.getStart(), arMisionPlanner.getGoal()));
+
+		arSpatialReasoner = new ArSpatialReasoner(arMisionPlanner.getMap());
+		if (arSpatialReasoner.calculatePath(arMisionPlanner.getStart().toPoint(), arMisionPlanner.getGoal().toPoint())) {
+			arSpatialReasoner.addPathToMap();
+		} else {
+			Log.warning(getClass(), Translate.get("ERROR_NOPATHTOGOAL"));
+		}
+
 	}
 }

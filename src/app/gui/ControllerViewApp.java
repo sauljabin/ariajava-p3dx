@@ -43,6 +43,7 @@ import app.animation.RobotInfoPanel;
 import app.aria.architecture.ArArchitecture;
 import app.aria.architecture.ArUpdaterPositionAnimation;
 import app.aria.architecture.aura.ArArchitectureAuRA;
+import app.aria.architecture.aura.ArMisionPlanner;
 import app.aria.architecture.reactive.ArArchitectureReactive;
 import app.aria.connection.ArConnector;
 import app.aria.exception.ArException;
@@ -50,7 +51,7 @@ import app.aria.robot.ArRobotMobile;
 import app.map.Goal;
 import app.map.Robot;
 import app.map.Map;
-import app.map.RobotHome;
+import app.map.Start;
 import app.util.ClassW;
 import app.util.UtilFile;
 import app.util.UtilImage;
@@ -70,6 +71,7 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 	public ArUpdaterPositionAnimation updaterPosition;
 	private boolean showPath;
 	private RobotInfoPanel robotInfoPanel;
+	private ArMisionPlanner arMisionPlanner;
 
 	public ControllerViewApp() {
 		init();
@@ -115,10 +117,13 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		viewApp.getSpnStrokeSize().setModel(new SpinnerNumberModel(Integer.parseInt(Config.get("ANIMATION_STROKESIZE")), 1, 100, 1));
 
 		int initMapSize = 6000;
-
-		map = new Map(new RobotHome(0, 0, 0), new Goal(ArRobotMobile.LONG * 2, 0, 0), -initMapSize, initMapSize, -initMapSize, initMapSize);
+		map = new Map(-initMapSize, initMapSize, -initMapSize, initMapSize);		
+		arMisionPlanner = new ArMisionPlanner();
+		arMisionPlanner.setStart(new Start(map, 0, 0, 0));
+		arMisionPlanner.setGoal(new Goal(map, ArRobotMobile.LONG * 2, 0, 0));		
+		arMisionPlanner.setMap(map);
 		setShowPath(Boolean.parseBoolean(Config.get("ANIMATION_SHOWPATH")));
-		animator.showMap(map);
+		animator.showMap(arMisionPlanner);
 		updateStartEndPoint();
 		viewApp.getSpnMaxSpeed().setModel(new SpinnerNumberModel(Integer.parseInt(Config.get("ROBOT_MAXSPEED")), 1, 500, 1));
 
@@ -134,12 +139,12 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 	}
 
 	public void updateStartEndPoint() {
-		viewApp.getSpnEndX().setValue(map.getGoal().getX());
-		viewApp.getSpnEndY().setValue(map.getGoal().getY());
-		viewApp.getSpnEndAngle().setValue(map.getGoal().getAngle());
-		viewApp.getSpnInitX().setValue(map.getRobotHome().getX());
-		viewApp.getSpnInitY().setValue(map.getRobotHome().getY());
-		viewApp.getSpnInitAngle().setValue(map.getRobotHome().getAngle());
+		viewApp.getSpnEndX().setValue(arMisionPlanner.getGoal().getX());
+		viewApp.getSpnEndY().setValue(arMisionPlanner.getGoal().getY());
+		viewApp.getSpnEndAngle().setValue(arMisionPlanner.getGoal().getAngle());
+		viewApp.getSpnInitX().setValue(arMisionPlanner.getStart().getX());
+		viewApp.getSpnInitY().setValue(arMisionPlanner.getStart().getY());
+		viewApp.getSpnInitAngle().setValue(arMisionPlanner.getStart().getAngle());
 	}
 
 	@Override
@@ -293,12 +298,14 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 
 		String fileName = path.getAbsolutePath();
 
-		map = new Map();
-		map.setShowPath(showPath);
+		arMisionPlanner = new ArMisionPlanner();
+
 		try {
-			map.load(path.getAbsolutePath());
+			arMisionPlanner.load(path.getAbsolutePath());
+			map = arMisionPlanner.getMap();
+			map.setShowPath(showPath);
 			map.setProportion((int) viewApp.getSpnProportion().getValue());
-			animator.showMap(map);
+			animator.showMap(arMisionPlanner);
 		} catch (Exception e) {
 			Log.error(getClass(), Translate.get("ERROR_MAPLOADED"), e);
 			e.printStackTrace();
@@ -359,7 +366,7 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 			return;
 		}
 
-		robot = new ArRobotMobile(map.getRobotHome().getX(), map.getRobotHome().getY(), map.getRobotHome().getAngle());
+		robot = new ArRobotMobile(arMisionPlanner.getStart().getX(), arMisionPlanner.getStart().getY(), arMisionPlanner.getStart().getAngle());
 
 		updaterPosition = new ArUpdaterPositionAnimation(robot, Integer.parseInt(Config.get("ANIMATION_POSITIONUPDATERATE")));
 
@@ -367,7 +374,7 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 			animator.removeAnimated(anRobot);
 		}
 		anRobot = new Robot(map);
-		anRobot.updateAnimatedPosition(map.getRobotHome().getX(), map.getRobotHome().getY(), map.getRobotHome().getAngle());
+		anRobot.updateAnimatedPosition(arMisionPlanner.getStart().getX(), arMisionPlanner.getStart().getY(), arMisionPlanner.getStart().getAngle());
 		animator.addAnimated(anRobot);
 
 		robotInfoPanel = new RobotInfoPanel(robot);
@@ -386,9 +393,9 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		}
 
 		if (classArch.getValue().equals(ArArchitectureAuRA.class)) {
-			arch = new ArArchitectureAuRA(robot, map);
+			arch = new ArArchitectureAuRA(arMisionPlanner, robot);
 		} else if (classArch.getValue().equals(ArArchitectureReactive.class)) {
-			arch = new ArArchitectureReactive(robot, map);
+			arch = new ArArchitectureReactive(robot);
 		} else {
 			Log.error(getClass(), Translate.get("ERROR_NOARCHINSTANCE"));
 			return;
@@ -479,27 +486,27 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 	}
 
 	public void setEndY() {
-		map.getGoal().setY((int) viewApp.getSpnEndY().getValue());
+		arMisionPlanner.getGoal().setY((int) viewApp.getSpnEndY().getValue());
 	}
 
 	public void setEndX() {
-		map.getGoal().setX((int) viewApp.getSpnEndX().getValue());
+		arMisionPlanner.getGoal().setX((int) viewApp.getSpnEndX().getValue());
 	}
 
 	public void setEndAngle() {
-		map.getGoal().setAngle(Double.valueOf(viewApp.getSpnEndAngle().getValue().toString()));
+		arMisionPlanner.getGoal().setAngle(Double.valueOf(viewApp.getSpnEndAngle().getValue().toString()));
 	}
 
 	public void setStartY() {
-		map.getRobotHome().setY((int) viewApp.getSpnInitY().getValue());
+		arMisionPlanner.getStart().setY((int) viewApp.getSpnInitY().getValue());
 	}
 
 	public void setStartX() {
-		map.getRobotHome().setX((int) viewApp.getSpnInitX().getValue());
+		arMisionPlanner.getStart().setX((int) viewApp.getSpnInitX().getValue());
 	}
 
 	public void setStartAngle() {
-		map.getRobotHome().setAngle(Double.valueOf(viewApp.getSpnInitAngle().getValue().toString()));
+		arMisionPlanner.getStart().setAngle(Double.valueOf(viewApp.getSpnInitAngle().getValue().toString()));
 	}
 
 	public void setRobotMaxSpeed() {
