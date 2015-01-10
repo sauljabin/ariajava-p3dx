@@ -33,6 +33,10 @@ public class ArMisionPlanner {
 	private Goal goal;
 	private Start start;
 	private Map map;
+	private double robotMaxSpeed;
+	private int robotSleepTime;
+	private double robotErrorDistance;
+	private double robotErrorAngle;
 
 	public String getPath() {
 		return path;
@@ -111,6 +115,38 @@ public class ArMisionPlanner {
 
 	public void setMap(Map map) {
 		this.map = map;
+	}
+
+	public void setRobotMaxSpeed(double robotMaxSpeed) {
+		this.robotMaxSpeed = robotMaxSpeed;
+	}
+
+	public double getRobotMaxSpeed() {
+		return robotMaxSpeed;
+	}
+
+	public int getRobotSleepTime() {
+		return robotSleepTime;
+	}
+
+	public void setRobotSleepTime(int robotSleepTime) {
+		this.robotSleepTime = robotSleepTime;
+	}
+
+	public double getRobotErrorDistance() {
+		return robotErrorDistance;
+	}
+
+	public void setRobotErrorDistance(double robotErrorDistance) {
+		this.robotErrorDistance = robotErrorDistance;
+	}
+
+	public double getRobotErrorAngle() {
+		return robotErrorAngle;
+	}
+
+	public void setRobotErrorAngle(double robotErrorAngle) {
+		this.robotErrorAngle = robotErrorAngle;
 	}
 
 }

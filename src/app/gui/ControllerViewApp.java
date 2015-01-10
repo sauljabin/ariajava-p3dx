@@ -91,8 +91,8 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		viewApp.getCanvasAnimation().setBackground(Color.GRAY);
 
 		Vector<ClassW> archs = new Vector<ClassW>();
-		archs.add(new ClassW(ArArchitectureReactive.class, "Reactive"));
 		archs.add(new ClassW(ArArchitectureAuRA.class, "AuRA"));
+		archs.add(new ClassW(ArArchitectureReactive.class, "Reactive"));
 
 		modelCmbArch = new DefaultComboBoxModel<ClassW>(archs);
 		viewApp.getCmbArch().setModel(modelCmbArch);
@@ -135,7 +135,9 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		});
 
 		viewApp.getSpnPositionUpdate().setModel(new SpinnerNumberModel(Integer.parseInt(Config.get("ANIMATION_POSITIONUPDATERATE")), 1, 100, 1));
-
+		viewApp.getSpnSleepTime().setModel(new SpinnerNumberModel(Integer.parseInt(Config.get("ROBOT_SLEEPTIME")), 1, 500, 1));
+		viewApp.getSpnErrorDistance().setModel(new SpinnerNumberModel(Double.parseDouble(Config.get("ROBOT_ERRORDISTANCE")), 0., 100., .1));
+		viewApp.getSpnErrorAngle().setModel(new SpinnerNumberModel(Double.parseDouble(Config.get("ROBOT_ERRORANGLE")), 0., 10., .1));
 	}
 
 	public void updateStartEndPoint() {
@@ -368,6 +370,9 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 
 		robot = new ArRobotMobile(arMisionPlanner.getStart().getX(), arMisionPlanner.getStart().getY(), arMisionPlanner.getStart().getAngle());
 		setRobotMaxSpeed();
+		setRobotSleepTime();
+		setRobotErrorAngle();
+		setRobotErrorDistance();
 		updaterPosition = new ArUpdaterPositionAnimation(robot, Integer.parseInt(Config.get("ANIMATION_POSITIONUPDATERATE")));
 
 		if (anRobot != null) {
@@ -376,12 +381,11 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		anRobot = new Robot(map);
 		anRobot.updateAnimatedPosition(arMisionPlanner.getStart().getX(), arMisionPlanner.getStart().getY(), arMisionPlanner.getStart().getAngle());
 		animator.addAnimated(anRobot);
+		robot.setAnimatedRobot(anRobot);
 
 		robotInfoPanel = new RobotInfoPanel(robot);
 
 		animator.setInfoPanel(robotInfoPanel);
-
-		robot.setAnimatedRobot(anRobot);
 
 		connector = new ArConnector(host, port, robot);
 
@@ -454,6 +458,12 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 			setAnimationStrokeSize();
 		else if (e.getSource().equals(viewApp.getSpnMaxSpeed()))
 			setRobotMaxSpeed();
+		else if (e.getSource().equals(viewApp.getSpnSleepTime()))
+			setRobotSleepTime();
+		else if (e.getSource().equals(viewApp.getSpnErrorAngle()))
+			setRobotErrorAngle();
+		else if (e.getSource().equals(viewApp.getSpnErrorDistance()))
+			setRobotErrorDistance();
 		else if (e.getSource().equals(viewApp.getSpnInitAngle()))
 			setStartAngle();
 		else if (e.getSource().equals(viewApp.getSpnInitX()))
@@ -510,9 +520,48 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 	}
 
 	public void setRobotMaxSpeed() {
-		if (robot != null) {
-			robot.setMaxSpeed((int) viewApp.getSpnMaxSpeed().getValue());
+		if (arMisionPlanner != null) {
+			arMisionPlanner.setRobotMaxSpeed((int) viewApp.getSpnMaxSpeed().getValue());
 			Config.set("ROBOT_MAXSPEED", viewApp.getSpnMaxSpeed().getValue().toString());
+			try {
+				Config.save();
+			} catch (Exception e) {
+				Log.warning(ControllerViewApp.class, Translate.get("ERROR_NOSAVECONFIG"), e);
+			}
+
+		}
+	}
+
+	public void setRobotSleepTime() {
+		if (arMisionPlanner != null) {
+			arMisionPlanner.setRobotSleepTime((int) viewApp.getSpnSleepTime().getValue());
+			Config.set("ROBOT_SLEEPTIME", viewApp.getSpnSleepTime().getValue().toString());
+			try {
+				Config.save();
+			} catch (Exception e) {
+				Log.warning(ControllerViewApp.class, Translate.get("ERROR_NOSAVECONFIG"), e);
+			}
+
+		}
+	}
+	
+	public void setRobotErrorDistance() {
+		if (arMisionPlanner != null) {
+			arMisionPlanner.setRobotErrorDistance((double) viewApp.getSpnErrorDistance().getValue());
+			Config.set("ROBOT_ERRORDISTANCE", viewApp.getSpnErrorDistance().getValue().toString());
+			try {
+				Config.save();
+			} catch (Exception e) {
+				Log.warning(ControllerViewApp.class, Translate.get("ERROR_NOSAVECONFIG"), e);
+			}
+
+		}
+	}
+	
+	public void setRobotErrorAngle() {
+		if (arMisionPlanner != null) {
+			arMisionPlanner.setRobotErrorAngle((double) viewApp.getSpnErrorAngle().getValue());
+			Config.set("ROBOT_ERRORANGLE", viewApp.getSpnErrorAngle().getValue().toString());
 			try {
 				Config.save();
 			} catch (Exception e) {

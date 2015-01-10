@@ -23,9 +23,6 @@ import app.path.geometry.Point;
 
 public class ArPlanSequencer {
 
-	private final static double ERROR_DISTANCE_TARGET = 30.;
-	private final static double ERROR_ANGLE = 1.;
-
 	private ArrayList<Point> path;
 	private Queue<Point> goalControl;
 
@@ -63,7 +60,7 @@ public class ArPlanSequencer {
 
 		if (nextGoal == null) {
 			double lastAngleTurn = arSpatialReasoner.getArMisionPlanner().getGoal().getAngle() - angle;
-			if (Math.abs(lastAngleTurn) > ERROR_ANGLE) {
+			if (Math.abs(lastAngleTurn) > arSpatialReasoner.getArMisionPlanner().getRobotErrorAngle()) {
 				schema.turn(lastAngleTurn);
 			} else {
 				Log.info(getClass(), Translate.get("INFO_GOALFOUND"));
@@ -77,15 +74,15 @@ public class ArPlanSequencer {
 		double desiredAngle = calculateDesiredAngle(position, nextGoal);
 		double angleTurn = desiredAngle - angle;
 
-		if (distance < ERROR_DISTANCE_TARGET) {
+		if (distance < arSpatialReasoner.getArMisionPlanner().getRobotErrorDistance()) {
 			schema.stop();
-			schema.sleep();
+			schema.sleep(arSpatialReasoner.getArMisionPlanner().getRobotSleepTime());
 			newSection();
-		} else if (Math.abs(angleTurn) > ERROR_ANGLE) {
+		} else if (Math.abs(angleTurn) > arSpatialReasoner.getArMisionPlanner().getRobotErrorAngle()) {
 			schema.turn(angleTurn);
 		} else {
-			if (distance > schema.getRobotMaxSpeed())
-				distance = schema.getRobotMaxSpeed();
+			if (distance > arSpatialReasoner.getArMisionPlanner().getRobotMaxSpeed())
+				distance = arSpatialReasoner.getArMisionPlanner().getRobotMaxSpeed();
 			schema.move(distance);
 		}
 
