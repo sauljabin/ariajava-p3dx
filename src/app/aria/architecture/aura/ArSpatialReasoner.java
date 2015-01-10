@@ -34,13 +34,23 @@ public class ArSpatialReasoner {
 	private Map map;
 	private Graph graph;
 	private ArrayList<Point> path;
+	private ArMisionPlanner arMisionPlanner;
 
 	public ArrayList<Point> getPath() {
 		return path;
 	}
 
 	public ArSpatialReasoner(Map map) {
-		this.map = map;
+
+	}
+
+	public ArSpatialReasoner(ArMisionPlanner arMisionPlanner) {
+		this.map = arMisionPlanner.getMap();
+		this.arMisionPlanner = arMisionPlanner;
+	}
+
+	public ArMisionPlanner getArMisionPlanner() {
+		return arMisionPlanner;
 	}
 
 	public boolean calculatePath(Point start, Point target) {

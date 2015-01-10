@@ -47,19 +47,18 @@ public class Point {
 	}
 
 	public Point(double x, double y, String name) {
-		super();
 		this.x = x;
 		this.y = y;
 		this.name = name;
 	}
 
-	public Point midpoint(Point otro) {
-		return new Point((otro.getX() + getX()) / 2.0, (otro.getY() + getY()) / 2.0, "");
+	public Point midPoint(Point point) {
+		return new Point((point.getX() + getX()) / 2.0, (point.getY() + getY()) / 2.0, "");
 	}
 
-	public double distance(Point otro) {
-		double difX = otro.getX() - getX();
-		double difY = otro.getY() - getY();
+	public double distance(Point point) {
+		double difX = point.getX() - getX();
+		double difY = point.getY() - getY();
 		double sum = Math.pow(difX, 2) + Math.pow(difY, 2);
 		return Math.sqrt(sum);
 	}

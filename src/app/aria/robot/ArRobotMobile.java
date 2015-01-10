@@ -35,7 +35,7 @@ public class ArRobotMobile extends ArRobot {
 	private ArSonarDevice sonar;
 	private Robot animatedRobot;
 	protected ArRangeDevice rangeSonar;
-	private int maxSpeed;
+	private double maxSpeed;
 
 	public ArRobotMobile(double initX, double initY, double initAngle) {
 		this.initX = initX;
@@ -119,11 +119,11 @@ public class ArRobotMobile extends ArRobot {
 		this.rangeSonar = rangeSonar;
 	}
 
-	public void setMaxSpeed(int maxSpeed) {
+	public void setMaxSpeed(double maxSpeed) {
 		this.maxSpeed = maxSpeed;
 	}
 
-	public int getMaxSpeed() {
+	public double getMaxSpeed() {
 		return maxSpeed;
 	}
 

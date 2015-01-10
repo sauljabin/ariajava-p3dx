@@ -76,3 +76,5 @@ INFO_MAPLOADED=Mapa cargado
 INFO_SAVEIMAGE=Imagen guardada exitosamente
 INFO_NOMAPLOADED=No se ha cargado un mapa
 INFO_INITSEARCHPATH=Iniciando búsqueda de camino óptimo
+INFO_GOALFOUND=Objetivo alcanzado
+INFO_NEWSECTION=Iniciando nueva sección
