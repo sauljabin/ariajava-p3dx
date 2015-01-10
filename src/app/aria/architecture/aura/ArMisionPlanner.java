@@ -38,6 +38,7 @@ public class ArMisionPlanner {
 	private double robotErrorDistance;
 	private double robotErrorAngle;
 	private int robotStopDistance;
+	private int robotSonarAngle;
 
 	public String getPath() {
 		return path;
@@ -160,6 +161,14 @@ public class ArMisionPlanner {
 
 	public void setRobotStopDistance(int robotStopDistance) {
 		this.robotStopDistance = robotStopDistance;
+	}
+
+	public int getRobotSonarAngle() {
+		return robotSonarAngle;
+	}
+
+	public void setRobotSonarAngle(int robotSonarAngle) {
+		this.robotSonarAngle = robotSonarAngle;
 	}
 
 }

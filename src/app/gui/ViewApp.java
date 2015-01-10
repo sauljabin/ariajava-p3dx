@@ -65,7 +65,7 @@ public class ViewApp extends JFrame {
 	private JLabel lblPort;
 	private JTextField txtHost;
 	private JIntegerField txtPort;
-	private JPanel pnlTabConnection;
+	private JPanel pnlTab2;
 	private JPanel pnlSouth;
 	private JTextArea tarConsole;
 	private JPanel pnlCenter;
@@ -96,7 +96,7 @@ public class ViewApp extends JFrame {
 	private JSpinner spnStrokeSize;
 	private JTabbedPane pnlTabWest;
 	private JPanel pnlWest;
-	private JPanel pnlTabCalibration;
+	private JPanel pnlTab1;
 	private JPanel pnlInitPoint;
 	private JLabel lblInitX;
 	private JSpinner spnInitX;
@@ -126,6 +126,8 @@ public class ViewApp extends JFrame {
 	private JSpinner spnErrorAngle;
 	private JLabel lblStopDistance;
 	private JSpinner spnStopDistance;
+	private JLabel lblSonarAngle;
+	private JSpinner spnSonarAngle;
 
 	public ViewApp() {
 		menuItems = new Vector<JMenuItem>();
@@ -313,6 +315,9 @@ public class ViewApp extends JFrame {
 		lblStopDistance = new JLabel(Translate.get("GUI_STOPDISTANCE"));
 		spnStopDistance = new JSpinner();
 
+		lblSonarAngle = new JLabel(Translate.get("GUI_SONARANGLE"));
+		spnSonarAngle = new JSpinner();
+
 		pnlRobot.add(lblMaxSpeed, "width 100, height 20");
 		pnlRobot.add(spnMaxSpeed, "width 100, height 20, wrap");
 		pnlRobot.add(lblSleepTime, "grow, height 20");
@@ -323,24 +328,26 @@ public class ViewApp extends JFrame {
 		pnlRobot.add(spnErrorAngle, "grow, height 20, wrap");
 		pnlRobot.add(lblStopDistance, "grow, height 20");
 		pnlRobot.add(spnStopDistance, "grow, height 20, wrap");
+		pnlRobot.add(lblSonarAngle, "grow, height 20");
+		pnlRobot.add(spnSonarAngle, "grow, height 20, wrap");
 
-		pnlTabConnection = new JPanel();
-		pnlTabConnection.setLayout(new MigLayout("insets 3"));
-		pnlTabCalibration = new JPanel();
-		pnlTabCalibration.setLayout(new MigLayout("insets 3"));
+		pnlTab2 = new JPanel();
+		pnlTab2.setLayout(new MigLayout("insets 3"));
+		pnlTab1 = new JPanel();
+		pnlTab1.setLayout(new MigLayout("insets 3"));
 		pnlWest = new JPanel();
 		pnlWest.setLayout(new MigLayout());
 		pnlTabWest = new JTabbedPane();
 
-		pnlTabCalibration.add(pnlAnimation, "wrap");
-		pnlTabCalibration.add(pnlRobot, "wrap");
-		pnlTabCalibration.add(pnlInitPoint, "wrap");
-		pnlTabCalibration.add(pnlEndPoint, "wrap");
-		pnlTabConnection.add(pnlRobotControl, "wrap");
-		pnlTabConnection.add(pnlConnection, "wrap");
+		pnlTab1.add(pnlAnimation, "wrap");
+		pnlTab1.add(pnlConnection, "wrap");
+		pnlTab2.add(pnlRobotControl, "wrap");
+		pnlTab2.add(pnlRobot, "wrap");
+		pnlTab2.add(pnlInitPoint, "wrap");
+		pnlTab2.add(pnlEndPoint, "wrap");
 
-		pnlTabWest.addTab(Translate.get("GUI_CALIBRATION"), pnlTabCalibration);
-		pnlTabWest.addTab(Translate.get("GUI_CONNECTION"), pnlTabConnection);
+		pnlTabWest.addTab(Translate.get("GUI_APPLICATION"), pnlTab1);
+		pnlTabWest.addTab(Translate.get("GUI_ROBOT"), pnlTab2);
 
 		pnlWest.add(pnlTabWest);
 
@@ -428,6 +435,7 @@ public class ViewApp extends JFrame {
 		spinners.add(spnErrorAngle);
 		spinners.add(spnErrorDistance);
 		spinners.add(spnStopDistance);
+		spinners.add(spnSonarAngle);
 
 		buttons.add(btnConnect);
 		buttons.add(btnDisconnect);
@@ -589,6 +597,14 @@ public class ViewApp extends JFrame {
 
 	public JSpinner getSpnStopDistance() {
 		return spnStopDistance;
+	}
+
+	public JSpinner getSpnSonarAngle() {
+		return spnSonarAngle;
+	}
+
+	public void setSpnSonarAngle(JSpinner spnSonarAngle) {
+		this.spnSonarAngle = spnSonarAngle;
 	}
 
 }

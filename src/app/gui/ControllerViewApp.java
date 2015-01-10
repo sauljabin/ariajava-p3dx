@@ -139,6 +139,7 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		viewApp.getSpnErrorDistance().setModel(new SpinnerNumberModel(Double.parseDouble(Config.get("ROBOT_ERRORDISTANCE")), 0., 100., .1));
 		viewApp.getSpnErrorAngle().setModel(new SpinnerNumberModel(Double.parseDouble(Config.get("ROBOT_ERRORANGLE")), 0., 10., .1));
 		viewApp.getSpnStopDistance().setModel(new SpinnerNumberModel(Integer.parseInt(Config.get("ROBOT_STOPDISTANCE")), 1, 1000, 1));
+		viewApp.getSpnSonarAngle().setModel(new SpinnerNumberModel(Integer.parseInt(Config.get("ROBOT_SONARANGLE")), 1, 180, 1));
 	}
 
 	public void updateStartEndPoint() {
@@ -375,6 +376,7 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		setRobotErrorAngle();
 		setRobotErrorDistance();
 		setRobotStopDistance();
+		setRobotSonarAngle();
 		updaterPosition = new ArUpdaterPositionAnimation(robot, Integer.parseInt(Config.get("ANIMATION_POSITIONUPDATERATE")));
 
 		if (anRobot != null) {
@@ -468,6 +470,8 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 			setRobotErrorAngle();
 		else if (e.getSource().equals(viewApp.getSpnErrorDistance()))
 			setRobotErrorDistance();
+		else if (e.getSource().equals(viewApp.getSpnSonarAngle()))
+			setRobotSonarAngle();
 		else if (e.getSource().equals(viewApp.getSpnInitAngle()))
 			setStartAngle();
 		else if (e.getSource().equals(viewApp.getSpnInitX()))
@@ -536,6 +540,19 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		}
 	}
 
+	public void setRobotSonarAngle() {
+		if (arMisionPlanner != null) {
+			arMisionPlanner.setRobotSonarAngle((int) viewApp.getSpnSonarAngle().getValue());
+			Config.set("ROBOT_SONARANGLE", viewApp.getSpnSonarAngle().getValue().toString());
+			try {
+				Config.save();
+			} catch (Exception e) {
+				Log.warning(ControllerViewApp.class, Translate.get("ERROR_NOSAVECONFIG"), e);
+			}
+
+		}
+	}
+
 	public void setRobotSleepTime() {
 		if (arMisionPlanner != null) {
 			arMisionPlanner.setRobotSleepTime((int) viewApp.getSpnSleepTime().getValue());
@@ -548,7 +565,7 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 
 		}
 	}
-	
+
 	public void setRobotStopDistance() {
 		if (arMisionPlanner != null) {
 			arMisionPlanner.setRobotStopDistance((int) viewApp.getSpnStopDistance().getValue());
@@ -561,7 +578,7 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 
 		}
 	}
-	
+
 	public void setRobotErrorDistance() {
 		if (arMisionPlanner != null) {
 			arMisionPlanner.setRobotErrorDistance((double) viewApp.getSpnErrorDistance().getValue());
@@ -574,7 +591,7 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 
 		}
 	}
-	
+
 	public void setRobotErrorAngle() {
 		if (arMisionPlanner != null) {
 			arMisionPlanner.setRobotErrorAngle((double) viewApp.getSpnErrorAngle().getValue());

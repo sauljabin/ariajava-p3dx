@@ -70,12 +70,18 @@ public class ArSchemaController {
 		ArUtil.sleep(sleepTime);
 	}
 
-	public double getSonarRadius() {
-		return 45;
+	public double rangeObstacle(double startAngle, double endAngle) {
+		lock();
+		double range = robot.getRangeSonar().currentReadingPolar(startAngle, endAngle);
+		unlock();
+		return range;
 	}
 
-	public boolean detectObstacle(int distance) {
-		double angle = getSonarRadius();
+	public int getMaxRangeSonar() {
+		return (int) robot.getSonar().getMaxRange();
+	}
+
+	public boolean detectObstacle(int distance, double angle) {
 		lock();
 		double range = robot.getRangeSonar().currentReadingPolar(-angle, angle);
 		unlock();
