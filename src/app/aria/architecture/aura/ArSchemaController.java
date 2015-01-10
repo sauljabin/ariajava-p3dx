@@ -52,30 +52,30 @@ public class ArSchemaController {
 
 	}
 
-	private void bloqueo() {
+	private void lock() {
 		robot.lock();
 	}
 
-	private void desbloqueo() {
+	private void unlock() {
 		robot.unlock();
 	}
 
 	public void look(double angle) {
-		bloqueo();
+		lock();
 		robot.setDeltaHeading(angle);
-		desbloqueo();
+		unlock();
 	}
 	
 	public void move(double speed) {
-		bloqueo();
+		lock();
 		robot.setVel(speed);
-		desbloqueo();
+		unlock();
 	}
 	
 	public void stop() {
-		bloqueo();
+		lock();
 		robot.setVel(0);
-		desbloqueo();
+		unlock();
 	}
 
 	public Point getPosition() {

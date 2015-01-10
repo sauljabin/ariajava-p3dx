@@ -13,10 +13,12 @@
 
 package app.aria.architecture.aura;
 
+import java.awt.geom.Line2D;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.TreeSet;
 
+import app.map.Line;
 import app.map.Map;
 import app.path.Dijkstra;
 import app.path.delaunay.Triangulation;
@@ -52,18 +54,18 @@ public class ArSpatialReasoner {
 
 		dijkstra = new Dijkstra(graph);
 		path = dijkstra.searchOptimalPath(start, target);
-		return path != null;
-	}
 
-	public void addPathToMap() {
 		map.setGraph(graph);
-		if (path != null) {
+		boolean pathFound;
+		if (pathFound = (path != null)) {
 			map.setPathPoints(new ArrayList<Point>(path));
 		}
+
+		return pathFound;
 	}
 
 	public void addStartGoal(Point start, Point goal, Graph graph) {
-		TreeSet<Link> orderedLinksHome = new TreeSet<Link>(new Comparator<Link>() {
+		TreeSet<Link> orderedLinksStart = new TreeSet<Link>(new Comparator<Link>() {
 			@Override
 			public int compare(Link o1, Link o2) {
 				if (o1.getWeight() > o2.getWeight())
@@ -73,7 +75,7 @@ public class ArSpatialReasoner {
 				return 0;
 			}
 		});
-		TreeSet<Link> orderedLinksTarget = new TreeSet<Link>(new Comparator<Link>() {
+		TreeSet<Link> orderedLinksGoal = new TreeSet<Link>(new Comparator<Link>() {
 			@Override
 			public int compare(Link o1, Link o2) {
 				if (o1.getWeight() > o2.getWeight())
@@ -84,14 +86,30 @@ public class ArSpatialReasoner {
 			}
 		});
 		for (Point point : graph.getPoints()) {
-			orderedLinksHome.add(new Link(point, start, "Start"));
-			orderedLinksTarget.add(new Link(point, goal, "Goal"));
+			orderedLinksStart.add(new Link(point, start, "Start"));
+			orderedLinksGoal.add(new Link(point, goal, "Goal"));
 		}
 		for (int i = 0; i < 5; i++) {
-			Link homeLink = orderedLinksHome.pollFirst();
-			Link targetLink = orderedLinksTarget.pollFirst();
-			graph.getLinks().add(homeLink);
-			graph.getLinks().add(targetLink);
+			Link startLink = orderedLinksStart.pollFirst();
+			Link goalLink = orderedLinksGoal.pollFirst();
+
+			Line2D lineStart = new Line2D.Double(startLink.getPointA().getX(), startLink.getPointA().getY(), startLink.getPointB().getX(), startLink.getPointB().getY());
+			Line2D lineGoal = new Line2D.Double(goalLink.getPointA().getX(), goalLink.getPointA().getY(), goalLink.getPointB().getX(), goalLink.getPointB().getY());
+
+			boolean intersectStart = false;
+			boolean intersectGoal = false;
+			for (Line line : map.getLines()) {
+				Line2D line2 = new Line2D.Double(line.getX1(), line.getY1(), line.getX2(), line.getY2());
+				if (!intersectStart)
+					intersectStart = lineStart.intersectsLine(line2);
+				if (!intersectGoal)
+					intersectGoal = lineGoal.intersectsLine(line2);
+			}
+
+			if (!intersectStart)
+				graph.getLinks().add(startLink);
+			if (!intersectGoal)
+				graph.getLinks().add(goalLink);
 		}
 	}
 
