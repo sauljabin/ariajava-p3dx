@@ -15,7 +15,6 @@ package app.aria.architecture.reactive;
 
 import com.mobilerobots.Aria.ArUtil;
 
-import app.map.Map;
 import app.aria.architecture.ArArchitecture;
 import app.aria.robot.ArRobotMobile;
 
@@ -29,15 +28,15 @@ public class ArArchitectureReactive extends ArArchitecture {
 	private boolean turnRight;
 	private int sleep;
 
-	public ArArchitectureReactive(ArRobotMobile robot, Map map) {
-		super("Reactive", robot, map);
+	public ArArchitectureReactive(ArRobotMobile robot) {
+		super("Reactive", robot);
 		angle = 45;
 		stopDistance = 500;
 		turnAngle = 20;
 		speed = 200;
 		turnLeft = false;
 		turnRight = false;
-		sleep=200;
+		sleep = 200;
 	}
 
 	@Override
@@ -57,7 +56,7 @@ public class ArArchitectureReactive extends ArArchitecture {
 			double leftRange = getRobot().getRangeSonar().currentReadingPolar(0, angle);
 			double rightRange = getRobot().getRangeSonar().currentReadingPolar(-angle, 0);
 			getRobot().unlock();
-			
+
 			if (!turnRight && !turnLeft) {
 				if (leftRange <= rightRange) {
 					turnLeft = true;
@@ -83,6 +82,11 @@ public class ArArchitectureReactive extends ArArchitecture {
 			turnLeft = false;
 			turnRight = false;
 		}
+	}
+
+	@Override
+	public void init() {
+
 	}
 
 }

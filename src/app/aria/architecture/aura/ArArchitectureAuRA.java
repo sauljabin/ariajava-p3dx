@@ -13,40 +13,125 @@
 
 package app.aria.architecture.aura;
 
-import com.mobilerobots.Aria.ArUtil;
-
 import app.Log;
+import app.Translate;
 import app.aria.architecture.ArArchitecture;
 import app.aria.robot.ArRobotMobile;
-import app.map.Map;
+import app.map.Start;
 import app.path.geometry.Point;
 
 public class ArArchitectureAuRA extends ArArchitecture {
 
 	private ArMisionPlanner arMisionPlanner;
-	private boolean ready;
+	private ArPlanSequencer arPlanSequencer;
+	private ArSpatialReasoner arSpatialReasoner;
+	private ArSchemaController arSchemaController;
+	private boolean pathExist;
+	private boolean avoid;
+	private double angleForAvoid;
+	private double scannerRangeStart;
+	private int scannerAngleStart;
+	private double scannerRangeEnd;
+	private int scannerAngleEnd;
 
-	private final static long SLEEP = 100;
-
-	public ArArchitectureAuRA(ArRobotMobile robot, Map map) {
-		super("AuRA", robot, map);
-		arMisionPlanner = new ArMisionPlanner(map, robot);
-		ready = false;
+	public ArArchitectureAuRA(ArMisionPlanner arMisionPlanner, ArRobotMobile robot) {
+		super("AuRA", robot);
+		this.arMisionPlanner = arMisionPlanner;
+		arSchemaController = new ArSchemaController(robot);
+		arMisionPlanner.getMap().setGraph(null);
+		arMisionPlanner.getMap().setPathPoints(null);
+		pathExist = false;
 	}
 
 	@Override
 	public void behavior() {
-		if (!ready) {
+		if (!pathExist)
+			return;
 
-			Point start = new Point(getMap().getRobotHome().getX(), getMap().getRobotHome().getY(), "INICIO");
-			Point finish = new Point(getMap().getGoal().getX(), getMap().getGoal().getY(), "FIN");
+		Point position = arSchemaController.getPosition();
+		double angle = arSchemaController.getAngle();
 
-			Log.info(getClass(), String.format("Inicio: %s, Fin: %s", start, finish));
-			arMisionPlanner.setStart(start);
-			arMisionPlanner.setTarget(finish);
-			ready = true;
+		if (arSchemaController.detectObstacle(arMisionPlanner.getRobotStopDistance(), arMisionPlanner.getRobotSonarAngle()) && !avoid) {
+			arSchemaController.stop();
+			arSchemaController.sleep(400);
+
+			obstacleScanner();
+
+			double point1X = position.getX() + scannerRangeStart * Math.cos(Math.toRadians(angle + scannerAngleStart));
+			double point1Y = position.getY() + scannerRangeStart * Math.sin(Math.toRadians(angle + scannerAngleStart));
+
+			double point2X = position.getX() + scannerRangeEnd * Math.cos(Math.toRadians(angle + scannerAngleEnd));
+			double point2Y = position.getY() + scannerRangeEnd * Math.sin(Math.toRadians(angle + scannerAngleEnd));
+
+			arMisionPlanner.addLine((int) point1X, (int) point1Y, (int) point2X, (int) point2Y);
+			avoid = true;
+			angleForAvoid = angle;
+			return;
 		}
-		arMisionPlanner.execute();
-		ArUtil.sleep(ArArchitectureAuRA.SLEEP);
+
+		if (avoid) {
+
+			double backPoitX = position.getX() + arMisionPlanner.getRobotStopDistance() * Math.cos(Math.toRadians(angleForAvoid + 180));
+			double backPoitY = position.getY() + arMisionPlanner.getRobotStopDistance() * Math.sin(Math.toRadians(angleForAvoid + 180));
+
+			Point nextGoal = new Point(backPoitX, backPoitY, "");
+			double desiredAngle = arPlanSequencer.calculateDesiredAngle(position, nextGoal);
+			double angleTurn = desiredAngle - angle;
+			if (Math.abs(angleTurn) > arSpatialReasoner.getArMisionPlanner().getRobotErrorAngle()) {
+				arSchemaController.turn(angleTurn);
+			} else {
+				avoid = false;
+				arMisionPlanner.setStart(new Start(arMisionPlanner.getMap(), (int) position.getX(), (int) position.getY(), angle));
+				calculatePath();
+			}
+		} else {
+			arPlanSequencer.executePlan(arSchemaController);
+		}
+	}
+
+	private void obstacleScanner() {
+		int startAngle = (int) -arMisionPlanner.getRobotSonarAngle();
+		int endAngle = (int) arMisionPlanner.getRobotSonarAngle();
+
+		boolean startReady = false;
+
+		scannerRangeStart = 0.;
+		scannerAngleStart = startAngle;
+		scannerRangeEnd = 0.;
+		scannerAngleEnd = endAngle;
+
+		double maxDistance = arMisionPlanner.getRobotStopDistance() + arMisionPlanner.getRobotStopDistance() / 2;
+
+		for (int i = startAngle; i < endAngle; i += 2) {
+			double range = arSchemaController.rangeObstacle(i - 1, i + 1);
+			if (range < maxDistance && !startReady) {
+				startReady = true;
+				scannerRangeStart = range;
+				scannerAngleStart = i;
+			}
+			if (startReady) {
+				if (range < maxDistance) {
+					scannerRangeEnd = range;
+					scannerAngleEnd = i;
+				}
+			}
+		}
+
+	}
+
+	private void calculatePath() {
+		Log.info(getClass(), String.format("%s: %s, %s: %s", Translate.get("GUI_STARTPOINT"), arMisionPlanner.getStart(), Translate.get("GUI_ENDPOINT"), arMisionPlanner.getGoal()));
+
+		arSpatialReasoner = new ArSpatialReasoner(arMisionPlanner);
+		if (pathExist = (arSpatialReasoner.calculatePath(arMisionPlanner.getStart().toPoint(), arMisionPlanner.getGoal().toPoint()))) {
+			arPlanSequencer = new ArPlanSequencer(arSpatialReasoner);
+		} else {
+			Log.warning(getClass(), Translate.get("ERROR_NOPATHTOGOAL"));
+		}
+	}
+
+	@Override
+	public void init() {
+		calculatePath();
 	}
 }

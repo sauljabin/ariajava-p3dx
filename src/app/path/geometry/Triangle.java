@@ -53,8 +53,8 @@ public class Triangle implements Animated {
 	public Circle getCircle() {
 		Line line1 = new Line(vertexes.get(0), vertexes.get(1));
 		Line line2 = new Line(vertexes.get(1), vertexes.get(2));
-		Point point1 = vertexes.get(0).midpoint(vertexes.get(1));
-		Point point2 = vertexes.get(1).midpoint(vertexes.get(2));
+		Point point1 = vertexes.get(0).midPoint(vertexes.get(1));
+		Point point2 = vertexes.get(1).midPoint(vertexes.get(2));
 		Line perpendicularLine1 = new Line(line1.slopePerpendicular(), point1);
 		Line perpendicularLine2 = new Line(line2.slopePerpendicular(), point2);
 		Point intersectionPoint = perpendicularLine1
@@ -65,9 +65,9 @@ public class Triangle implements Animated {
 
 	public ArrayList<Link> calculateSegmentDirection() {
 		Point center = getCircle().getCenter();
-		Point point1 = vertexes.get(0).midpoint(vertexes.get(1));
-		Point point2 = vertexes.get(1).midpoint(vertexes.get(2));
-		Point point3 = vertexes.get(2).midpoint(vertexes.get(0));
+		Point point1 = vertexes.get(0).midPoint(vertexes.get(1));
+		Point point2 = vertexes.get(1).midPoint(vertexes.get(2));
+		Point point3 = vertexes.get(2).midPoint(vertexes.get(0));
 		ArrayList<Link> links = new ArrayList<Link>();
 		links.add(new Link(point1, center));
 		links.add(new Link(point2, center));
@@ -80,9 +80,9 @@ public class Triangle implements Animated {
 		if (vertexes.get(0).distance(vertexes.get(1)) > maxDistance
 				|| vertexes.get(1).distance(vertexes.get(2)) > maxDistance
 				|| vertexes.get(2).distance(vertexes.get(0)) > maxDistance) {
-			points.add(vertexes.get(0).midpoint(vertexes.get(1)));
-			points.add(vertexes.get(1).midpoint(vertexes.get(2)));
-			points.add(vertexes.get(2).midpoint(vertexes.get(0)));
+			points.add(vertexes.get(0).midPoint(vertexes.get(1)));
+			points.add(vertexes.get(1).midPoint(vertexes.get(2)));
+			points.add(vertexes.get(2).midPoint(vertexes.get(0)));
 		}
 		return points;
 	}
