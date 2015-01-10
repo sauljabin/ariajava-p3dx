@@ -64,6 +64,7 @@ public class ArPlanSequencer {
 				schema.turn(lastAngleTurn);
 			} else {
 				Log.info(getClass(), Translate.get("INFO_GOALFOUND"));
+				schema.getRobot().setCompletePath(true);
 				planFinish = true;
 			}
 			return;
@@ -108,7 +109,7 @@ public class ArPlanSequencer {
 		Log.info(getClass(), String.format("%s [%s;%s]", Translate.get("INFO_NEWSECTION"), prevGoalString, nextGoalString));
 	}
 
-	private double calculateDesiredAngle(Point point1, Point point2) {
+	public double calculateDesiredAngle(Point point1, Point point2) {
 		return Math.toDegrees(Math.atan2(point2.getY() - point1.getY(), point2.getX() - point1.getX()));
 	}
 

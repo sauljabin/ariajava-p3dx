@@ -34,6 +34,7 @@ public class ArRobotMobile extends ArRobot {
 	private ArSonarDevice sonar;
 	private Robot animatedRobot;
 	protected ArRangeDevice rangeSonar;
+	private boolean completePath;
 
 	public ArRobotMobile(double initX, double initY, double initAngle) {
 		this.initX = initX;
@@ -43,6 +44,7 @@ public class ArRobotMobile extends ArRobot {
 		sonar = new ArSonarDevice();
 		addRangeDevice(sonar);
 		rangeSonar = findRangeDevice("sonar");
+		completePath = false;
 	}
 
 	public ArSonarDevice getSonar() {
@@ -115,6 +117,14 @@ public class ArRobotMobile extends ArRobot {
 
 	public void setRangeSonar(ArRangeDevice rangeSonar) {
 		this.rangeSonar = rangeSonar;
+	}
+
+	public boolean isCompletePath() {
+		return completePath;
+	}
+
+	public void setCompletePath(boolean completePath) {
+		this.completePath = completePath;
 	}
 
 }

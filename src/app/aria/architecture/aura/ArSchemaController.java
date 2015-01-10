@@ -53,20 +53,36 @@ public class ArSchemaController {
 	}
 
 	public Point getPosition() {
-		robot.lock();
+		lock();
 		Point point = new Point(robot.getX(), robot.getY(), "");
-		robot.unlock();
+		unlock();
 		return point;
 	}
 
 	public double getAngle() {
-		robot.lock();
+		lock();
 		double angle = robot.getTh();
-		robot.unlock();
+		unlock();
 		return angle;
 	}
 
 	public void sleep(int sleepTime) {
 		ArUtil.sleep(sleepTime);
+	}
+
+	public double getSonarRadius() {
+		return 45;
+	}
+
+	public boolean detectObstacle(int distance) {
+		double angle = getSonarRadius();
+		lock();
+		double range = robot.getRangeSonar().currentReadingPolar(-angle, angle);
+		unlock();
+		return range < distance;
+	}
+
+	public ArRobotMobile getRobot() {
+		return robot;
 	}
 }

@@ -35,18 +35,16 @@ public class ArSpatialReasoner {
 	private Graph graph;
 	private ArrayList<Point> path;
 	private ArMisionPlanner arMisionPlanner;
+	private int numLinksToStartGoal;
 
 	public ArrayList<Point> getPath() {
 		return path;
 	}
 
-	public ArSpatialReasoner(Map map) {
-
-	}
-
 	public ArSpatialReasoner(ArMisionPlanner arMisionPlanner) {
 		this.map = arMisionPlanner.getMap();
 		this.arMisionPlanner = arMisionPlanner;
+		numLinksToStartGoal = 3;
 	}
 
 	public ArMisionPlanner getArMisionPlanner() {
@@ -99,7 +97,7 @@ public class ArSpatialReasoner {
 			orderedLinksStart.add(new Link(point, start, "Start"));
 			orderedLinksGoal.add(new Link(point, goal, "Goal"));
 		}
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < numLinksToStartGoal; i++) {
 			Link startLink = orderedLinksStart.pollFirst();
 			Link goalLink = orderedLinksGoal.pollFirst();
 

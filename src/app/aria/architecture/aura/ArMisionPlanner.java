@@ -37,6 +37,7 @@ public class ArMisionPlanner {
 	private int robotSleepTime;
 	private double robotErrorDistance;
 	private double robotErrorAngle;
+	private int robotStopDistance;
 
 	public String getPath() {
 		return path;
@@ -109,6 +110,10 @@ public class ArMisionPlanner {
 		}
 	}
 
+	public void addLine(int x1, int y1, int x2, int y2) {
+		map.addLine(x1, y1, x2, y2);
+	}
+
 	public Map getMap() {
 		return map;
 	}
@@ -147,6 +152,14 @@ public class ArMisionPlanner {
 
 	public void setRobotErrorAngle(double robotErrorAngle) {
 		this.robotErrorAngle = robotErrorAngle;
+	}
+
+	public int getRobotStopDistance() {
+		return robotStopDistance;
+	}
+
+	public void setRobotStopDistance(int robotStopDistance) {
+		this.robotStopDistance = robotStopDistance;
 	}
 
 }
