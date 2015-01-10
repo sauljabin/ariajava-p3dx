@@ -138,6 +138,7 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		viewApp.getSpnSleepTime().setModel(new SpinnerNumberModel(Integer.parseInt(Config.get("ROBOT_SLEEPTIME")), 1, 500, 1));
 		viewApp.getSpnErrorDistance().setModel(new SpinnerNumberModel(Double.parseDouble(Config.get("ROBOT_ERRORDISTANCE")), 0., 100., .1));
 		viewApp.getSpnErrorAngle().setModel(new SpinnerNumberModel(Double.parseDouble(Config.get("ROBOT_ERRORANGLE")), 0., 10., .1));
+		viewApp.getSpnStopDistance().setModel(new SpinnerNumberModel(Integer.parseInt(Config.get("ROBOT_STOPDISTANCE")), 1, 1000, 1));
 	}
 
 	public void updateStartEndPoint() {
@@ -373,6 +374,7 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		setRobotSleepTime();
 		setRobotErrorAngle();
 		setRobotErrorDistance();
+		setRobotStopDistance();
 		updaterPosition = new ArUpdaterPositionAnimation(robot, Integer.parseInt(Config.get("ANIMATION_POSITIONUPDATERATE")));
 
 		if (anRobot != null) {
@@ -460,6 +462,8 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 			setRobotMaxSpeed();
 		else if (e.getSource().equals(viewApp.getSpnSleepTime()))
 			setRobotSleepTime();
+		else if (e.getSource().equals(viewApp.getSpnStopDistance()))
+			setRobotStopDistance();
 		else if (e.getSource().equals(viewApp.getSpnErrorAngle()))
 			setRobotErrorAngle();
 		else if (e.getSource().equals(viewApp.getSpnErrorDistance()))
@@ -536,6 +540,19 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		if (arMisionPlanner != null) {
 			arMisionPlanner.setRobotSleepTime((int) viewApp.getSpnSleepTime().getValue());
 			Config.set("ROBOT_SLEEPTIME", viewApp.getSpnSleepTime().getValue().toString());
+			try {
+				Config.save();
+			} catch (Exception e) {
+				Log.warning(ControllerViewApp.class, Translate.get("ERROR_NOSAVECONFIG"), e);
+			}
+
+		}
+	}
+	
+	public void setRobotStopDistance() {
+		if (arMisionPlanner != null) {
+			arMisionPlanner.setRobotStopDistance((int) viewApp.getSpnStopDistance().getValue());
+			Config.set("ROBOT_STOPDISTANCE", viewApp.getSpnStopDistance().getValue().toString());
 			try {
 				Config.save();
 			} catch (Exception e) {

@@ -124,6 +124,8 @@ public class ViewApp extends JFrame {
 	private JSpinner spnErrorDistance;
 	private JLabel lblErrorAngle;
 	private JSpinner spnErrorAngle;
+	private JLabel lblStopDistance;
+	private JSpinner spnStopDistance;
 
 	public ViewApp() {
 		menuItems = new Vector<JMenuItem>();
@@ -164,7 +166,7 @@ public class ViewApp extends JFrame {
 
 	private void init() {
 		setLayout(new BorderLayout());
-		setSize(800, 700);
+		setSize(800, 750);
 		setTitle(Config.get("APP_NAME"));
 
 		menuBar = new JMenuBar();
@@ -308,6 +310,9 @@ public class ViewApp extends JFrame {
 		lblErrorAngle = new JLabel(Translate.get("GUI_ERRORANGLE"));
 		spnErrorAngle = new JSpinner();
 
+		lblStopDistance = new JLabel(Translate.get("GUI_STOPDISTANCE"));
+		spnStopDistance = new JSpinner();
+
 		pnlRobot.add(lblMaxSpeed, "width 100, height 20");
 		pnlRobot.add(spnMaxSpeed, "width 100, height 20, wrap");
 		pnlRobot.add(lblSleepTime, "grow, height 20");
@@ -316,6 +321,8 @@ public class ViewApp extends JFrame {
 		pnlRobot.add(spnErrorDistance, "grow, height 20, wrap");
 		pnlRobot.add(lblErrorAngle, "grow, height 20");
 		pnlRobot.add(spnErrorAngle, "grow, height 20, wrap");
+		pnlRobot.add(lblStopDistance, "grow, height 20");
+		pnlRobot.add(spnStopDistance, "grow, height 20, wrap");
 
 		pnlTabConnection = new JPanel();
 		pnlTabConnection.setLayout(new MigLayout("insets 3"));
@@ -420,6 +427,7 @@ public class ViewApp extends JFrame {
 		spinners.add(spnSleepTime);
 		spinners.add(spnErrorAngle);
 		spinners.add(spnErrorDistance);
+		spinners.add(spnStopDistance);
 
 		buttons.add(btnConnect);
 		buttons.add(btnDisconnect);
@@ -577,6 +585,10 @@ public class ViewApp extends JFrame {
 
 	public JSpinner getSpnErrorAngle() {
 		return spnErrorAngle;
+	}
+
+	public JSpinner getSpnStopDistance() {
+		return spnStopDistance;
 	}
 
 }
