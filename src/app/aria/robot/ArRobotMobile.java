@@ -24,7 +24,6 @@ public class ArRobotMobile extends ArRobot {
 
 	public static final int LONG = 455;
 	public static final int WIDTH = 381;
-	public static final int STOP_DISTANCE = 400;
 
 	private double relativeX;
 	private double relativeY;
@@ -35,7 +34,7 @@ public class ArRobotMobile extends ArRobot {
 	private ArSonarDevice sonar;
 	private Robot animatedRobot;
 	protected ArRangeDevice rangeSonar;
-	private int maxSpeed;
+	private boolean completePath;
 
 	public ArRobotMobile(double initX, double initY, double initAngle) {
 		this.initX = initX;
@@ -45,6 +44,7 @@ public class ArRobotMobile extends ArRobot {
 		sonar = new ArSonarDevice();
 		addRangeDevice(sonar);
 		rangeSonar = findRangeDevice("sonar");
+		completePath = false;
 	}
 
 	public ArSonarDevice getSonar() {
@@ -119,12 +119,12 @@ public class ArRobotMobile extends ArRobot {
 		this.rangeSonar = rangeSonar;
 	}
 
-	public void setMaxSpeed(int maxSpeed) {
-		this.maxSpeed = maxSpeed;
+	public boolean isCompletePath() {
+		return completePath;
 	}
 
-	public int getMaxSpeed() {
-		return maxSpeed;
+	public void setCompletePath(boolean completePath) {
+		this.completePath = completePath;
 	}
 
 }

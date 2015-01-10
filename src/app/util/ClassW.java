@@ -47,6 +47,11 @@ public class ClassW implements Comparable<ClassW> {
 	}
 
 	@Override
+	public boolean equals(Object o) {
+		return toString().equals(o.toString());
+	}
+
+	@Override
 	public String toString() {
 		return name != null ? name : value.getSimpleName();
 	}

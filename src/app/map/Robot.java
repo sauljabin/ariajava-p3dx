@@ -74,18 +74,18 @@ public class Robot implements Animated {
 		g.setColor(Color.RED);
 		int widthRobot = ArRobotMobile.WIDTH;
 		int longRobot =  ArRobotMobile.LONG;
-		int robotHomeX = map.canvasX(animatedX - longRobot / 2.);
-		int robotHomeY = map.canvasY(animatedY + widthRobot / 2.);
+		int startX = map.canvasX(animatedX - longRobot / 2.);
+		int startY = map.canvasY(animatedY + widthRobot / 2.);
 		int corner = map.proportionalValue(50);
 		double angle = animatedAngle;
 		g.rotate(-Math.toRadians(angle), map.canvasX(animatedX), map.canvasY(animatedY));
 
 		xRobot = new int[] {
-				robotHomeX + corner, robotHomeX + map.proportionalValue(longRobot * 2. / 3.), robotHomeX + map.proportionalValue(longRobot), robotHomeX + map.proportionalValue(longRobot * 2. / 3.), robotHomeX + corner, robotHomeX, robotHomeX, robotHomeX + corner
+				startX + corner, startX + map.proportionalValue(longRobot * 2. / 3.), startX + map.proportionalValue(longRobot), startX + map.proportionalValue(longRobot * 2. / 3.), startX + corner, startX, startX, startX + corner
 		};
 
 		yRobot = new int[] {
-				robotHomeY, robotHomeY, robotHomeY + map.proportionalValue(widthRobot / 2.), robotHomeY + map.proportionalValue(widthRobot), robotHomeY + map.proportionalValue(widthRobot), robotHomeY + map.proportionalValue(widthRobot) - corner, robotHomeY + corner, robotHomeY
+				startY, startY, startY + map.proportionalValue(widthRobot / 2.), startY + map.proportionalValue(widthRobot), startY + map.proportionalValue(widthRobot), startY + map.proportionalValue(widthRobot) - corner, startY + corner, startY
 		};
 
 		g.fillPolygon(xRobot, yRobot, 8);

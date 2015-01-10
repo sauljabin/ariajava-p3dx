@@ -18,6 +18,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import app.Log;
+import app.Translate;
 import app.path.geometry.Point;
 import app.path.graphs.Graph;
 
@@ -59,12 +60,12 @@ public class Dijkstra {
 			findPath(point.getAncestor());
 	}
 
-	public ArrayList<Point> searchOptimalPath(Point home, Point target) {
-		Log.info(getClass(), "Iniciando busqueda de camino optimo (Algoritmo Dijkstra)");
+	public ArrayList<Point> searchOptimalPath(Point start, Point target) {
+		Log.info(getClass(), Translate.get("INFO_INITSEARCHPATH"));
 		this.path = new ArrayList<Point>();
 		this.visitedNode = new LinkedList<Point>();
 		try {
-			nextNode(home, target);
+			nextNode(start, target);
 			findPath(target);
 		} catch (Exception e) {
 			return null;
