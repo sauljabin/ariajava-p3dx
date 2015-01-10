@@ -13,8 +13,6 @@
 
 package app.aria.architecture.aura;
 
-import com.mobilerobots.Aria.ArUtil;
-
 import app.Log;
 import app.Translate;
 import app.aria.architecture.ArArchitecture;
@@ -23,32 +21,34 @@ import app.aria.robot.ArRobotMobile;
 public class ArArchitectureAuRA extends ArArchitecture {
 
 	private ArMisionPlanner arMisionPlanner;
-	// private ArPlanSequencer arPlanSequencer;
+	private ArPlanSequencer arPlanSequencer;
 	private ArSpatialReasoner arSpatialReasoner;
-	// private ArSchemaController arSchemaController;
-
-	private final static long SLEEP = 100;
+	private ArSchemaController arSchemaController;
+	private boolean pathExist;
 
 	public ArArchitectureAuRA(ArMisionPlanner arMisionPlanner, ArRobotMobile robot) {
 		super("AuRA", robot);
 		this.arMisionPlanner = arMisionPlanner;
+		arSchemaController = new ArSchemaController(robot);
 		arMisionPlanner.getMap().setGraph(null);
 		arMisionPlanner.getMap().setPathPoints(null);
+		pathExist = false;
 	}
 
 	@Override
 	public void behavior() {
-
-		ArUtil.sleep(ArArchitectureAuRA.SLEEP);
+		if (!pathExist)
+			return;
+		arPlanSequencer.executePlan(arSchemaController);
 	}
 
 	@Override
 	public void init() {
-		Log.info(getClass(), String.format("%s, %s", arMisionPlanner.getStart(), arMisionPlanner.getGoal()));
+		Log.info(getClass(), String.format("%s: %s, %s: %s", Translate.get("GUI_STARTPOINT"), arMisionPlanner.getStart(), Translate.get("GUI_ENDPOINT"), arMisionPlanner.getGoal()));
 
-		arSpatialReasoner = new ArSpatialReasoner(arMisionPlanner.getMap());
-		if (arSpatialReasoner.calculatePath(arMisionPlanner.getStart().toPoint(), arMisionPlanner.getGoal().toPoint())) {
-
+		arSpatialReasoner = new ArSpatialReasoner(arMisionPlanner);
+		if (pathExist = (arSpatialReasoner.calculatePath(arMisionPlanner.getStart().toPoint(), arMisionPlanner.getGoal().toPoint()))) {
+			arPlanSequencer = new ArPlanSequencer(arSpatialReasoner);
 		} else {
 			Log.warning(getClass(), Translate.get("ERROR_NOPATHTOGOAL"));
 		}

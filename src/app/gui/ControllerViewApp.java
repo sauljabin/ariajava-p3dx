@@ -117,10 +117,10 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		viewApp.getSpnStrokeSize().setModel(new SpinnerNumberModel(Integer.parseInt(Config.get("ANIMATION_STROKESIZE")), 1, 100, 1));
 
 		int initMapSize = 6000;
-		map = new Map(-initMapSize, initMapSize, -initMapSize, initMapSize);		
+		map = new Map(-initMapSize, initMapSize, -initMapSize, initMapSize);
 		arMisionPlanner = new ArMisionPlanner();
 		arMisionPlanner.setStart(new Start(map, 0, 0, 0));
-		arMisionPlanner.setGoal(new Goal(map, ArRobotMobile.LONG * 2, 0, 0));		
+		arMisionPlanner.setGoal(new Goal(map, ArRobotMobile.LONG * 2, 0, 0));
 		arMisionPlanner.setMap(map);
 		setShowPath(Boolean.parseBoolean(Config.get("ANIMATION_SHOWPATH")));
 		animator.showMap(arMisionPlanner);
@@ -367,7 +367,7 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		}
 
 		robot = new ArRobotMobile(arMisionPlanner.getStart().getX(), arMisionPlanner.getStart().getY(), arMisionPlanner.getStart().getAngle());
-
+		setRobotMaxSpeed();
 		updaterPosition = new ArUpdaterPositionAnimation(robot, Integer.parseInt(Config.get("ANIMATION_POSITIONUPDATERATE")));
 
 		if (anRobot != null) {
@@ -510,8 +510,16 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 	}
 
 	public void setRobotMaxSpeed() {
-		if (robot != null)
+		if (robot != null) {
 			robot.setMaxSpeed((int) viewApp.getSpnMaxSpeed().getValue());
+			Config.set("ROBOT_MAXSPEED", viewApp.getSpnMaxSpeed().getValue().toString());
+			try {
+				Config.save();
+			} catch (Exception e) {
+				Log.warning(ControllerViewApp.class, Translate.get("ERROR_NOSAVECONFIG"), e);
+			}
+
+		}
 	}
 
 	public void setAnimationFPS() {

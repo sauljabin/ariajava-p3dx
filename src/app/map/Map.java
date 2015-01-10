@@ -265,9 +265,9 @@ public class Map implements Animated {
 		for (Line line : getLines()) {
 			Point p1 = new Point(line.getX1(), line.getY1(), "");
 			Point p5 = new Point(line.getX2(), line.getY2(), "");
-			Point p3 = p1.midpoint(p5);
-			Point p2 = p1.midpoint(p3);
-			Point p4 = p3.midpoint(p5);
+			Point p3 = p1.midPoint(p5);
+			Point p2 = p1.midPoint(p3);
+			Point p4 = p3.midPoint(p5);
 			list.add(p1);
 			list.add(p2);
 			list.add(p3);

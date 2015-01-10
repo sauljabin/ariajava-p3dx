@@ -13,6 +13,8 @@
 
 package app.aria.architecture.aura;
 
+import com.mobilerobots.Aria.ArUtil;
+
 import app.aria.robot.ArRobotMobile;
 import app.path.geometry.Point;
 
@@ -20,36 +22,10 @@ public class ArSchemaController {
 
 	private ArRobotMobile robot;
 
+	private final static long SLEEP_TIME = 200;
+
 	public ArSchemaController(ArRobotMobile robot) {
 		this.robot = robot;
-	}
-
-	/**
-	 * Move in a particular compass direction
-	 */
-	public void moveAhead() {
-
-	}
-
-	/**
-	 * Move towards a detected goal object
-	 */
-	public void moveToGoal() {
-
-	}
-
-	/**
-	 * Move away from barriers
-	 */
-	public void avoidStaticObstacle() {
-
-	}
-
-	/**
-	 * Move toward the center of a path, road or hallway
-	 */
-	public void stayOnPath() {
-
 	}
 
 	private void lock() {
@@ -60,18 +36,18 @@ public class ArSchemaController {
 		robot.unlock();
 	}
 
-	public void look(double angle) {
+	public void turn(double angle) {
 		lock();
 		robot.setDeltaHeading(angle);
 		unlock();
 	}
-	
+
 	public void move(double speed) {
 		lock();
 		robot.setVel(speed);
 		unlock();
 	}
-	
+
 	public void stop() {
 		lock();
 		robot.setVel(0);
@@ -92,4 +68,11 @@ public class ArSchemaController {
 		return angle;
 	}
 
+	public double getRobotMaxSpeed() {
+		return robot.getMaxSpeed();
+	}
+
+	public void sleep() {
+		ArUtil.sleep(SLEEP_TIME);
+	}
 }
