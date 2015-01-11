@@ -3,7 +3,6 @@ Resolution: 0
 LineMinPos: -6260 -2300
 LineMaxPos: 3826 8637
 NumLines: 25
-Cairn: RobotHome -6561 -2581 0 "" ICON "" -6561 -2581 4060 8954
 Cairn: RobotHome -4728 -1070 0 "" ICON ""
 LINES
 -6260 8620 -6260 -2300

@@ -90,8 +90,8 @@ public class ArArchitectureAuRA extends ArArchitecture {
 	}
 
 	private void obstacleScanner() {
-		int startAngle = (int) -arMisionPlanner.getRobotSonarAngle();
-		int endAngle = (int) arMisionPlanner.getRobotSonarAngle();
+		int startAngle = (int) -arMisionPlanner.getRobotSonarAngle() + 15;
+		int endAngle = (int) arMisionPlanner.getRobotSonarAngle() + 15;
 
 		boolean startReady = false;
 

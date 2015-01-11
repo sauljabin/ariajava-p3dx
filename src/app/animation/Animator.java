@@ -417,11 +417,23 @@ public class Animator implements Runnable {
 			if (animated.getShape() != null && animated.getAnimatedMouseListener() != null) {
 				Shape tempShape = animated.getShape();
 
-				double x = zoomWidth(tempShape.getBounds().x) + translateX - offsetWidth();
-				double y = zoomHeight(tempShape.getBounds().y) + translateY - offsetHeight();
+				int tempX = tempShape.getBounds().x;
+				int tempY = tempShape.getBounds().y;
+				int tempW = tempShape.getBounds().width;
+				int tempH = tempShape.getBounds().height;
 
-				double width = zoomWidth(tempShape.getBounds().width);
-				double height = zoomHeight(tempShape.getBounds().height);
+				if (e.getID() == MouseEvent.MOUSE_DRAGGED) {
+					tempW *= 5;
+					tempH *= 5;
+					tempX -= tempW / 2;
+					tempY -= tempH / 2;
+				}
+
+				double width = zoomWidth(tempW);
+				double height = zoomHeight(tempH);
+
+				double x = zoomWidth(tempX) + translateX - offsetWidth();
+				double y = zoomHeight(tempY) + translateY - offsetHeight();
 
 				Shape shape = new Rectangle2D.Double(x, y, width, height);
 
