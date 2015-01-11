@@ -197,7 +197,7 @@ Por otra parte, se explica el funcionamiento e instalación sobre sistemas opera
 desarrollada. Se exponen los resultados y conclusiones del conjunto de pruebas 
 realizadas para validar la arquitectura. En los resultados alcanzados se encontró 
 que el robot tiene la capacidad de dirigirse por el espacio efectivamente más no completamente eficiente. 
-%También se pudo observar que el robot responde satisfactoriamente a obstaculos inesperados. 
+También se pudo observar que el robot responde satisfactoriamente a obstaculos inesperados. 
 
  \textbf{Palabras clave}: Robótica, ARIA, AuRA, Arquitectura Híbrida, Pioneer P3DX.}}
 \end{center}
@@ -401,9 +401,7 @@ este está disponible al público con licencia de software \textbf{MIT} en la si
 \subsubsection*{\textit{Planificador de misión}}
 
 Con el fin de planificar la misión, se desarrolló una interfaz gráfica intuitiva que permite configurar
-los parámetros generales, cargar la información cartográfica y además presentar la ruta óptima que deberá recorrer el robot. 
-Como se observa en la \reffigure{fig:planificador} se puede ingresar la posición inicial y final deseada, además de la velocidad máxima del robot, 
-y posee un conjunto de herramientas para la manipulación del mapa.
+los parámetros generales, cargar la información cartográfica y además presentar la ruta óptima que deberá recorrer el robot \refpfigure{fig:planificador}. 
 
 \begin{figure}[here]
 \begin{center}
@@ -541,7 +539,8 @@ Q.adicionar(s)\;
 
 Se desarrolló una herramienta computacional llamada \textbf{AriaJavaP3DX}, que provee los elementos gráficos necesarios para 
 configurar y monitorear el comportamiento del robot Pioneer P3DX.
-Como se muestra en las Figuras \ref{fig:ventana-principal-partes} y \ref{fig:ventana-principal-conexion}, la ventana principal está compuesta por 7 elementos:
+
+Como se muestra en las Figuras \ref{fig:ventana-principal-partes} y \ref{fig:ventana-principal2}, la ventana principal está compuesta por 8 elementos básicos:
 
 \begin{figure}[H]
 \begin{center}
@@ -553,34 +552,41 @@ Como se muestra en las Figuras \ref{fig:ventana-principal-partes} y \ref{fig:ven
 
 \begin{figure}[H]
 \begin{center}
-\includegraphics[width=10cm]{ventana-principal-conexion-partes.png} 
+\includegraphics[width=10cm]{ventana-principal2-partes.png} 
 \caption{Partes de la ventana principal.}
-\label{fig:ventana-principal-conexion}
+\label{fig:ventana-principal2}
 \end{center}
 \end{figure} 
 
 \begin{enumerate}
-\item En la sección \textbf{Animación} de la pestaña \textbf{Calibración}, se puede configurar la animación 
+\item Esta sección permite configurar la animación 
 a través de los siguientes items: \textbf{FPS}, cuadros por segundo (en ingles \comillas{Frames per second}), 
 se refiere a la frecuencia en que se actualiza la imagen de la animación. \textbf{Proporción}, es la proporción del mapa en 
 la animación con respecto a la medida original en milímetros. \textbf{Trazo}, es el grosor del trazado de las imágenes en la 
-animación. \textbf{Refresh}, es la frecuencia en segundos en que se verifica la posición real del robot y se actualiza la 
+animación. \textbf{Sincronización}, es la frecuencia en segundos en que se verifica la posición real del robot y se actualiza la 
 posición del robot animado.
-\item La sección \textbf{Robot}, permite asigna la velocidad máxima, las posiciones inicial y final del robot. 
-\item En la parte inferior de la ventana se encuentra la consola, permite observar los mensajes que se generan en la ejecución
-de la aplicación.
+\item En el panel \textbf{Conexión} se establece la dirección IP y el puerto de conexión con el robot.
+\item En la región central de la ventana se localiza la animación, se puede observar un ejemplo en la \reffigure{fig:mapa-cargado}. 
 \item En el lateral derecho de la ventana se encuentran una serie de botones que permiten manipular el mapa.
  En primer lugar 
 se puede hacer zoom sobre el mapa \refpfigure{subfig:botones-zoom}. Además se puede mover la ubicación del mapa hacia los 4 puntos 
-cardinales \refpfigure{subfig:botones-mover-mapa}. Por otra parte, se puede centrar el mapa \refpfigure{subfig:botones-centrar-capturar} y hacer una captura de imagen, al presionar el botón de captura de imagen (ícono camara fotográfica) se
+cardinales \refpfigure{subfig:botones-mover-mapa}. Por otra parte, se puede centrar el mapa \refpfigure{subfig:botones-centrar-capturar} y hacer una captura de imagen, al presionar el botón de captura de imagen (ícono cámara fotográfica) se
 muestra la ventana de guardar imagen \refpfigure{fig:guardar-imagen}. Los últimos botones \refpfigure{subfig:botones-ocultar-mapa} permiten mostrar u ocultar
 la ruta óptima calculada y activar o desactivar el antialiasing.
-\item En la región central de la ventana se observa el canvas donde se genera la animación, 
-como se puede observar en la \reffigure{fig:mapa-cargado}. 
-\item En la pestaña \textbf{Conexión} se puede establecer la arquitectura de control del robot.
-En el item \textbf{Arquitectura}, se puede seleccionar entre un comportamiento solamente reactivo
-o la arquitectura AuRA.
-\item Esta última sección permite establecer la dirección IP y el puerto de conexión con el robot.
+\item En la parte inferior de la ventana se encuentra la consola, permite observar los mensajes que se generan en la ejecución
+de la aplicación.
+\item En este panel se puede establecer la arquitectura de control del robot.
+En el item \textbf{Arquitectura}, se puede elegir entre la arquitectura AuRA o un comportamiento solamente reactivo.
+\item Este panel permite manipular el conjunto de variables que permiten calibrar el comportamiento del robot, estas son:
+\begin{enumerate}
+\item \textbf{Velocidad max.:} velocidad máxima alcanzada por el robot.
+\item \textbf{Robot delay:} tiempo de espera entre acciones.
+\item \textbf{Error distancia:} distancia máxima permitida entre el robot y los objetivos.
+\item \textbf{Error ángulo:} diferencia máxima permitida entre el ángulo del robot y el ángulo deseado.
+\item \textbf{Distancia min:} distancia mínima tolerada entre el robot y un obstáculo.
+\item \textbf{Ángulo sonar:} rango de detección del sonar.
+\end{enumerate}
+\item Esta última sección esta destinada a asignar la posición de inicio y fin del robot.
 \end{enumerate} 
 
 \begin{figure}[H]
@@ -641,7 +647,7 @@ La opción \textbf{Ver configuración} permite visualizar la lista de valores de
 
 \begin{figure}[H]
 \begin{center}
-\includegraphics[width=3cm]{menu-opciones2.png} 
+\includegraphics[width=2cm]{menu-opciones2.png} 
 \caption{Menú opciones.}
 \label{fig:menu-opciones}
 \end{center}
