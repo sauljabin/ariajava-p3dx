@@ -168,7 +168,7 @@ public class ViewApp extends JFrame {
 
 	private void init() {
 		setLayout(new BorderLayout());
-		setSize(800, 750);
+		setSize(800, 700);
 		setTitle(Config.get("APP_NAME"));
 
 		menuBar = new JMenuBar();

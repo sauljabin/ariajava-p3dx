@@ -19,6 +19,8 @@
 \usepackage{graphicx}
 \usepackage{url}
 \usepackage{listings}
+\usepackage[ruled,vlined,spanish,onelanguage]{algorithm2e}
+\usepackage{float}
 \lstset{ frame=Ltb,
 framerule=0pt,
 aboveskip=0.5cm,
@@ -44,7 +46,7 @@ numberfirstline = false,
 breaklines=true
 }
 \usepackage[font=footnotesize,labelfont=bf]{caption}
-%\usepackage{subcaption}
+\usepackage{subcaption}
 \usepackage[T1]{fontenc}
 \usepackage{color}
 \definecolor{gray97}{gray}{.97}
@@ -136,13 +138,13 @@ breaklines=true
 \author{ 
 \footnote{  {\it\scriptsize  Decanato de Ciencias y Tecnolog\'ia,} 
 {\it\scriptsize Universidad Centroccidental Lisandro Alvarado,}
-{\it\scriptsize Barquisimeto, Venezuela, sauljabin@gmail.com}
-}\hspace{1mm}{Saúl Piña}
+{\it\scriptsize Barquisimeto, Venezuela, thejorgemylio@gmail.com}
+}\hspace{1mm}{Jorge Parra}
  \hspace{3mm} 
 \footnote{  {\it\scriptsize  Decanato de Ciencias y Tecnolog\'ia,} 
 {\it\scriptsize Universidad Centroccidental Lisandro Alvarado,}
-{\it\scriptsize Barquisimeto, Venezuela, thejorgemylio@gmail.com}
-}\hspace{1mm}{ Jorge Parra} \\
+{\it\scriptsize Barquisimeto, Venezuela, sauljabin@gmail.com}
+}\hspace{1mm}{ Saúl Piña} \\
  %\hspace{3mm} 
 %\footnote{  {\it\scriptsize Departamento-Instituto-Facultad}, 
 %{\it\scriptsize Universidad-Instituci\'on (filiaci\'on)},
@@ -170,7 +172,7 @@ breaklines=true
 %                APELLIDO, INICIAL NOMBRE. et al
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \fancyhead{} \fancyhead[CE]{{\scriptsize ARQUITECTURA HÍBRIDA DE NAVEGACIÓN PARA ROBOT PIONEER PD3X}}
-\fancyhead[CO]{ Saúl Piña, Jorge Parra 
+\fancyhead[CO]{ Jorge Parra, Saúl Piña
 }
 \fancyfoot{}
 %\fancyfoot[CO,CE]{\scriptsize{{Publicaciones en Ciencias y Tecnolog\'ia.} Vol 7,N$^{0}$2, Jul--Dic 2013, pp.07--15.}}
@@ -186,14 +188,16 @@ breaklines=true
 
 \vspace{-3mm} \hspace{.05in}\parbox{4.5in} {{\small %\footnotesize 
 
-En el presente informe se da a conocer de manera detallada el diseño, desarrollo e implementación de 
-una arquitectura de navegación híbrida basada en la arquitectura AuRA para el robot Pionner P3DX, 
+En el presente informe se da a conocer de manera detallada el diseño, desarrollo e implementación 
+de la arquitectura de navegación híbrida AuRA para el robot Pionner P3DX, 
 con el objetivo de planificar rutas entre dos puntos cualesquiera en un ambiente conocido.
 La arquitectura construye el camino más corto aplicando el Algoritmo de Dijkstra sobre el diagrama de Voronoi asociado
-al entorno. Se segmentó el mapa con la Triangulación de Delaunay para generar dicho diagrama.
-Por otra parte, se explica el funcionamiento e instalación de la aplicación de software 
+al entorno. Se segmentó el espacio a través de la Triangulación de Delaunay.
+Por otra parte, se explica el funcionamiento e instalación sobre sistemas operativos Windows o Linux de la aplicación de software 
 desarrollada. Se exponen los resultados y conclusiones del conjunto de pruebas 
-realizadas para validar la arquitectura.
+realizadas para validar la arquitectura. En los resultados alcanzados se encontró 
+que el robot tiene la capacidad de dirigirse por el espacio efectivamente más no completamente eficiente. 
+También se pudo observar que el robot responde satisfactoriamente a obstaculos inesperados. 
 
  \textbf{Palabras clave}: Robótica, ARIA, AuRA, Arquitectura Híbrida, Pioneer P3DX.}}
 \end{center}
@@ -217,14 +221,24 @@ realizadas para validar la arquitectura.
 \section*{Introducción}
 
 La robótica móvil es un campo de investigación que supone la integración de numerosas disciplinas
-entre las que se encuentran la electrónica, ingeniería mecánica,
+entre las que resaltan la electrónica, ingeniería mecánica,
 inteligencia artificial, estadística, entre otros. Tiene como objetivo 
-construir una ruta de navegación sobre un entorno conocido o desconocido,
+guiar el curso de un robot movil sobre un entorno con obstculos conocido o desconocido,
 a través de un sistema que integra la percepción del entorno mediante
 sensores, toma de decisiones y acciones.
 
-La arquitectura AuRA propone un enfoque donde se fusiona los paradigmas deliberativo y reactivo,
-lo que le permite al robot responder a eventos inesperados y a la vez cumplir con los objetivos de la misión.
+Las tareas involucradas en la navegación de un robot móvil son: la percepción del
+entorno, la planificación de una trayectoria libre de obstáculos, y la conducción del vehiculo a través de la referencia establecida.
+Es necesario que se incluya la capacidad de reaccionar ante situaciones inesperadas.
+
+La arquitectura AuRA propone un enfoque de control donde se fusiona los paradigmas deliberativo y reactivo,
+integra todas las tareas expuestas anteriormente, por ende, le permitirá al robot movil responder a eventos inesperados, desenvolverse en 
+entornos no estructurados y a la vez cumplir con los objetivos de la misión. La implementancion de esta arqitectura supone un conocimiento previo
+del entorno, el cual servira como insumo para la planificación global de la misión.
+
+En el presente trabajo se expone todo el proceso de implementación de la arquitectura híbrida AuRA sobre el robot movil P3DX,
+con un razonador espacial principalmente basada en el diagrama de Voronoi y en el algoritmo voraz Dijkstra para el calculo de 
+la ruta óptima.
 
 \section*{Pioneer P3DX}
 
@@ -234,9 +248,16 @@ Es uno de los robots más popularmente usados en las áreas de la educación e i
 
 \begin{figure}[here]
 	\centering
-	\includegraphics[width=5cm]{pioneer.png} 
+	\includegraphics[width=6cm]{pioneer.png} 
 	\caption{Robot Pioneer P3DX.}
 	\label{fig:pioneer}
+\end{figure} 
+
+\begin{figure}[here]
+	\centering
+	\includegraphics[width=8cm]{pioneer-dimensiones.png} 
+	\caption{Dimensiones en milímetros del robot Pioneer P3DX.}
+	\label{fig:pioneer-dimensiones}
 \end{figure} 
 
 \subsubsection*{Especificaciones del Pioneer P3DX}
@@ -267,12 +288,7 @@ Es uno de los robots más popularmente usados en las áreas de la educación e i
 \\
 \indent\textbf{Capacidad:} 7,2 Ah.
 
-\begin{figure}[here]
-	\centering
-	\includegraphics[width=8cm]{pioneer-dimensiones.png} 
-	\caption{Dimensiones (milímetros) Robot Pioneer P3DX.}
-	\label{fig:pioneer-dimensiones}
-\end{figure} 
+
 
 \section*{Arquitectura AuRA}
 
@@ -287,7 +303,7 @@ puede ser comparado con un piloto, convierte la ruta generada por el \textit{raz
 \begin{figure}[here]
 \begin{center}
 \includegraphics[width=5cm]{aura.png} 
-\caption{Representación de Arquitectura AuRA.}
+\caption{Representación de arquitectura AuRA.}
 \label{fig:aura}
 \end{center}
 \end{figure} 
@@ -385,12 +401,11 @@ este está disponible al público con licencia de software \textbf{MIT} en la si
 \subsubsection*{\textit{Planificador de misión}}
 
 Con el fin de planificar la misión, se desarrolló una interfaz gráfica intuitiva que permite configurar
-los parámetros generales, cargar la información cartográfica y además presentar la ruta óptima que deberá recorrer el robot. 
-Como se observa en la \reffigure{fig:planificador} se puede ingresar la posición inicial y final deseada.
+los parámetros generales, cargar la información cartográfica y además presentar la ruta óptima que deberá recorrer el robot \refpfigure{fig:planificador}. 
 
 \begin{figure}[here]
 \begin{center}
-\includegraphics[width=6cm]{ventana-principal.png} 
+\includegraphics[width=10cm]{ventana-principal.png} 
 \caption{Planificador de misión.}
 \label{fig:planificador}
 \end{center}
@@ -430,11 +445,12 @@ A continuación se describen las líneas que conforman el mapa:
 \\\textbf{Línea 7:} \sourcecode{LINES}, indica el inicio de la sección de obstáculos.
 \\\textbf{A partir de la línea 8:} sección de obstáculos.
 
-La \reffigure{fig:map} muestra el resultado del archivo \textit{.map} descrito en el \reflistings{lst:map}.
+La \reffigure{fig:map} muestra el resultado del archivo \textit{.map} descrito en el \reflistings{lst:map}, se puede observar el recuadro
+externo especificado desde la línea 7, el punto de inicio es representado por el rectángulo azul y el objetivo por el rectángulo rojo.
 
-\begin{figure}[here]
+\begin{figure}[H]
 \begin{center}
-\includegraphics[width=6cm]{map.png} 
+\includegraphics[width=4cm]{map.png} 
 \caption{Resultado de ejemplo archivo mapa \reflistings{lst:map}.}
 \label{fig:map}
 \end{center}
@@ -442,32 +458,202 @@ La \reffigure{fig:map} muestra el resultado del archivo \textit{.map} descrito e
 
 \subsubsection*{\textit{Razonador Espacial}}
 
+El razonador espacial es el encargado de construir la ruta que deberá recorrer el robot para llegar al objetivo.
+En esta implementación se diseñó un razonador espacial que calcula la ruta óptima mediante 3 etapas \refpfigure{fig:razonador-espacial}.
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=4cm]{razonador-espacial.png} 
+\caption{Etapas del razonador espacial.}
+\label{fig:razonador-espacial}
+\end{center}
+\end{figure}
+
+Como se muestra en la \reffigure{fig:razonador-espacial}, en la primera etapa se realiza una segmentación del mapa
+a través de la \textbf{Triangulación de Delaunay}, esto divide el espacio en secciones pequeñas y conectadas. En segundo lugar
+se genera un \textbf{Diagrama de Voronoi} a partir de la triangulación, este diagrama representará el mapa
+en un grafo conectado. Por último, se aplica el \textbf{Algoritmo de Dijkstra} sobre el Diagrama de Voronoi con el fin
+de calcular la ruta óptima desde un punto de inicio hasta un punto objetivo dentro del grafo.
+
+
+\begin{enumerate}
+\item \textbf{Triangulación de Delaunay:}
+\item \textbf{Diagrama de Voronoi:}
+\item \textbf{Algoritmo de Dijkstra:} Este algoritmo fue diseñado por Edsger Dijkstra en 1959 \cite{sniedovich2006,lavalle2006,cormen2001}, se puede categorizar en la familia de algoritmos voraces y posee una complejidad de $O(n^{2})$. Tiene como objetivo hayar todos los caminos con costo mínimo desde un nodo inicial a todos los demas nodos dentro de un grafo ponderado. Basicamente lo que hace este algoritmo es recorrer los nodos adyacentes a un nodo especifico, si encuentra un nodo con un alguna alternativa más óptima
+actualiza su peso y le indica cual es su nuevo nodo ancestro .
+
+Se explicara el algoritmo a través de su pseudocódigo (Algoritmo \ref{alg:dijkstra}).
+Se tienen los siguietes elementos:
+
+\begin{itemize}
+\item $G$: el grafo
+\item $Q$: cola de prioridad
+\item $s$: nodo inicial
+\end{itemize}
+
+Se inicializan todos los pesos acumulados de los nodos en infinito y todos los nodos ancestros en nulo. 
+Luego se agrega el nodo inicial a la cola de prioridad. 
+Se procede a recorrer la cola de prioridad, mientras esta sea distinta de vacio se toma el primer elemento. 
+Posteriormente se verifica el peso acumulado de cada nodo adyacente al primer elemento en la cola, si el peso acumulado del nodo actual del ciclo es mayor
+al peso del primer elemento ($u$) más el peso entre ambos nodos, se actualiza el peso acumulado y el nodo ancestro del nodo actual.
+Por último se agrega a la cola de prioridad el nodo adyacente. 
+
+\begin{algorithm}
+\DontPrintSemicolon
+\KwData{Nodo inicial $s$}
+\KwResult{Ruta óptima}
+
+Inicializar $Q$ y $G$\;
+
+\For{$u~\epsilon~G.getNodos()$}{
+ u.setPesoAcumulado(INFINITO)\;
+ u.setNodoAncestro(NULL)\;
+}
+
+s.setPesoAcumulado(0)\;
+Q.adicionar(s)\;
+
+\While{$Q\neq\emptyset$}{
+	u = Q.getPrimero()\;
+	\For{$v~\epsilon~u.getNodosAdyacentes()$}{ 
+		\If{v.getPesoAcumulado() > u.getPesoAcumulado() + G.getPesoEntreNodos(u,v)}{
+			v.setPesoAcumulado(u.getPesoAcumulado() + G.getPesoEntreNodos(u,v))\;
+			v.setNodoAncestro(u)\;
+			Q.adicionar(v)\;
+		}
+	}
+}
+
+\caption{Algoritmo de Dijkstra \label{alg:dijkstra}}
+\end{algorithm}
+
+
+\end{enumerate}
 
 \subsubsection*{\textit{Secuenciador del Plan}}
 
 \subsection*{Capa Reactiva}
 
+\pagebreak
 \section*{Herramienta de Software Desarrollada}
 
-%\begin{figure}[here]
-%\begin{center}
-%\includegraphics[width=6cm]{ventana-principal.png} 
-%\caption{Ventana principal.}
-%\label{fig:ventana-principal}
-%\end{center}
-%\end{figure} 
+Se desarrolló una herramienta computacional llamada \textbf{AriaJavaP3DX}, que provee los elementos gráficos necesarios para 
+configurar y monitorear el comportamiento del robot Pioneer P3DX.
 
-\subsubsection*{\textit{Menu Opciones}}
+Como se muestra en las Figuras \ref{fig:ventana-principal-partes} y \ref{fig:ventana-principal2}, la ventana principal está compuesta por 8 elementos básicos:
 
-\begin{figure}[here]
+\begin{figure}[H]
 \begin{center}
-\includegraphics[width=3cm]{menu-opciones2.png} 
-\caption{Menu opciones.}
+\includegraphics[width=10cm]{ventana-principal-partes.png} 
+\caption{Partes de la ventana principal.}
+\label{fig:ventana-principal-partes}
+\end{center}
+\end{figure}
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=10cm]{ventana-principal2-partes.png} 
+\caption{Partes de la ventana principal.}
+\label{fig:ventana-principal2}
+\end{center}
+\end{figure} 
+
+\begin{enumerate}
+\item Esta sección permite configurar la animación 
+a través de los siguientes items: \textbf{FPS}, cuadros por segundo (en ingles \comillas{Frames per second}), 
+se refiere a la frecuencia en que se actualiza la imagen de la animación. \textbf{Proporción}, es la proporción del mapa en 
+la animación con respecto a la medida original en milímetros. \textbf{Trazo}, es el grosor del trazado de las imágenes en la 
+animación. \textbf{Sincronización}, es la frecuencia en segundos en que se verifica la posición real del robot y se actualiza la 
+posición del robot animado.
+\item En el panel \textbf{Conexión} se establece la dirección IP y el puerto de conexión con el robot.
+\item En la región central de la ventana se localiza la animación, se puede observar un ejemplo en la \reffigure{fig:mapa-cargado}. 
+\item En el lateral derecho de la ventana se encuentran una serie de botones que permiten manipular el mapa.
+ En primer lugar 
+se puede hacer zoom sobre el mapa \refpfigure{subfig:botones-zoom}. Además se puede mover la ubicación del mapa hacia los 4 puntos 
+cardinales \refpfigure{subfig:botones-mover-mapa}. Por otra parte, se puede centrar el mapa \refpfigure{subfig:botones-centrar-capturar} y hacer una captura de imagen, al presionar el botón de captura de imagen (ícono cámara fotográfica) se
+muestra la ventana de guardar imagen \refpfigure{fig:guardar-imagen}. Los últimos botones \refpfigure{subfig:botones-ocultar-mapa} permiten mostrar u ocultar
+la ruta óptima calculada y activar o desactivar el antialiasing.
+\item En la parte inferior de la ventana se encuentra la consola, permite observar los mensajes que se generan en la ejecución
+de la aplicación.
+\item En este panel se puede establecer la arquitectura de control del robot.
+En el item \textbf{Arquitectura}, se puede elegir entre la arquitectura AuRA o un comportamiento solamente reactivo.
+\item Este panel permite manipular el conjunto de variables que permiten calibrar el comportamiento del robot, estas son:
+\begin{enumerate}
+\item \textbf{Velocidad max.:} velocidad máxima alcanzada por el robot.
+\item \textbf{Robot delay:} tiempo de espera entre acciones.
+\item \textbf{Error distancia:} distancia máxima permitida entre el robot y los objetivos.
+\item \textbf{Error ángulo:} diferencia máxima permitida entre el ángulo del robot y el ángulo deseado.
+\item \textbf{Distancia min:} distancia mínima tolerada entre el robot y un obstáculo.
+\item \textbf{Ángulo sonar:} rango de detección del sonar.
+\end{enumerate}
+\item Esta última sección esta destinada a asignar la posición de inicio y fin del robot.
+\end{enumerate} 
+
+\begin{figure}[H]
+        \centering
+        \begin{subfigure}[b]{0.2\linewidth}
+        		\centering
+                \includegraphics[width=1cm]{botones-zoom.png}
+                \caption{Zoom}
+                \label{subfig:botones-zoom}
+        \end{subfigure}
+        ~ 
+        \begin{subfigure}[b]{0.2\linewidth}
+        		\centering
+                \includegraphics[width=1cm]{botones-mover-mapa.png}
+                \caption{Mover}
+                \label{subfig:botones-mover-mapa}
+        \end{subfigure}
+        ~ 
+        \begin{subfigure}[b]{0.2\linewidth}
+        		\centering
+                \includegraphics[width=1cm]{botones-centrar-capturar.png}
+                \caption{Capturar}
+                \label{subfig:botones-centrar-capturar}
+        \end{subfigure}
+        ~ 
+        \begin{subfigure}[b]{0.2\linewidth}
+        		\centering
+                \includegraphics[width=1cm]{botones-ocultar-mapa.png}
+                \caption{Ocultar}
+                \label{subfig:botones-ocultar-mapa}
+        \end{subfigure}
+        \caption{Acciones para manipulación del mapa.}
+        \label{fig:botones-mapa}
+\end{figure}
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=6cm]{guardar-imagen.png} 
+\caption{Ventana para guardar captura del mapa.}
+\label{fig:guardar-imagen}
+\end{center}
+\end{figure} 
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=10cm]{mapa-cargado.png} 
+\caption{Mapa cargado.}
+\label{fig:mapa-cargado}
+\end{center}
+\end{figure} 
+
+\pagebreak
+\subsubsection*{\textit{Menú Opciones}}
+
+A través de este menú \refpfigure{fig:menu-opciones} se puede seleccionar y cargar un mapa ingresando 
+a la opción \textbf{Cargar Mapa}, esta, desplegará una ventana de búsqueda \refpfigure{fig:cargar-mapa}.
+La opción \textbf{Ver configuración} permite visualizar la lista de valores de la configuración general de la aplicación \refpfigure{fig:ver-configuracion}. Por último la opción cerrar permite terminar la aplicación.
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=2cm]{menu-opciones2.png} 
+\caption{Menú opciones.}
 \label{fig:menu-opciones}
 \end{center}
 \end{figure} 
 
-\begin{figure}[here]
+\begin{figure}[H]
 \begin{center}
 \includegraphics[width=6cm]{cargar-mapa.png} 
 \caption{Ventana para seleccionar mapa.}
@@ -475,7 +661,7 @@ La \reffigure{fig:map} muestra el resultado del archivo \textit{.map} descrito e
 \end{center}
 \end{figure} 
 
-\begin{figure}[here]
+\begin{figure}[H]
 \begin{center}
 \includegraphics[width=6cm]{ver-configuracion.png} 
 \caption{Ventana para ver los atributos de configuración.}
@@ -483,11 +669,55 @@ La \reffigure{fig:map} muestra el resultado del archivo \textit{.map} descrito e
 \end{center}
 \end{figure} 
 
+\subsubsection*{\textit{Menú Ayuda}}
+
+A través del menu ayuda \refpfigure{fig:menu-ayuda} se puede acceder a la documentación de 
+la aplicación, además se puede ingresar a la ventana de creditos en la opción \textbf{Sobre AriaJavaP3DX} \refpfigure{fig:ventana-about}.
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=3cm]{menu-ayuda2.png} 
+\caption{Menu Ayuda.}
+\label{fig:menu-ayuda}
+\end{center}
+\end{figure} 
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=6cm]{ventana-about.png} 
+\caption{Ventana para ver la información de la aplicación.}
+\label{fig:ventana-about}
+\end{center}
+\end{figure} 
+
 \section*{Experimentación}
+
+Para el proceso de experimentación se empleó la herramienta de simulación MobileSim, y se cargo el plano del 
+Edificio K del Decanato de Ciencias y Tecnología de la Universidad Centrocidental Lisandro Alvarado. Se diseñaron
+des experimentos 
+
+\section*{Experimento I, Navegación sin Obstculos}
+
+\section*{Experimento II, Navegación con Obstaculos}
+
 
 \section*{Conclusión}
 
-AL FINALIZAR
+La arquitectua AuRA es altamente modular por su diseño, integra la capa reactiva con 
+la capa deliberativa de manera que el robot movil pueda desenvolverse en 
+entornos no estructurados y a la vez cumplir con los objetivos de la misión. Los resultados
+presentados en esta investigación muestran que una combinación en AuRA y
+un razonador espacial basado en los diagramas de Voronoi genera buenas rutas entre el 
+el punto de partida y el objetivo, más se pudo apreciar que no son del todo eficientes.
+El algoritmo voraz Dijkstra  cumplio con las expectativas con respeto al 
+tiempo de ejecución, se pudo apreciar que es necesario poco tiempo para determinar
+las rutas optimas sobre los grafos, lo que ayuda 
+a minimizar el tiempo de calculo en el construcción
+de nuevos caminos al encontrar obstaculos.
+
+Con respecto al desempeño general de la implementación hecha, se puede decir que los resultados 
+fueron buenos, en el experimento realizado sin obstaculos la tasa de exito fue de 100\% con un tiempo
+promedio de 391,6 segundos. Por su parte el experimento con obstaculos obtuvo una calificación
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                 BIBLIOGRAFIA
@@ -524,6 +754,25 @@ AL FINALIZAR
 	MobileRobots. (2014).
 	Mapper3. 	
 	Disponible en: \\\link{http://robots.mobilerobots.com/wiki/Mapper3}.
+	
+\bibitem{sniedovich2006} 
+	Sniedovich, M. (2006). 
+	Dijkstra's algorithm revisited: the dynamic programming connexion. 
+	Control and cybernetics.
+	Vol. 35. No. 3. Pp. 599-620.
+
+\bibitem{lavalle2006} 
+	Lavalle, S. (2006). Planning algorithms. Cambridge university press.
+	
+\bibitem{cormen2001} 
+	Cormen, T., Leiserson, C., Rivest, R. y Stein, C. (2001). Introduction to algorithms. Cambridge: MIT press.
+
+\bibitem{berg2000} 
+	De Berg, M., Van Kreveld, M., Overmars, M. y Schwarzkopf, O. (2000). Computational geometry. Springer Berlin Heidelberg.
+	Pp. 1-17.
+
+\bibitem{okabe2009} 
+	Okabe, A., Boots, B., Sugihara, K. y Chiu, S. (2009). Spatial tessellations: concepts and applications of Voronoi diagrams. John Wiley & Sons. Vol. 501.
 	
 \end{thebibliography}
 \end{document}
