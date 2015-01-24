@@ -23,6 +23,10 @@ import app.path.geometry.Point;
 
 public class ArPlanSequencer {
 
+	public static final int APS_MOVING = 1;
+	public static final int APS_FINISH = 2;
+	public static final int APS_TURN = 3;
+
 	private ArrayList<Point> path;
 	private Queue<Point> goalControl;
 
@@ -51,10 +55,10 @@ public class ArPlanSequencer {
 		return arSpatialReasoner;
 	}
 
-	public void executePlan(ArSchemaController schema) {
+	public int executePlan(ArSchemaController schema) {
 
 		if (planFinish)
-			return;
+			return APS_FINISH;
 
 		double angle = schema.getAngle();
 
@@ -67,7 +71,7 @@ public class ArPlanSequencer {
 				schema.getRobot().setCompletePath(true);
 				planFinish = true;
 			}
-			return;
+			return APS_FINISH;
 		}
 
 		Point position = schema.getPosition();
@@ -79,14 +83,16 @@ public class ArPlanSequencer {
 			schema.stop();
 			schema.sleep(arSpatialReasoner.getArMisionPlanner().getRobotSleepTime());
 			newSection();
+			return APS_TURN;
 		} else if (Math.abs(angleTurn) > arSpatialReasoner.getArMisionPlanner().getRobotErrorAngle()) {
 			schema.turn(angleTurn);
+			return APS_TURN;
 		} else {
 			if (distance > arSpatialReasoner.getArMisionPlanner().getRobotMaxSpeed())
 				distance = arSpatialReasoner.getArMisionPlanner().getRobotMaxSpeed();
 			schema.move(distance);
+			return APS_MOVING;
 		}
-
 	}
 
 	public boolean isPlanFinish() {

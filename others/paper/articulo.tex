@@ -692,7 +692,32 @@ la aplicación, además se puede ingresar a la ventana de creditos en la opción
 
 \section*{Experimentación}
 
+Para el proceso de experimentación se empleó la herramienta de simulación MobileSim, y se cargo el plano del 
+Edificio K del Decanato de Ciencias y Tecnología de la Universidad Centrocidental Lisandro Alvarado. Se diseñaron
+des experimentos 
+
+\section*{Experimento I, Navegación sin Obstculos}
+
+\section*{Experimento II, Navegación con Obstaculos}
+
+
 \section*{Conclusión}
+
+La arquitectua AuRA es altamente modular por su diseño, integra la capa reactiva con 
+la capa deliberativa de manera que el robot movil pueda desenvolverse en 
+entornos no estructurados y a la vez cumplir con los objetivos de la misión. Los resultados
+presentados en esta investigación muestran que una combinación en AuRA y
+un razonador espacial basado en los diagramas de Voronoi genera buenas rutas entre el 
+el punto de partida y el objetivo, más se pudo apreciar que no son del todo eficientes.
+El algoritmo voraz Dijkstra  cumplio con las expectativas con respeto al 
+tiempo de ejecución, se pudo apreciar que es necesario poco tiempo para determinar
+las rutas optimas sobre los grafos, lo que ayuda 
+a minimizar el tiempo de calculo en el construcción
+de nuevos caminos al encontrar obstaculos.
+
+Con respecto al desempeño general de la implementación hecha, se puede decir que los resultados 
+fueron buenos, en el experimento realizado sin obstaculos la tasa de exito fue de 100\% con un tiempo
+promedio de 391,6 segundos. Por su parte el experimento con obstaculos obtuvo una calificación
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                 BIBLIOGRAFIA
@@ -740,7 +765,14 @@ la aplicación, además se puede ingresar a la ventana de creditos en la opción
 	Lavalle, S. (2006). Planning algorithms. Cambridge university press.
 	
 \bibitem{cormen2001} 
-	Cormen, T., Leiserson, C., Rivest, R., y Stein, C. (2001). Introduction to algorithms. Cambridge: MIT press.
+	Cormen, T., Leiserson, C., Rivest, R. y Stein, C. (2001). Introduction to algorithms. Cambridge: MIT press.
+
+\bibitem{berg2000} 
+	De Berg, M., Van Kreveld, M., Overmars, M. y Schwarzkopf, O. (2000). Computational geometry. Springer Berlin Heidelberg.
+	Pp. 1-17.
+
+\bibitem{okabe2009} 
+	Okabe, A., Boots, B., Sugihara, K. y Chiu, S. (2009). Spatial tessellations: concepts and applications of Voronoi diagrams. John Wiley & Sons. Vol. 501.
 	
 \end{thebibliography}
 \end{document}

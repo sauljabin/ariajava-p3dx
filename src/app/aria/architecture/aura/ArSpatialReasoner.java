@@ -44,7 +44,7 @@ public class ArSpatialReasoner {
 	public ArSpatialReasoner(ArMisionPlanner arMisionPlanner) {
 		this.map = arMisionPlanner.getMap();
 		this.arMisionPlanner = arMisionPlanner;
-		numLinksToStartGoal = 5;
+		numLinksToStartGoal = 4;
 	}
 
 	public ArMisionPlanner getArMisionPlanner() {
