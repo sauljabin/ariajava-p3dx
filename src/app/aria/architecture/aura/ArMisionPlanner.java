@@ -39,6 +39,7 @@ public class ArMisionPlanner {
 	private double robotErrorAngle;
 	private int robotStopDistance;
 	private int robotSonarAngle;
+	private boolean loaded;
 
 	public String getPath() {
 		return path;
@@ -109,6 +110,7 @@ public class ArMisionPlanner {
 			goal = new Goal(start.getX() + ArRobotMobile.LONG * 2, start.getY(), start.getAngle());
 			goal.setMap(map);
 		}
+		loaded = true;
 	}
 
 	public void addLine(int x1, int y1, int x2, int y2) {
@@ -169,6 +171,11 @@ public class ArMisionPlanner {
 
 	public void setRobotSonarAngle(int robotSonarAngle) {
 		this.robotSonarAngle = robotSonarAngle;
+	}
+
+	public void reset() throws Exception {
+		if (loaded)
+			load(path);
 	}
 
 }
