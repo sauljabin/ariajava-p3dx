@@ -1,6 +1,6 @@
 /**
  * 
- * ArUpdaterPositionAnimation.java
+ * AnimationSynchronizer.java
  * 
  * Copyright (c) 2014, Saul Piña <sauljp07@gmail.com>, Jorge Parra <thejorgemylio@gmail.com>.
  * 
@@ -11,24 +11,25 @@
  *
  */
 
-package app.aria.architecture;
+package app.gui;
 
 import app.aria.robot.ArRobotMobile;
 
-public class ArUpdaterPositionAnimation implements Runnable {
-	
+public class AnimationSynchronizer implements Runnable {
+
 	private int updateAnimatedPositionRate;
 	private Thread thread;
 	private boolean run;
 	private double animatedX;
 	private double animatedY;
 	private double animatedAngle;
-
 	private ArRobotMobile robot;
-	
-	public ArUpdaterPositionAnimation(ArRobotMobile robot, int updateAnimatedPositionRate) {
+	private ControllerViewApp controllerViewApp;
+
+	public AnimationSynchronizer(ControllerViewApp controllerViewApp, ArRobotMobile robot, int updateAnimatedPositionRate) {
 		this.robot = robot;
 		this.updateAnimatedPositionRate = updateAnimatedPositionRate;
+		this.controllerViewApp = controllerViewApp;
 		updateAnimatedPosition();
 	}
 
@@ -38,10 +39,18 @@ public class ArUpdaterPositionAnimation implements Runnable {
 		robot.unlock();
 	}
 
+	private synchronized boolean isConnect() {
+		boolean connect;
+		robot.lock();
+		connect = robot.isConnected();
+		robot.unlock();
+		return connect;
+	}
+
 	public void updateAnimatedPosition(double x, double y, double angle) {
 		animatedX = x;
 		animatedY = y;
-		animatedAngle = angle;		
+		animatedAngle = angle;
 		robot.setRelativeAngle(angle);
 		robot.setRelativeX(x);
 		robot.setRelativeY(y);
@@ -99,6 +108,10 @@ public class ArUpdaterPositionAnimation implements Runnable {
 	@Override
 	public void run() {
 		while (run) {
+			if (!isConnect()) {
+				controllerViewApp.disconnect();
+				continue;
+			}
 			updateAnimatedPosition();
 			try {
 				Thread.sleep(1000 / updateAnimatedPositionRate);

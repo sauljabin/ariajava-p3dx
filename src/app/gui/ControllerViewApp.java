@@ -41,7 +41,6 @@ import app.Translate;
 import app.animation.Animator;
 import app.animation.RobotInfoPanel;
 import app.aria.architecture.ArArchitecture;
-import app.aria.architecture.ArUpdaterPositionAnimation;
 import app.aria.architecture.aura.ArArchitectureAuRA;
 import app.aria.architecture.aura.ArMisionPlanner;
 import app.aria.architecture.reactive.ArArchitectureReactive;
@@ -68,7 +67,7 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 	private ArConnector connector;
 	public static final int TRANSLATE = 20;
 	public static final int ZOOM = 1;
-	public ArUpdaterPositionAnimation updaterPosition;
+	public AnimationSynchronizer updaterPosition;
 	private boolean showPath;
 	private RobotInfoPanel robotInfoPanel;
 	private ArMisionPlanner arMisionPlanner;
@@ -313,6 +312,7 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		} catch (Exception e) {
 			Log.error(getClass(), Translate.get("ERROR_MAPLOADED"), e);
 			e.printStackTrace();
+			return;
 		}
 
 		Log.info(getClass(), Translate.get("INFO_MAPLOADED") + ": " + fileName);
@@ -377,7 +377,7 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		setRobotErrorDistance();
 		setRobotStopDistance();
 		setRobotSonarAngle();
-		updaterPosition = new ArUpdaterPositionAnimation(robot, Integer.parseInt(Config.get("ANIMATION_POSITIONUPDATERATE")));
+		updaterPosition = new AnimationSynchronizer(this, robot, Integer.parseInt(Config.get("ANIMATION_POSITIONUPDATERATE")));
 
 		if (anRobot != null) {
 			animator.removeAnimated(anRobot);

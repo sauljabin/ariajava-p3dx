@@ -27,12 +27,7 @@ public class ArArchitectureAuRA extends ArArchitecture {
 	private ArSpatialReasoner arSpatialReasoner;
 	private ArSchemaController arSchemaController;
 	private boolean pathExist;
-	private boolean avoid;
-	private double angleForAvoid;
-	private double scannerRangeStart;
-	private int scannerAngleStart;
-	private double scannerRangeEnd;
-	private int scannerAngleEnd;
+	private int arPlanSequencerState;
 
 	public ArArchitectureAuRA(ArMisionPlanner arMisionPlanner, ArRobotMobile robot) {
 		super("AuRA", robot);
@@ -51,54 +46,35 @@ public class ArArchitectureAuRA extends ArArchitecture {
 		Point position = arSchemaController.getPosition();
 		double angle = arSchemaController.getAngle();
 
-		if (arSchemaController.detectObstacle(arMisionPlanner.getRobotStopDistance(), arMisionPlanner.getRobotSonarAngle()) && !avoid) {
+		if (detectObstacle()) {
 			arSchemaController.stop();
 			arSchemaController.sleep(400);
-
-			obstacleScanner();
-
-			double point1X = position.getX() + scannerRangeStart * Math.cos(Math.toRadians(angle + scannerAngleStart));
-			double point1Y = position.getY() + scannerRangeStart * Math.sin(Math.toRadians(angle + scannerAngleStart));
-
-			double point2X = position.getX() + scannerRangeEnd * Math.cos(Math.toRadians(angle + scannerAngleEnd));
-			double point2Y = position.getY() + scannerRangeEnd * Math.sin(Math.toRadians(angle + scannerAngleEnd));
-
-			arMisionPlanner.addLine((int) point1X, (int) point1Y, (int) point2X, (int) point2Y);
-			avoid = true;
-			angleForAvoid = angle;
-			return;
-		}
-
-		if (avoid) {
-
-			double backPoitX = position.getX() + arMisionPlanner.getRobotStopDistance() * Math.cos(Math.toRadians(angleForAvoid + 180));
-			double backPoitY = position.getY() + arMisionPlanner.getRobotStopDistance() * Math.sin(Math.toRadians(angleForAvoid + 180));
-
-			Point nextGoal = new Point(backPoitX, backPoitY, "");
-			double desiredAngle = arPlanSequencer.calculateDesiredAngle(position, nextGoal);
-			double angleTurn = desiredAngle - angle;
-			if (Math.abs(angleTurn) > arSpatialReasoner.getArMisionPlanner().getRobotErrorAngle()) {
-				arSchemaController.turn(angleTurn);
-			} else {
-				avoid = false;
-				arMisionPlanner.setStart(new Start(arMisionPlanner.getMap(), (int) position.getX(), (int) position.getY(), angle));
-				calculatePath();
-			}
+			obstacleScanner(position, angle);
+			arMisionPlanner.setStart(new Start(arMisionPlanner.getMap(), (int) position.getX(), (int) position.getY(), angle));
+			calculatePath();
+			arPlanSequencerState = ArPlanSequencer.APS_TURN;
 		} else {
-			arPlanSequencer.executePlan(arSchemaController);
+			arPlanSequencerState = arPlanSequencer.executePlan(arSchemaController);
 		}
 	}
 
-	private void obstacleScanner() {
+	private boolean detectObstacle() {
+		if (arPlanSequencerState != ArPlanSequencer.APS_TURN)
+			return arSchemaController.detectObstacle(arMisionPlanner.getRobotStopDistance(), arMisionPlanner.getRobotSonarAngle());
+		else
+			return false;
+	}
+
+	private void obstacleScanner(Point position, double angle) {
 		int startAngle = (int) -arMisionPlanner.getRobotSonarAngle() + 15;
 		int endAngle = (int) arMisionPlanner.getRobotSonarAngle() + 15;
 
 		boolean startReady = false;
 
-		scannerRangeStart = 0.;
-		scannerAngleStart = startAngle;
-		scannerRangeEnd = 0.;
-		scannerAngleEnd = endAngle;
+		double scannerRangeStart = 0.;
+		double scannerAngleStart = startAngle;
+		double scannerRangeEnd = 0.;
+		double scannerAngleEnd = endAngle;
 
 		double maxDistance = arMisionPlanner.getRobotStopDistance() + arMisionPlanner.getRobotStopDistance() / 2;
 
@@ -116,6 +92,14 @@ public class ArArchitectureAuRA extends ArArchitecture {
 				}
 			}
 		}
+
+		double point1X = position.getX() + scannerRangeStart * Math.cos(Math.toRadians(angle + scannerAngleStart));
+		double point1Y = position.getY() + scannerRangeStart * Math.sin(Math.toRadians(angle + scannerAngleStart));
+
+		double point2X = position.getX() + scannerRangeEnd * Math.cos(Math.toRadians(angle + scannerAngleEnd));
+		double point2Y = position.getY() + scannerRangeEnd * Math.sin(Math.toRadians(angle + scannerAngleEnd));
+
+		arMisionPlanner.addLine((int) point1X, (int) point1Y, (int) point2X, (int) point2Y);
 
 	}
 
