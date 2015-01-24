@@ -387,10 +387,8 @@ public class Animator implements Runnable {
 			addAnimated(arMisionPlanner.getStart());
 		if (arMisionPlanner.getGoal() != null)
 			addAnimated(arMisionPlanner.getGoal());
-		setSize(arMisionPlanner.getMap().getCanvasWidth(), arMisionPlanner.getMap().getCanvasHeight());
-		centerMap();
+		setSize(arMisionPlanner.getMap().getCanvasWidth(), arMisionPlanner.getMap().getCanvasHeight());		
 		refresh();
-
 	}
 
 	public void updateMapProportion(int proportion) {

@@ -71,6 +71,7 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 	private boolean showPath;
 	private RobotInfoPanel robotInfoPanel;
 	private ArMisionPlanner arMisionPlanner;
+	private boolean wasConnect;
 
 	public ControllerViewApp() {
 		init();
@@ -123,6 +124,7 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		arMisionPlanner.setMap(map);
 		setShowPath(Boolean.parseBoolean(Config.get("ANIMATION_SHOWPATH")));
 		animator.showMap(arMisionPlanner);
+		animator.centerMap();
 		updateStartEndPoint();
 		viewApp.getSpnMaxSpeed().setModel(new SpinnerNumberModel(Integer.parseInt(Config.get("ROBOT_MAXSPEED")), 1, 500, 1));
 
@@ -305,10 +307,9 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 
 		try {
 			arMisionPlanner.load(path.getAbsolutePath());
-			map = arMisionPlanner.getMap();
-			map.setShowPath(showPath);
-			map.setProportion((int) viewApp.getSpnProportion().getValue());
+			initMap();
 			animator.showMap(arMisionPlanner);
+			animator.centerMap();
 		} catch (Exception e) {
 			Log.error(getClass(), Translate.get("ERROR_MAPLOADED"), e);
 			e.printStackTrace();
@@ -317,6 +318,12 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 
 		Log.info(getClass(), Translate.get("INFO_MAPLOADED") + ": " + fileName);
 		updateStartEndPoint();
+	}
+
+	private void initMap() {
+		map = arMisionPlanner.getMap();
+		map.setShowPath(showPath);
+		map.setProportion((int) viewApp.getSpnProportion().getValue());
 	}
 
 	public void about() {
@@ -368,6 +375,18 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		if (map == null) {
 			JOptionPane.showMessageDialog(viewApp, Translate.get("ERROR_MAPNOTLOADED"), "Error", JOptionPane.ERROR_MESSAGE);
 			return;
+		}
+
+		if (wasConnect) {
+			try {
+				arMisionPlanner.reset();
+				initMap();
+				animator.showMap(arMisionPlanner);
+			} catch (Exception e) {
+				Log.error(getClass(), Translate.get("ERROR_MAPLOADED"), e);
+				e.printStackTrace();
+				return;
+			}
 		}
 
 		robot = new ArRobotMobile(arMisionPlanner.getStart().getX(), arMisionPlanner.getStart().getY(), arMisionPlanner.getStart().getAngle());
@@ -434,6 +453,7 @@ public class ControllerViewApp implements ActionListener, ChangeListener {
 		viewApp.getSpnInitX().setEnabled(false);
 		viewApp.getSpnInitY().setEnabled(false);
 		viewApp.getSpnInitAngle().setEnabled(false);
+		wasConnect = true;
 	}
 
 	public void showConfig() {
