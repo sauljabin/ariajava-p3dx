@@ -463,7 +463,7 @@ En esta implementación se diseñó un razonador espacial que calcula la ruta ó
 
 \begin{figure}[H]
 \begin{center}
-\includegraphics[width=4cm]{razonador-espacial.png} 
+\includegraphics[width=3cm]{razonador-espacial.png} 
 \caption{Etapas del razonador espacial.}
 \label{fig:razonador-espacial}
 \end{center}
@@ -692,14 +692,86 @@ la aplicación, además se puede ingresar a la ventana de creditos en la opción
 
 \section*{Experimentación}
 
-Para el proceso de experimentación se empleó la herramienta de simulación MobileSim, y se cargo el plano del 
+Para el proceso de experimentación se empleó la herramienta de simulación MobileSim, y se digitalizó el plano del 
 Edificio K del Decanato de Ciencias y Tecnología de la Universidad Centrocidental Lisandro Alvarado. Se diseñaron
-des experimentos 
+dos experimentos con la finalidad de observar el comportamiento exhibido por el robot simulado frente a un escenario
+con y sin obstáculos, además detectar la configuración ideal para la navegación.
+Los experimentos consisten en ejecutar seis veces el algoritmo configurando los parámetros 
+de navegación con diferentes valores.
 
-\section*{Experimento I, Navegación sin Obstculos}
+La información espacial para los experimentos se cargo en un archivo \textit{.map}, el resultado puede observarse 
+en las Figuras \ref{fig:mapa-k} y \ref{fig:mapa-k-ruta}.
 
-\section*{Experimento II, Navegación con Obstaculos}
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=10cm]{mapa-k.png} 
+\caption{Mapa del Módulo K.}
+\label{fig:mapa-k}
+\end{center}
+\end{figure} 
 
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=10cm]{mapa-k-ruta.png} 
+\caption{Mapa del Módulo K con Ruta de Navegación.}
+\label{fig:mapa-k-ruta}
+\end{center}
+\end{figure} 
+
+Los atributos configurables para la navegación son los siguientes:
+
+\noindent\textbf{Punto inicio:} punto origen de navegación.\\
+\textbf{Punto objetivo:} objetivo que el robot debe alcanzar.\\
+\textbf{Error distancia:} distancia máxima permitida entre el robot y los objetivos.\\
+\textbf{Error ángulo:} diferencia máxima permitida entre el ángulo del robot y el ángulo deseado.\\
+\textbf{Distancia mínima:} distancia tolerada entre el robot y un obstáculo.\\
+\textbf{Ángulo sonar:} rango de detección del sonar.
+
+\subsection*{Experimento I, Navegación sin Obstáculos}
+
+En el \reftable{tab:experimento-1} se puede apreciar los resultados obtenidos. 
+La tasa de éxito fue de 100\%.
+
+\begin{table}[h]
+\centering
+\caption{Tabla de Resultados Experimento Sin Obstáculos}
+\label{tab:experimento-1}
+\tiny
+\begin{tabular}{|l|l|l|l|l|l|l|} \hline
+&&&\textbf{Error}&\textbf{Error}&& \\ 
+\textbf{Nro}&	\textbf{Punto Inicio}	& \textbf{Punto Objetivo} &	\textbf{Distancia}	& \textbf{Ángulo} &	\textbf{Éxito} &	\textbf{Tiempo} \\ \hline
+1&(12000,12000)&(50950,21800)&30&2&Si&419,17 \\ \hline
+2&(48645,24047)&(56392,23638)&30&2&Si&417,29 \\ \hline
+3&(9221,23000)&(54431,10791)&40&4&Si&455,21 \\ \hline
+4&(8000,11000)&(40431,16000)&40&4&Si&310,5  \\ \hline
+5&(39432,20500)&(8800,11000)&60&6&Si&317,64 \\ \hline
+6&(54432,11500)&(8800,23000)&60&6&Si&429,77 \\ \hline
+\end{tabular}
+\end{table}
+
+\subsection*{Experimento II, Navegación con Obstáculos}
+
+Para el experimento con obstaculos se configuraron las pruebas con 
+las siguientes tolerancias de error: distandia de 30mm y ángulo 2 grados.
+De este experimento (\reftable{tab:experimento-2}) se obtuvo una tasa de éxito de 66,6\%. Se puede interpretar del resultado
+que distancias de aproximación menores o igual a 300mm no son ideales para el algoritmo de navegación desarrollado.
+
+\begin{table}[h]
+\centering
+\caption{Tabla de Resultados Experimento Con Obstáculos}
+\label{tab:experimento-2}
+\tiny
+\begin{tabular}{|l|l|l|l|l|l|l|} \hline
+&&&\textbf{Distancia}&\textbf{Ángulo}&& \\ 
+\textbf{Nro}&\textbf{Punto Inicio}&\textbf{Punto Objetivo}&\textbf{Mínima}&\textbf{Sonar}&\textbf{Éxito}&\textbf{Tiempo} \\ \hline
+1&(12000,12000)&(50950,21800)&500&45&Si&540,17 \\ \hline
+2&(48645,24047)&(56392,23638)&500&55&Si&130,44 \\ \hline
+3&(9221,23000)&(54431,10791)&400&45&Si&529,08 \\ \hline
+4&(8000,11000)&(40431,16000)&400&55&Si&383,89 \\ \hline
+5&(39432,20500)&(8800,11000)&300&45&No&\\ \hline
+6&(54432,11500)&(8800,23000)&300&55&No&\\ \hline
+\end{tabular}
+\end{table}
 
 \section*{Conclusión}
 
@@ -716,8 +788,11 @@ a minimizar el tiempo de calculo en el construcción
 de nuevos caminos al encontrar obstaculos.
 
 Con respecto al desempeño general de la implementación hecha, se puede decir que los resultados 
-fueron buenos, en el experimento realizado sin obstaculos la tasa de exito fue de 100\% con un tiempo
-promedio de 391,6 segundos. Por su parte el experimento con obstaculos obtuvo una calificación
+fueron buenos, en el experimento realizado sin obstaculos la tasa de exito fue de 100\%.
+Por su parte, el experimento con obstaculos obtuvo una calificación de 66,6\%, debido a que dos
+de las pruebas realizadas resultaron fallidas. La distandia de aproximación mínima de las pruebas erradas
+fue de 300 milímetros, lo que sugiere que esta distancia es muy pequeña para el algoritmo desarrollado, por ende se toma como
+distancia de aproximación deseable 500 milímetros.
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %                                 BIBLIOGRAFIA
