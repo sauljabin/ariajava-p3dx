@@ -35,7 +35,7 @@ rulesepcolor=\color{black},
 %
 stringstyle=\ttfamily,
 showstringspaces = false,
-basicstyle=\footnotesize\ttfamily,
+basicstyle=\tiny\ttfamily,
 commentstyle=\color{gray45},
 keywordstyle=\bfseries,
 %
@@ -159,7 +159,7 @@ breaklines=true
 }
 
 %\vspace{-15mm}
-\date{\small{Octubre 2014}
+\date{\small{Enero 2015}
 }
 
 %\date{}
@@ -197,7 +197,7 @@ Por otra parte, se explica el funcionamiento e instalación sobre sistemas opera
 desarrollada. Se exponen los resultados y conclusiones del conjunto de pruebas 
 realizadas para validar la arquitectura. En los resultados alcanzados se encontró 
 que el robot tiene la capacidad de dirigirse por el espacio efectivamente más no completamente eficiente. 
-También se pudo observar que el robot responde satisfactoriamente a obstaculos inesperados. 
+También se pudo observar que el robot responde satisfactoriamente a obstáculos inesperados. 
 
  \textbf{Palabras clave}: Robótica, ARIA, AuRA, Arquitectura Híbrida, Pioneer P3DX.}}
 \end{center}
@@ -223,28 +223,28 @@ También se pudo observar que el robot responde satisfactoriamente a obstaculos 
 La robótica móvil es un campo de investigación que supone la integración de numerosas disciplinas
 entre las que resaltan la electrónica, ingeniería mecánica,
 inteligencia artificial, estadística, entre otros. Tiene como objetivo 
-guiar el curso de un robot movil sobre un entorno con obstculos conocido o desconocido,
+guiar el curso de un robot móvil sobre un entorno con obstáculos conocido o desconocido,
 a través de un sistema que integra la percepción del entorno mediante
 sensores, toma de decisiones y acciones.
 
 Las tareas involucradas en la navegación de un robot móvil son: la percepción del
-entorno, la planificación de una trayectoria libre de obstáculos, y la conducción del vehiculo a través de la referencia establecida.
+entorno, la planificación de una trayectoria libre de obstáculos, y la conducción del vehículo a través de la referencia establecida.
 Es necesario que se incluya la capacidad de reaccionar ante situaciones inesperadas.
 
 La arquitectura AuRA propone un enfoque de control donde se fusiona los paradigmas deliberativo y reactivo,
-integra todas las tareas expuestas anteriormente, por ende, le permitirá al robot movil responder a eventos inesperados, desenvolverse en 
-entornos no estructurados y a la vez cumplir con los objetivos de la misión. La implementancion de esta arqitectura supone un conocimiento previo
-del entorno, el cual servira como insumo para la planificación global de la misión.
+integra todas las tareas expuestas anteriormente, por ende, le permitirá al robot móvil responder a eventos inesperados, desenvolverse en 
+entornos no estructurados y a la vez cumplir con los objetivos de la misión. La implementación de esta arquitectura supone un conocimiento previo
+del entorno, el cual servirá como insumo para la planificación global de la misión.
 
-En el presente trabajo se expone todo el proceso de implementación de la arquitectura híbrida AuRA sobre el robot movil P3DX,
-con un razonador espacial principalmente basada en el diagrama de Voronoi y en el algoritmo voraz Dijkstra para el calculo de 
+En el presente trabajo se expone todo el proceso de implementación de la arquitectura híbrida AuRA sobre el robot móvil P3DX,
+con un razonador espacial principalmente basada en el diagrama de Voronoi y en el algoritmo voraz Dijkstra para el cálculo de 
 la ruta óptima.
 
 \section*{Pioneer P3DX}
 
 El Pionner P3DX \refpfigure{fig:pioneer} es un robot ligero ideal para ser usado en el interior de laboratorios o aulas de clases. El robot cuenta con una rueda y un motor ubicados a cada lado del mismo. Además, tiene una rueda en la parte posterior que le ayuda a mantener el equilibrio.
 Igualmente, el Pionner P3DX posee sensores de ultrasonido o sonares, empleados para detectar obstáculos en el ambiente.
-Es uno de los robots más popularmente usados en las áreas de la educación e investigación. Puedes ser fácilmente personalizado y mejorado, integrandolo con accesorios de diversa índole. Por otra parte, posee un conjunto completo de aplicaciones y librerías que sustentan el desarrollo de proyectos de investigación.
+Es uno de los robots más popularmente usados en las áreas de la educación e investigación. Puede ser fácilmente personalizado y mejorado, integrándolo con accesorios de diversa índole. Por otra parte, posee un conjunto completo de aplicaciones y librerías que sustentan el desarrollo de proyectos de investigación.
 
 \begin{figure}[here]
 	\centering
@@ -298,7 +298,7 @@ tradicional y otra reactiva basada en teoría de esquemas. En la \reffigure{fig:
 la capa deliberativa la componen el \textit{planificador de misión}, \textit{razonador espacial} y el \textit{secuenciador del plan}. En el nivel más alto se encuentra el \textit{planificador de misión}, representa la interfaz con el humano y permite establecer los objetivos, 
 las restricciones y los parámetros en los que debe operar el robot. El \textit{razonador espacial} puede ser referido como navegador, este usa la información cartográfica
 almacenada para construir la ruta deseada que el robot debe seguir para completar la misión. El \textit{secuenciador del plan}
-puede ser comparado con un piloto, convierte la ruta generada por el \textit{razonador espacial} al conjunto de comportamientos (esquemas) que debe ejecutar la capa reactiva. En la capa reactiva, el \textit{control de esquema} es el responsable de llevar a cabo y monitorear en tiempo real el conjunto de comportamientos que el secuenciador ordena ejecutar, cada comportamiento esta asociado a un esquema perceptual, en otras palabras, cada estimulo genera una respuesta. 
+puede ser comparado con un piloto, convierte la ruta generada por el \textit{razonador espacial} al conjunto de comportamientos (esquemas) que debe ejecutar la capa reactiva. En la capa reactiva, el \textit{control de esquema} es el responsable de llevar a cabo y monitorear en tiempo real el conjunto de comportamientos que el secuenciador ordena ejecutar, cada comportamiento está asociado a un esquema perceptual, en otras palabras, cada estímulo genera una respuesta. 
 
 \begin{figure}[here]
 \begin{center}
@@ -310,7 +310,7 @@ puede ser comparado con un piloto, convierte la ruta generada por el \textit{raz
 
 \subsubsection*{Fortalezas de la Arquitectura AuRA}
 
-Modularidad, flexibilidad, generalización e hibridación, son los características resaltantes de esta arquitectura.
+Modularidad, flexibilidad, generalización e hibridación, son las características resaltantes de esta arquitectura.
 
 \textbf{Modularidad}, es altamente modular debido a su diseño en capas, lo que permite intercambiar o mejorar
 los componentes sin afectar el funcionamiento general.
@@ -324,13 +324,13 @@ para la construcción de rutas, aprendizaje y adaptación.
 
 \section*{Entorno de Desarrollo}
 
-Para llevar a cabo la presente investigación se desarrollo una aplicación cliente
+Para llevar a cabo la presente investigación se desarrolló una aplicación cliente
 con las siguientes herramientas de software:
 
 \textbf{ARIA} (Advanced Robot Interface for Applications) \cite{aria2014},
 es una librería desarrollada en el lenguaje de programación C++ para todas las
 plataformas MobileRobots/ActivMedia. Provee el conjunto de herramientas necesarias
-para controlar y monitorear de forma dinámica al robot y sus elementos. Ademas, esta librería
+para controlar y monitorear de forma dinámica al robot y sus elementos. Además, esta librería
 incluye implementaciones llamadas \textit{wrapper} en los lenguajes de programación Python y Java, siendo este último 
 el lenguaje de desarrollo para este investigación.
 
@@ -411,7 +411,7 @@ los parámetros generales, cargar la información cartográfica y además presen
 \end{center}
 \end{figure} 
 
-Por otra parte es posible cargar mapas a través de archivos de texto plano con extensión \textit{.map}, 
+Por otra parte, es posible cargar mapas a través de archivos de texto plano con extensión \textit{.map}, 
 este formato de archivo es compatible con MobileSim y puede ser generado o editado por
 Mapper3 \cite{mapper2014}.
 
@@ -475,14 +475,82 @@ se genera un \textbf{Diagrama de Voronoi} a partir de la triangulación, este di
 en un grafo conectado. Por último, se aplica el \textbf{Algoritmo de Dijkstra} sobre el Diagrama de Voronoi con el fin
 de calcular la ruta óptima desde un punto de inicio hasta un punto objetivo dentro del grafo.
 
-
 \begin{enumerate}
-\item \textbf{Triangulación de Delaunay:}
+\item \textbf{Triangulación de Delaunay}
+
+Una triangulación es la división de una superficie o polígono plano en un conjunto de triángulos, con la restricción de que cada lado del triángulo se reparta entre dos triángulos adyacentes \cite{dma2015}.
+
+La condición de Delaunay dice que una red de triángulos es una triangulación de Delaunay si todas las circunferencias circunscritas de todos los triángulos de la red son vacías, es decir, la 
+circunferencia circunscrita de cada triángulo de la red no contiene otros vértices aparte de los tres que definen el triángulo. Esa es la definición original para espacios bidimensionales, y es posible ampliarla para espacios tridimensionales usando la esfera en vez de la circunferencia circunscrita. Esta condición asegura que los ángulos del interior de los triángulos son lo más grandes posibles, la longitud de los lados de los triángulos es mínima y la triangulación formada es única.
+
+Por lo tanto, la triangulación de Delaunay es una red de triángulos que se caracteriza por formar los triángulos más equiláteros posibles, es decir, maximiza el mínimo ángulo de los triángulos. De esta forma, los puntos más próximos entre sí, estarán conectados por una arista, en la que los triángulos resultantes serán lo más regulares posibles \cite{dma2015,delaunay2015,berg2000,okabe2009}. En la figura \reffigure{fig:delaunay} 
+se puede observar un ejemplo de triangulación de Delaunay. Esta técnica tiene gran aplicación en la generación de gráficos en 3D por computadora.
+
+\begin{figure}[H]
+\begin{center}
+	\begin{subfigure}[b]{0.2\linewidth}
+		\includegraphics[width=3cm]{delaunay_circumcircles.png}
+	\end{subfigure}
+	~~~~
+    \begin{subfigure}[b]{0.2\linewidth}
+		\includegraphics[width=3cm]{delaunay.png} 
+	\end{subfigure}
+\caption{Ejemplo de Triangulación de Delaunay.}
+\label{fig:delaunay}
+\end{center}
+\end{figure}
+
+Las propiedades de la triangulación son las siguientes.
+\begin{itemize}
+\item La triangulación es unívoca si ningún círculo rodeado por los vértices de un triángulo contiene otros puntos del espacio.
+\item El ángulo mínimo dentro de todos los triángulos está maximizado y la longitud de los lados de los triángulos es mínima.
+\item Las aristas que pertenecen al perímetro de la triangulación conforman el cierre convexo de la nube de puntos. Estas aristas formarán parte de un solo triángulo, mientras que las aristas interiores a la triangulación van a formar parte de dos triángulos. Los triángulos que conforman el cierre convexo suelen ser alargados.
+\end{itemize}
+
 \item \textbf{Diagrama de Voronoi:}
-\item \textbf{Algoritmo de Dijkstra:} Este algoritmo fue diseñado por Edsger Dijkstra en 1959 \cite{sniedovich2006,lavalle2006,cormen2001}, se puede categorizar en la familia de algoritmos voraces y posee una complejidad de $O(n^{2})$. Tiene como objetivo hayar todos los caminos con costo mínimo desde un nodo inicial a todos los demas nodos dentro de un grafo ponderado. Basicamente lo que hace este algoritmo es recorrer los nodos adyacentes a un nodo especifico, si encuentra un nodo con un alguna alternativa más óptima
+
+Un Diagrama de Voronoi de un conjunto de puntos en el plano, también conocido como teselaciones de Voronoi, no es más que la subdivisión del mismo en regiones formadas por los lugares más próximos a cada uno de los puntos \cite{berg2000,okabe2009}.
+Estos objetos fueron estudiados por Dirichlet, Voronoi y Thiessen.
+El diagrama debe cumplir las siguientes propiedades:
+
+\begin{itemize}
+\item El diagrama de Voronoi está compuesto fundamentalmente por puntos generadores, aristas y vértices.
+\item Dos puntos pi y pj son vecinos si comparten una arista. Una arista es la bisectriz perpendicular del segmento pi , pj.
+\item Un vértice es un punto equidistante a tres puntos y es la intersección de tres aristas.
+\item Una región de Voronoi es un polígono convexo o es una región no acotada.
+\item Una región de Voronoi es no acotada si su punto generador pertenece a la envolvente convexa de la nube de puntos.
+\item Dentro del círculo con centro en un vértice de Voronoi y que pasa por 3 puntos generadores no puede existir ningún otro punto generador.
+\end{itemize}
+
+Algunas de las aplicaciones del Diagrama de Voronoi son las siguietes: Posicionamiento de torretas en telefonía móvil.
+Control aéreo.
+Modelizador del crecimiento de bosques mediante diagramas de Voronoi.
+Reconstrucción de curvas.
+Empacamiento de objetos circulares.
+
+La triangulación de Delaunay con todos los circuncentros es el grafo dual del diagrama de Voronoi: los circuncentros son los vértices de los segmentos del diagrama \cite{delaunaywiki2015}. En la \reffigure{fig:delaunay_centers} se observa la triangulación con todas las circunferencias circunscritas y sus centros. Conectando los centros de las circunferencias circunscritas se produce el diagrama de Voronoi 
+\refpfigure{fig:voronoi}.
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=6cm]{delaunay_centers.png} 
+\caption{Ejemplo de Circuncentros de la Triangulación de Delaunay.}
+\label{fig:delaunay_centers}
+\end{center}
+\end{figure}
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=5cm]{voronoi.png} 
+\caption{Ejemplo de Diagrama de Voronoi.}
+\label{fig:voronoi}
+\end{center}
+\end{figure}
+
+\item \textbf{Algoritmo de Dijkstra:} Este algoritmo fue diseñado por Edsger Dijkstra en 1959 \cite{sniedovich2006,lavalle2006,cormen2001}, se puede categorizar en la familia de algoritmos voraces y posee una complejidad de $O(n^{2})$. Tiene como objetivo hallar todos los caminos con costo mínimo desde un nodo inicial a todos los demás nodos dentro de un grafo ponderado. Básicamente lo que hace este algoritmo es recorrer los nodos adyacentes a un nodo específico, si encuentra un nodo con un alguna alternativa más óptima
 actualiza su peso y le indica cual es su nuevo nodo ancestro .
 
-Se explicara el algoritmo a través de su pseudocódigo (Algoritmo \ref{alg:dijkstra}).
+Se explicará el algoritmo a través de su pseudocódigo (Algoritmo \ref{alg:dijkstra}).
 Se tienen los siguietes elementos:
 
 \begin{itemize}
@@ -493,10 +561,10 @@ Se tienen los siguietes elementos:
 
 Se inicializan todos los pesos acumulados de los nodos en infinito y todos los nodos ancestros en nulo. 
 Luego se agrega el nodo inicial a la cola de prioridad. 
-Se procede a recorrer la cola de prioridad, mientras esta sea distinta de vacio se toma el primer elemento. 
-Posteriormente se verifica el peso acumulado de cada nodo adyacente al primer elemento en la cola, si el peso acumulado del nodo actual del ciclo es mayor
+Se procede a recorrer la cola de prioridad, mientras esta sea distinta de vacío se toma el primer elemento. 
+Posteriormente, se verifica el peso acumulado de cada nodo adyacente al primer elemento en la cola, si el peso acumulado del nodo actual del ciclo es mayor
 al peso del primer elemento ($u$) más el peso entre ambos nodos, se actualiza el peso acumulado y el nodo ancestro del nodo actual.
-Por último se agrega a la cola de prioridad el nodo adyacente. 
+Por último, se agrega a la cola de prioridad el nodo adyacente. 
 
 \begin{algorithm}
 \DontPrintSemicolon
@@ -526,15 +594,112 @@ Q.adicionar(s)\;
 
 \caption{Algoritmo de Dijkstra \label{alg:dijkstra}}
 \end{algorithm}
-
-
 \end{enumerate}
 
 \subsubsection*{\textit{Secuenciador del Plan}}
 
+El secuenciador del plan es el encargado de dirigir el robot utilizando
+la información generada por el planificador. Tiene la responsabilidad de colocar al robot 
+en el ángulo correcto para dirigirse a la siguiente meta, y además, le indica cuando moverse.
+Lleva el control de que metas han sido cumplidas y cuales no. En el \refalgorithm{alg:secuenciador} se
+observa el pseudocódigo de la implementación del secuenciador.
+
+\begin{algorithm}
+\DontPrintSemicolon
+Point position = schema.getPosition()\;
+double distance = position.distance(nextGoal)\;
+double desiredAngle = calculateDesiredAngle(position, nextGoal)\;
+double angleTurn = desiredAngle - angle\;
+
+   \uIf{distance < RobotErrorDistance}{
+      schema.stop()\;
+      nextGoal = goalControl.poll()\;
+   }\uElseIf{Math.abs(angleTurn) > RobotErrorAngle}{
+      schema.turn(angleTurn)\;
+   }\Else{   
+     schema.move(distance)\;
+   }
+}
+
+\caption{Secuenciador del Plan \label{alg:secuenciador}}
+\end{algorithm}
+
 \subsection*{Capa Reactiva}
 
-\pagebreak
+\subsubsection*{\textit{Esquema de Percepción}}
+
+El robot percibe en el entorno a través de los siguientes sensores:
+
+\textbf{Sonar:} permite establecer la distancia entre su ubicación
+y los obstáculos cercanos. En la \reffigure{fig:sonares}, se observa 
+la disposición del sonar.
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=5cm]{sensores.png} 
+\caption{Disposición del sonar del robot.}
+\label{fig:sonares}
+\end{center}
+\end{figure}
+
+\textbf{Sensor Odométrico:} permite estimar el cambio en la posición del robot a través del giro de las ruedas, utiliza como punto de referencia el punto de inicio. 
+
+\subsubsection*{\textit{Esquema de Control}}
+
+El esquema de control son el conjunto de comportamientos integrados
+que permiten controlar el robot. 
+
+El esquema de percepción y de control implementados se pueden apreciar en el \reflistings{lst:esquemas}.
+
+\begin{minipage}{\linewidth}
+\begin{lstlisting}[caption={Implementación de Esquemas.}, label=lst:esquemas]
+public class ArSchemaController {
+   private ArRobotMobile robot;
+   
+   public ArSchemaController(ArRobotMobile robot) {
+      this.robot = robot;
+   }
+  
+   public void turn(double angle) {
+      robot.setDeltaHeading(angle);
+   }
+
+   public void move(double speed) {
+      robot.setVel(speed);
+   }
+
+   public void stop() {
+      robot.setVel(0);
+   }
+
+   public Point getPosition() {
+      Point point = new Point(robot.getX(), robot.getY(), "");
+      return point;
+   }
+
+   public double getAngle() {
+      double angle = robot.getTh();
+      return angle;
+   }
+
+   public void sleep(int sleepTime) {
+      ArUtil.sleep(sleepTime);
+   }
+
+   public double rangeObstacle(double startAngle, double endAngle) {
+      double range = robot.getRangeSonar().currentReadingPolar(startAngle, endAngle);
+      return range;
+   }
+
+   public boolean detectObstacle(int distance, double angle) {
+      double range = robot.getRangeSonar().currentReadingPolar(-angle, angle);
+      return range < distance;
+   }
+
+}
+\end{lstlisting}
+\end{minipage}
+
 \section*{Herramienta de Software Desarrollada}
 
 Se desarrolló una herramienta computacional llamada \textbf{AriaJavaP3DX}, que provee los elementos gráficos necesarios para 
@@ -544,7 +709,7 @@ Como se muestra en las Figuras \ref{fig:ventana-principal-partes} y \ref{fig:ven
 
 \begin{figure}[H]
 \begin{center}
-\includegraphics[width=10cm]{ventana-principal-partes.png} 
+\includegraphics[width=6cm]{ventana-principal-partes.png} 
 \caption{Partes de la ventana principal.}
 \label{fig:ventana-principal-partes}
 \end{center}
@@ -552,7 +717,7 @@ Como se muestra en las Figuras \ref{fig:ventana-principal-partes} y \ref{fig:ven
 
 \begin{figure}[H]
 \begin{center}
-\includegraphics[width=10cm]{ventana-principal2-partes.png} 
+\includegraphics[width=6cm]{ventana-principal2-partes.png} 
 \caption{Partes de la ventana principal.}
 \label{fig:ventana-principal2}
 \end{center}
@@ -560,7 +725,7 @@ Como se muestra en las Figuras \ref{fig:ventana-principal-partes} y \ref{fig:ven
 
 \begin{enumerate}
 \item Esta sección permite configurar la animación 
-a través de los siguientes items: \textbf{FPS}, cuadros por segundo (en ingles \comillas{Frames per second}), 
+a través de los siguientes items: \textbf{FPS}, cuadros por segundo (en inglés \comillas{Frames per second}), 
 se refiere a la frecuencia en que se actualiza la imagen de la animación. \textbf{Proporción}, es la proporción del mapa en 
 la animación con respecto a la medida original en milímetros. \textbf{Trazo}, es el grosor del trazado de las imágenes en la 
 animación. \textbf{Sincronización}, es la frecuencia en segundos en que se verifica la posición real del robot y se actualiza la 
@@ -576,8 +741,8 @@ la ruta óptima calculada y activar o desactivar el antialiasing.
 \item En la parte inferior de la ventana se encuentra la consola, permite observar los mensajes que se generan en la ejecución
 de la aplicación.
 \item En este panel se puede establecer la arquitectura de control del robot.
-En el item \textbf{Arquitectura}, se puede elegir entre la arquitectura AuRA o un comportamiento solamente reactivo.
-\item Este panel permite manipular el conjunto de variables que permiten calibrar el comportamiento del robot, estas son:
+En el ítem \textbf{Arquitectura}, se puede elegir entre la arquitectura AuRA o un comportamiento solamente reactivo.
+\item En este panel se manipula el conjunto de variables que permiten calibrar el comportamiento del robot, estas son:
 \begin{enumerate}
 \item \textbf{Velocidad max.:} velocidad máxima alcanzada por el robot.
 \item \textbf{Robot delay:} tiempo de espera entre acciones.
@@ -586,7 +751,7 @@ En el item \textbf{Arquitectura}, se puede elegir entre la arquitectura AuRA o u
 \item \textbf{Distancia min:} distancia mínima tolerada entre el robot y un obstáculo.
 \item \textbf{Ángulo sonar:} rango de detección del sonar.
 \end{enumerate}
-\item Esta última sección esta destinada a asignar la posición de inicio y fin del robot.
+\item Esta última sección está destinada a asignar la posición de inicio y fin del robot.
 \end{enumerate} 
 
 \begin{figure}[H]
@@ -638,7 +803,7 @@ En el item \textbf{Arquitectura}, se puede elegir entre la arquitectura AuRA o u
 \end{center}
 \end{figure} 
 
-\pagebreak
+
 \subsubsection*{\textit{Menú Opciones}}
 
 A través de este menú \refpfigure{fig:menu-opciones} se puede seleccionar y cargar un mapa ingresando 
@@ -671,13 +836,13 @@ La opción \textbf{Ver configuración} permite visualizar la lista de valores de
 
 \subsubsection*{\textit{Menú Ayuda}}
 
-A través del menu ayuda \refpfigure{fig:menu-ayuda} se puede acceder a la documentación de 
-la aplicación, además se puede ingresar a la ventana de creditos en la opción \textbf{Sobre AriaJavaP3DX} \refpfigure{fig:ventana-about}.
+A través del menú ayuda \refpfigure{fig:menu-ayuda} se puede acceder a la documentación de 
+la aplicación, además se puede ingresar a la ventana de créditos en la opción \textbf{Sobre AriaJavaP3DX} \refpfigure{fig:ventana-about}.
 
 \begin{figure}[H]
 \begin{center}
 \includegraphics[width=3cm]{menu-ayuda2.png} 
-\caption{Menu Ayuda.}
+\caption{Menú Ayuda.}
 \label{fig:menu-ayuda}
 \end{center}
 \end{figure} 
@@ -693,18 +858,18 @@ la aplicación, además se puede ingresar a la ventana de creditos en la opción
 \section*{Experimentación}
 
 Para el proceso de experimentación se empleó la herramienta de simulación MobileSim, y se digitalizó el plano del 
-Edificio K del Decanato de Ciencias y Tecnología de la Universidad Centrocidental Lisandro Alvarado. Se diseñaron
+Edificio K del Decanato de Ciencias y Tecnología de la Universidad Centroccidental Lisandro Alvarado. Se diseñaron
 dos experimentos con la finalidad de observar el comportamiento exhibido por el robot simulado frente a un escenario
 con y sin obstáculos, además detectar la configuración ideal para la navegación.
 Los experimentos consisten en ejecutar seis veces el algoritmo configurando los parámetros 
 de navegación con diferentes valores.
 
-La información espacial para los experimentos se cargo en un archivo \textit{.map}, el resultado puede observarse 
+La información espacial para los experimentos se cargó en un archivo \textit{.map}, el resultado puede observarse 
 en las Figuras \ref{fig:mapa-k} y \ref{fig:mapa-k-ruta}.
 
 \begin{figure}[H]
 \begin{center}
-\includegraphics[width=10cm]{mapa-k.png} 
+\includegraphics[width=8cm]{mapa-k.png} 
 \caption{Mapa del Módulo K.}
 \label{fig:mapa-k}
 \end{center}
@@ -712,7 +877,7 @@ en las Figuras \ref{fig:mapa-k} y \ref{fig:mapa-k-ruta}.
 
 \begin{figure}[H]
 \begin{center}
-\includegraphics[width=10cm]{mapa-k-ruta.png} 
+\includegraphics[width=8cm]{mapa-k-ruta.png} 
 \caption{Mapa del Módulo K con Ruta de Navegación.}
 \label{fig:mapa-k-ruta}
 \end{center}
@@ -751,8 +916,8 @@ La tasa de éxito fue de 100\%.
 
 \subsection*{Experimento II, Navegación con Obstáculos}
 
-Para el experimento con obstaculos se configuraron las pruebas con 
-las siguientes tolerancias de error: distandia de 30mm y ángulo 2 grados.
+Para el experimento con obstáculos se configuraron las pruebas con 
+las siguientes tolerancias de error: distancia de 30mm y ángulo 2 grados.
 De este experimento (\reftable{tab:experimento-2}) se obtuvo una tasa de éxito de 66,6\%. Se puede interpretar del resultado
 que distancias de aproximación menores o igual a 300mm no son ideales para el algoritmo de navegación desarrollado.
 
@@ -776,21 +941,21 @@ que distancias de aproximación menores o igual a 300mm no son ideales para el a
 \section*{Conclusión}
 
 La arquitectua AuRA es altamente modular por su diseño, integra la capa reactiva con 
-la capa deliberativa de manera que el robot movil pueda desenvolverse en 
+la capa deliberativa de manera que el robot móvil pueda desenvolverse en 
 entornos no estructurados y a la vez cumplir con los objetivos de la misión. Los resultados
-presentados en esta investigación muestran que una combinación en AuRA y
+presentados en esta investigación muestran que una combinación entre AuRA y
 un razonador espacial basado en los diagramas de Voronoi genera buenas rutas entre el 
-el punto de partida y el objetivo, más se pudo apreciar que no son del todo eficientes.
-El algoritmo voraz Dijkstra  cumplio con las expectativas con respeto al 
+el punto de partida y el objetivo, más se observó que no son del todo eficientes.
+El algoritmo voraz Dijkstra  cumplió con las expectativas con respecto al 
 tiempo de ejecución, se pudo apreciar que es necesario poco tiempo para determinar
-las rutas optimas sobre los grafos, lo que ayuda 
-a minimizar el tiempo de calculo en el construcción
-de nuevos caminos al encontrar obstaculos.
+las rutas óptimas sobre los grafos, lo que ayuda 
+a minimizar el tiempo de cálculo en el construcción
+de nuevos caminos al encontrar obstáculos.
 
 Con respecto al desempeño general de la implementación hecha, se puede decir que los resultados 
-fueron buenos, en el experimento realizado sin obstaculos la tasa de exito fue de 100\%.
-Por su parte, el experimento con obstaculos obtuvo una calificación de 66,6\%, debido a que dos
-de las pruebas realizadas resultaron fallidas. La distandia de aproximación mínima de las pruebas erradas
+fueron buenos, en el experimento realizado sin obstáculos la tasa de éxito fue de 100\%.
+Por su parte, el experimento con obstáculos obtuvo una calificación de 66,6\%, debido a que dos
+de las pruebas realizadas resultaron fallidas. La distancia de aproximación mínima de las pruebas erradas
 fue de 300 milímetros, lo que sugiere que esta distancia es muy pequeña para el algoritmo desarrollado, por ende se toma como
 distancia de aproximación deseable 500 milímetros.
 
@@ -829,6 +994,26 @@ distancia de aproximación deseable 500 milímetros.
 	MobileRobots. (2014).
 	Mapper3. 	
 	Disponible en: \\\link{http://robots.mobilerobots.com/wiki/Mapper3}.
+		
+\bibitem{dma2015} 
+	Triangulación de Delaunay. 	
+	Disponible en: \\\link{http://www.dma.fi.upm.es/mabellanas/bigdelone/FrameConceptos.htm}
+
+\bibitem{delaunay2015} 
+	Triangulación de Delaunay. 	
+	Disponible en: \\\link{http://www.dma.fi.upm.es/mabellanas/voronoi/delone/delone.html}
+	
+\bibitem{berg2000} 
+	De Berg, M., Van Kreveld, M., Overmars, M. y Schwarzkopf, O. (2000). Computational geometry. Springer Berlin Heidelberg.
+	Pp. 1-17.
+
+\bibitem{okabe2009} 
+	Okabe, A., Boots, B., Sugihara, K. y Chiu, S. (2009). Spatial tessellations: concepts and applications of Voronoi diagrams. John Wiley & Sons. Vol. 501.
+
+\bibitem{delaunaywiki2015} 
+	Wikipedia.
+	Triangulación de Delaunay. 	
+	Disponible en: \\\link{http://es.wikipedia.org/wiki/Triangulación_de_Delaunay}		
 	
 \bibitem{sniedovich2006} 
 	Sniedovich, M. (2006). 
@@ -842,12 +1027,6 @@ distancia de aproximación deseable 500 milímetros.
 \bibitem{cormen2001} 
 	Cormen, T., Leiserson, C., Rivest, R. y Stein, C. (2001). Introduction to algorithms. Cambridge: MIT press.
 
-\bibitem{berg2000} 
-	De Berg, M., Van Kreveld, M., Overmars, M. y Schwarzkopf, O. (2000). Computational geometry. Springer Berlin Heidelberg.
-	Pp. 1-17.
 
-\bibitem{okabe2009} 
-	Okabe, A., Boots, B., Sugihara, K. y Chiu, S. (2009). Spatial tessellations: concepts and applications of Voronoi diagrams. John Wiley & Sons. Vol. 501.
-	
 \end{thebibliography}
 \end{document}
