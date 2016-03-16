@@ -1,14 +1,10 @@
 /**
+ * Copyright (c) 2014 Saúl Piña <sauljabin@gmail.com>, Jorge Parra <thejorgemylio@gmail.com>.
  * 
- * ArRobotMobile.java
+ * This file is part of AriaJava P3DX.
  * 
- * Copyright (c) 2014, Saul Piña <sauljp07@gmail.com>, Jorge Parra <thejorgemylio@gmail.com>.
- * 
- * This file is part of AriaJavaP3DX.
- * 
- * AriaJavaP3DX is licensed under The MIT License.
- * For full copyright and license information please see the LICENSE.txt file.
- *
+ * AriaJava P3DX is licensed under The MIT License.
+ * For full copyright and license information please see the LICENSE file.
  */
 
 package app.aria.robot;
