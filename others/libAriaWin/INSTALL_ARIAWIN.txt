@@ -1,8 +1,0 @@
--INSTALAR ARIA-2.7.6.exe y MobileSim-0.7.2-1.exe
--COPIAR Aria.dll en C:\Program Files\MobileRobots\ARIA\bin\
--EN EL ARCHIVO CONFIG.properties ACTUALIZAR LA VARIABLE PATH_LIBARIA:
-	PATH_LIBARIA=C\:\\Program Files\\MobileRobots\\ARIA\\bin\\
--AGREGAR A LA VARIABLE DE ENTORNO PATH AGREGAR:
-	;C:\Program Files\MobileRobots\ARIA\bin\
--EN Run Configurations>Arguments>VM Arguments colocar:
-	-Xms512m -Xmx1024m
