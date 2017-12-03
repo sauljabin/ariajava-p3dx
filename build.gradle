@@ -11,7 +11,8 @@ sourceCompatibility = 1.8
 
 repositories {
     flatDir {
-        dirs "/usr/local/Aria/java"
+        dirs "C:/Program Files/MobileRobots/Aria/java"
+        // Ubuntu dirs "/usr/local/Aria/java"
     }
     mavenCentral()
 }

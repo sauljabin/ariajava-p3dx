@@ -15,8 +15,8 @@ Documentación
 -------------
 [Informe](documents/informe/articulo.pdf)
 
-Instalación
------------
+Instalación Ubuntu
+------------------
 
 Instalar [ARIA](http://robots.mobilerobots.com/wiki/ARIA), [ARIA Java](http://robots.mobilerobots.com/wiki/ARIA) y [MobileSim](http://robots.mobilerobots.com/wiki/MobileSim).
 
@@ -27,11 +27,26 @@ export ARIA_PATH=/usr/local/Aria
 export LD_LIBRARY_PATH=/lib:/usr/lib:/usr/local/lib:$ARIA_PATH/lib
 ```
 
+Configurar `build.gradle` usando `dirs "/usr/local/Aria/java"` en la especificación de repositorios.
+
+Instalación Windows
+-------------------
+
+Instalar [ARIA](http://robots.mobilerobots.com/wiki/ARIA) y [MobileSim](http://robots.mobilerobots.com/wiki/MobileSim).
+
+Configurar las variables de entorno:
+
+```
+C:\Program Files\MobileRobots\Aria\bin64
+```
+
+Configurar `build.gradle` usando `dirs "C:/Program Files/MobileRobots/Aria/java"` en la especificación de repositorios.
+
 Iniciar Aplicación
 ------------------
 
 Abrir MobileSim con el mapa `documents/maps/PlantaAltaModuloK.map`,
-ejecutar la aplicación con `make run` y conectar.
+ejecutar la aplicación con `./gradlew -q run` y conectar.
 
 Screenshots
 ------------
@@ -42,4 +57,3 @@ Screenshots
 ![](documents/screenshots/screenshot-3.png)
 
 ![](documents/screenshots/screenshot-4.png)
-
