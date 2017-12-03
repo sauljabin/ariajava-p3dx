@@ -29,8 +29,8 @@ export LD_LIBRARY_PATH=/lib:/usr/lib:/usr/local/lib:$ARIA_PATH/lib
 
 Configurar `build.gradle` usando `dirs "/usr/local/Aria/java"` en la especificación de repositorios.
 
-Instalación Windows
--------------------
+Instalación Windows (Recomendada)
+---------------------------------
 
 Instalar [ARIA](http://robots.mobilerobots.com/wiki/ARIA) y [MobileSim](http://robots.mobilerobots.com/wiki/MobileSim).
 
