@@ -9,7 +9,7 @@ Algoritmos de navegación para robot Pioneer P3DX usando la Librería ARIA http:
 - Repository: https://github.com/sauljabin/ariajava-p3dx
 - License: MIT
 - Language: Java
-- Windows (Recomenda)
+- Windows (Recomendada)
 
 Documentación
 -------------
