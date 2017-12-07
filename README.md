@@ -20,13 +20,13 @@ Instalación Windows (Recomendada)
 
 Instalar [ARIA 2.9.3](http://robots.mobilerobots.com/wiki/ARIA) y [MobileSim 0.7.5](http://robots.mobilerobots.com/wiki/MobileSim).
 
-Configurar las variables de entorno:
+Agregar a la variable de entorno `Path` la ruta de intalación de Aria, tener en cuenta el tipo de sistema operativo:
 
 ```
 C:\Program Files\MobileRobots\Aria\bin64
 ```
 
-Configurar `build.gradle` usando `dirs "C:/Program Files/MobileRobots/Aria/java"` en la especificación de repositorios.
+Configurar `build.gradle` usando `dirs "C:/Program Files/MobileRobots/Aria/java"` (ruta de intalación de Aria) en la especificación de repositorios.
 
 Instalación Ubuntu (Inestable)
 ------------------------------
